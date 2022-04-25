@@ -12,7 +12,7 @@ public class Topic {
         String tempname;
         String tempdesc;
 
-        String findTopic = "Select topicID from userTable where (name = ?, desc = ?)";
+        String findTopic = "Select topicID from userTable where name = ? and desc = ?";
         try{
             prepStmt = c.prepareStatement(findTopic);
         } catch (SQLException e){

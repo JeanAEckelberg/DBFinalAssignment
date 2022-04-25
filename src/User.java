@@ -14,7 +14,7 @@ public class User {
     private String userName;
     
     public User(Connection c, String username, String password){
-        String findUser = "Select UserID from userTable where (username = ?, password = ?)";
+        String findUser = "Select UserID from userTable where username = ? and password = ?";
         
         Scanner sc = new Scanner(System.in);
         
