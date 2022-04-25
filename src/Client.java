@@ -25,6 +25,7 @@ public class Client {
         } catch (SQLException e){
             System.err.println("Connection Failed");
         }
+        
     }
     
 }
