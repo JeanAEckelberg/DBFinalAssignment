@@ -49,6 +49,7 @@ public class User {
         
         try{
             rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException();
             id = rs.getInt(1);
             rs.close();
         } catch (SQLException e) {
