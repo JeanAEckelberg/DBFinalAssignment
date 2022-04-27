@@ -4,15 +4,15 @@ import java.sql.*;
 public class Topic {
     private String name;
     private String description;
-    private int topicId;
-    Topic(Connection c, String desc, String name){
-        Scanner sc = new Scanner(System.in);
+    private int topicID;
+    private int userID;
+    
+    
+    Topic(Connection c, int id) throws SQLException{
         PreparedStatement prepStmt;
         ResultSet rs;
-        String tempname;
-        String tempdesc;
 
-        String findTopic = "Select topicID from userTable where name = ? and desc = ?";
+        String findTopic = "Select * from topic where topicID = ?";
         try{
             prepStmt = c.prepareStatement(findTopic);
         } catch (SQLException e){
@@ -20,42 +20,34 @@ public class Topic {
            System.exit(1);
            return;
         }
-        System.out.print("Enter Topic name: ");
-        tempname = sc.nextLine();
-        
-        System.out.print("Enter Topic description: ");
-        tempdesc = sc.nextLine();
 
         try{
-            prepStmt.setString(1, tempname);
-            prepStmt.setString(2, tempdesc);
+            prepStmt.setInt(1, id);
         } catch (SQLException e) {
-            System.err.println("Can't set topic name and topic description.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't set ID.");
         }   
 
         
         
         try{
             rs = prepStmt.executeQuery();
-            this.topicId = rs.getInt(1);
+            
+            if(!rs.next()) throw new SQLException();
+            
+            topicID = rs.getInt(1);
+            name = rs.getString(2);
+            description = rs.getString(3);
+            userID = rs.getInt(4);
+            
             rs.close();
         } catch (SQLException e) {
-            System.err.println("Can't execute query.");
-            System.exit(1);
-            return;
-        }
-        this.name = tempname;
-        this.description = tempdesc;
-
-
-        
+            throw new SQLException("Can't execute query.");
+        }    
 
     }
 
-    public static void createTopic(Connection c, String name, String description){
-        String insertString = "insert into topic(topicName, topicDescription) values(?,?)";
+    public static void createTopic(Connection c, String name, String description, int userID) throws SQLException{
+        String insertString = "insert into topic(topicName, topicDescription, creator) values(?,?,?)";
         
         
         PreparedStatement prepStmt;
@@ -64,22 +56,25 @@ public class Topic {
             prepStmt = c.prepareStatement(insertString);
             prepStmt.setString(1, name);
             prepStmt.setString(2, description);
+            prepStmt.setInt(3, userID);
         } catch (SQLException e){
-            System.err.println("Can't prep statement.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't prep statement.");
         }
         
         try{
             prepStmt.executeUpdate();
             prepStmt.close();
         } catch (SQLException e){
-            System.err.println("Can't execute statement.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't execute statement.");
         }
     }
     
+    public String getDescription(){
+        return description;
+    }
     
+    public int getID(){
+        return topicID;
+    }
     
 }

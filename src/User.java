@@ -92,7 +92,41 @@ public class User {
         } catch (SQLException e){
             System.err.println("Can't execute statement.");
             System.exit(1);
-            return;
+        }
+    }
+    
+    public static int getPermissionLevel(Connection c, int id){
+        String getPerm = "Select permissions from userTable where userID = ?";
+        
+        PreparedStatement prepStmt;
+        ResultSet rs;
+        
+        try{
+             prepStmt = c.prepareStatement(getPerm);
+        } catch (SQLException e){
+            System.err.println("Can't prep statement.");
+            System.exit(1);
+            return -1;
+        }
+        
+        try{
+            prepStmt.setInt(1, id);
+        } catch (SQLException e) {
+            System.err.println("Can't set ID.");
+            System.exit(1);
+            return -1;
+        }  
+        
+        try{
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException();
+            id = rs.getInt(1);
+            rs.close();
+            return id;
+        } catch (SQLException e) {
+            System.err.println("Can't execute query.");
+            System.exit(1);
+            return -1;
         }
     }
 }
