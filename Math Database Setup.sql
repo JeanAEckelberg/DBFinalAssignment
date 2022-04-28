@@ -35,7 +35,9 @@ create table if not exists question (
 
 create table if not exists answer (
 	answerID serial primary key,
-	answerText varchar(200) unique not null
+	answerText varchar(200) unique not null,
+	creator int,
+	foreign key (creator) references userTable(userID)
 );
 
 create table if not exists test (
@@ -169,14 +171,14 @@ values ('A ^ B', 4),
 	   ('P→Q is true if P is false is what kind of proof?', 1),
 	   ('Z represents the Natural (or counting) Numbers', 5);
 	   
-insert into answer (answerText)
-values ('True'),
-	   ('False'),
-	   ('Conjunction'),
-	   ('Disjunction'),
-	   ('Not a logical expression'),
-	   ('Vacuous proof'),
-	   ('Trivial proof');
+insert into answer (answerText, creator)
+values ('True', 4),
+	   ('False', 4),
+	   ('Conjunction', 4),
+	   ('Disjunction', 4),
+	   ('Not a logical expression', 4),
+	   ('Vacuous proof', 4),
+	   ('Trivial proof', 4);
 	   
 insert into answerToQuestion (questionID, answerID, correct)
 values (1, 3, true),
@@ -229,3 +231,5 @@ values (4, 1, 100.0, '00:01:02.1'); -- intervals are written in 'HH:mm:ss.s' whe
 --select * from getUserTests(6);
 
 --select * from getUserTopics(7);
+
+--select userID from userTable where username = 'Milksoplimit' and password = 'p455word';
