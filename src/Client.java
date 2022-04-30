@@ -25,6 +25,8 @@ public class Client {
         } catch (SQLException e){
             System.err.println("Connection Failed");
         }
+        Window w = new Window("Discrete DB", 1280, 960); //connection,
+        w.LogIn();
         
     }
     
