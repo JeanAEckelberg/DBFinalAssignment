@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.security.cert.CertPathValidatorException.Reason;
 import java.sql.*;
 //ill finish this class tomorrow after test
 public class Topic {
@@ -76,5 +77,46 @@ public class Topic {
     public int getID(){
         return topicID;
     }
+    public static String getName(Connection c, int id) throws SQLException{
+        PreparedStatement prepStmt;
+        ResultSet rs;
+        String returnedName;
+        String findName = "Select topicName from topic where topicID = ?";
+        try{
+            prepStmt = c.prepareStatement(findName);
+
+        }catch(SQLException e){
+            System.err.println("Can't prep statment");
+            System.exit(1);
+            return null;
+        }
+
+        try{
+            prepStmt.setInt(1, id);
+        } catch(SQLException e){
+            throw new SQLException("Can't set ID");
+        }
+
+        try{
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException("Nothing in result set");
+            returnedName = rs.getString(1);
+            rs.close();
+
+            
+
+        }catch(SQLException e){
+            throw new SQLException("Can't execute query");
+        }
+        return returnedName;
+
+    }
+
+    
+
+
+
+
+  
     
 }
