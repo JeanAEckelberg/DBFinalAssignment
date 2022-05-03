@@ -11,11 +11,11 @@ public class Window {
     JPanel currentPane;
     Connection c;
     
-    public Window( String title, int width, int height){ //Connection c,
+    public Window( String title, int width, int height, Connection c){ //Connection c,
         frame = new JFrame(title);
         frame.setBounds(200, 100, width, height);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //this.c = c;
+        this.c = c;
         
         currentPane = new JPanel();
         frame.setLayout(null);

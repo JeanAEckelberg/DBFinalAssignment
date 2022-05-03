@@ -31,11 +31,13 @@ public class User {
             return;
         }
         
-        System.out.print("Enter Username: ");
-        user = sc.nextLine();
+        //System.out.print("Enter Username: ");
+        //user = sc.nextLine();
+        user = username;
         
-        System.out.print("Enter Password: ");
-        pass = sc.nextLine();
+        //System.out.print("Enter Password: ");
+        //pass = sc.nextLine();
+        pass = password;
         
         try{
             prepStmt.setString(1, user);
