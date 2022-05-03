@@ -13,7 +13,7 @@ public class User {
     private int id;
     private String userName;
     
-    public User(Connection c, String username, String password){
+    public User(Connection c, String username, String password) throws SQLException{
         String findUser = "Select UserID from userTable where username = ? and password = ?";
         
         Scanner sc = new Scanner(System.in);
@@ -26,9 +26,7 @@ public class User {
         try{
              prepStmt = c.prepareStatement(findUser);
         } catch (SQLException e){
-            System.err.println("Can't prep statement.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't prep statement.");
         }
         
         //System.out.print("Enter Username: ");
@@ -43,9 +41,7 @@ public class User {
             prepStmt.setString(1, user);
             prepStmt.setString(2, pass);
         } catch (SQLException e) {
-            System.err.println("Can't set username and password.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't set username and password.");
         }   
         
         
@@ -55,9 +51,7 @@ public class User {
             id = rs.getInt(1);
             rs.close();
         } catch (SQLException e) {
-            System.err.println("Can't execute query.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't execute query.");
         }
         userName = user;
     }
@@ -70,7 +64,7 @@ public class User {
         return userName;
     }
     
-    public static void createUser(Connection c, String username, String password){
+    public static void createUser(Connection c, String username, String password) throws SQLException{
         String insertString = "insert into userTable(username, password) values(?,?)";
         
         
@@ -83,21 +77,18 @@ public class User {
             prepStmt.setString(1, username);
             prepStmt.setString(2, password);
         } catch (SQLException e){
-            System.err.println("Can't prep statement.");
-            System.exit(1);
-            return;
+            throw new SQLException("Can't prep statement.");
         }
         
         try{
             prepStmt.executeUpdate();
             prepStmt.close();
         } catch (SQLException e){
-            System.err.println("Can't execute statement.");
-            System.exit(1);
+            throw new SQLException("Can't execute statement.");
         }
     }
     
-    public static int getPermissionLevel(Connection c, int id){
+    public static int getPermissionLevel(Connection c, int id) throws SQLException{
         String getPerm = "Select permissions from userTable where userID = ?";
         
         PreparedStatement prepStmt;
@@ -106,17 +97,13 @@ public class User {
         try{
              prepStmt = c.prepareStatement(getPerm);
         } catch (SQLException e){
-            System.err.println("Can't prep statement.");
-            System.exit(1);
-            return -1;
+            throw new SQLException("Can't prep statement.");
         }
         
         try{
             prepStmt.setInt(1, id);
         } catch (SQLException e) {
-            System.err.println("Can't set ID.");
-            System.exit(1);
-            return -1;
+            throw new SQLException("Can't set ID.");
         }  
         
         try{
@@ -126,9 +113,7 @@ public class User {
             rs.close();
             return id;
         } catch (SQLException e) {
-            System.err.println("Can't execute query.");
-            System.exit(1);
-            return -1;
+            throw new SQLException("Can't execute query.");
         }
     }
 }

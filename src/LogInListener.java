@@ -14,11 +14,13 @@ public class LogInListener implements ActionListener{
     private JPasswordField pass;
     private JLabel errorMsg;
     private Connection c;
+    private Window ref;
     
     public LogInListener(Window ref, Connection c, JLabel error, JTextField user, JPasswordField pass){
         this.c = c;
         this.user = user;
         this.pass = pass;
+        this.ref = ref;
         errorMsg = error;
     }
     
@@ -27,7 +29,7 @@ public class LogInListener implements ActionListener{
         User currentUser;
         try{
             currentUser = new User(c, user.getText(), pass.getText());
-            
+            ref.Dashboard(currentUser);
         } catch (Exception f){
             pass.selectAll();
             errorMsg.setVisible(true);

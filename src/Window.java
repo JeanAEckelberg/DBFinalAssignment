@@ -26,7 +26,7 @@ public class Window {
     
     public void LogIn(){
         frame.setVisible(false);
-        //frame.remove(currentPane);
+        frame.remove(currentPane);
         JLabel user, pass, error;
         JTextField name;
         JPasswordField key;
