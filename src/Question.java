@@ -53,6 +53,8 @@ public class Question {
             System.exit(1);
             return;
         }
+        answers = new ArrayList<>();
+        topics = new ArrayList<>();
         pullAnswers(c);
         pullTopics(c);
     }
@@ -213,7 +215,7 @@ public class Question {
         topics.remove(temp);
     }
     
-    public Topic[] getTopics(Connection c, int userID, int topicID){
+    public Topic[] getTopics(Connection c, int userID){
         if (!validatePerms(c, userID)) return null;
         Topic[] temp = new Topic[0];
         return topics.toArray(temp);
@@ -264,7 +266,7 @@ public class Question {
         answers.remove(temp);
     }
     
-    public Answer[] getAnswers(Connection c, int userID, int ansID){
+    public Answer[] getAnswers(Connection c, int userID){
         if (!validatePerms(c, userID)) return null;
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
@@ -276,7 +278,7 @@ public class Question {
     
     public static void createQuestion(Connection c, 
             int userID, String qText) throws SQLException{
-        String setQuestion = "insert into question(questionText, creator) values(?)";
+        String setQuestion = "insert into question(questionText, creator) values(?, ?)";
         
         PreparedStatement prepStmt1;
 
