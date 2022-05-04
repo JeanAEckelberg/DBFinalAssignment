@@ -132,7 +132,7 @@ public class Question {
         }
     }
     
-    private boolean validatePerms(Connection c, int id){
+    private boolean validatePerms(Connection c, int id) throws SQLException {
         int permLvl = User.getPermissionLevel(c, id);
         return permLvl > 0 || id == userID;
     }
@@ -141,7 +141,7 @@ public class Question {
         return questionText;
     }
     
-    public void setText(Connection c, int id, String text){
+    public void setText(Connection c, int id, String text) throws SQLException {
         
         if (!validatePerms(c, id)) return;
         
@@ -215,7 +215,7 @@ public class Question {
         topics.remove(temp);
     }
     
-    public Topic[] getTopics(Connection c, int userID){
+    public Topic[] getTopics(Connection c, int userID) throws SQLException{
         if (!validatePerms(c, userID)) return null;
         Topic[] temp = new Topic[0];
         return topics.toArray(temp);
@@ -266,7 +266,7 @@ public class Question {
         answers.remove(temp);
     }
     
-    public Answer[] getAnswers(Connection c, int userID){
+    public Answer[] getAnswers(Connection c, int userID) throws SQLException {
         if (!validatePerms(c, userID)) return null;
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
