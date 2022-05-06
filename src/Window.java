@@ -3,6 +3,8 @@
  * @author Jean, Greg, Carson
  */
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import javax.swing.*;
 
@@ -107,7 +109,7 @@ public class Window {
         key.setBounds(frame.getWidth()/2, frame.getHeight()/2-50, 100, 30);
         signUp.add(key);
         
-        enter.addActionListener(new SignUpListener(this,c,error,name,key));
+        enter.addActionListener(new SignUpListener(c,error,name,key));
         back.addActionListener(new BackToLogInListener(this));
         currentPane = signUp;
         frame.add(signUp);
@@ -120,6 +122,7 @@ public class Window {
         frame.remove(currentPane);
     }
     
+<<<<<<< Updated upstream
      public void AddTopic(){
         frame.setVisible(false);
         frame.remove(currentPane);
@@ -138,4 +141,118 @@ public class Window {
         frame.remove(currentPane);
     }
     
+=======
+    public void CreateTopic(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JLabel topic, desc, error;
+        JTextField name;
+        JTextField description;
+        
+        JPanel createTopic = new JPanel();
+        createTopic.setSize(frame.getSize());
+        createTopic.setLayout(null);
+        
+        JButton enter = new JButton("Create");
+        enter.setBounds(frame.getWidth()/2-50, frame.getHeight()/2, 100, 30);
+        createTopic.add(enter);
+        
+        JButton back = new JButton("Back");
+        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+        createTopic.add(back);
+        
+        topic = new JLabel("Set Topic Name: ");
+        topic.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-200, 100, 30);
+        createTopic.add(topic);
+        
+        desc = new JLabel("Set Topic Description: ");
+        desc.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100, 100, 100);
+        createTopic.add(desc);
+        
+        error = new JLabel("Name already in use!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-250, 400, 30);
+        error.setVisible(false);
+        createTopic.add(error);
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2, frame.getHeight()/2-200, 100, 30);
+        createTopic.add(name);
+        
+        description = new JTextField();
+        description.setBounds(frame.getWidth()/2, frame.getHeight()/2-100, 100, 100);
+        createTopic.add(description);
+        
+        enter.addActionListener(new TopicCreateListener(c,name,description,error,currentUser));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = createTopic;
+        frame.add(createTopic);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void CreateQuestion(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JLabel question, error;
+        JLabel[] ans = new JLabel[4];
+        
+        JTextArea questionText;
+        JTextField[] ansText = new JTextField[4];
+        
+        JRadioButton[] ansButtons = new JRadioButton[4];
+        ButtonGroup group = new ButtonGroup();
+        
+        JPanel createQuestion = new JPanel();
+        createQuestion.setSize(frame.getSize());
+        createQuestion.setLayout(null);
+        
+        JButton enter = new JButton("Create");
+        enter.setBounds(frame.getWidth()-150, frame.getHeight()-100, 100, 30);
+        createQuestion.add(enter);
+        
+        JButton back = new JButton("Back");
+        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+        createQuestion.add(back);
+        
+        question = new JLabel("Set Question Text: ");
+        question.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-250, 100, 100);
+        createQuestion.add(question);
+        
+        for(int i = 0; i < ans.length; i++){
+            ans[i] = new JLabel("Set Answer: ");
+            ans[i].setBounds(frame.getWidth()/2-100, frame.getHeight()/2-150+(i*50), 100, 30);
+            createQuestion.add(ans[i]);
+        }
+        
+        error = new JLabel("Question already exists!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-300, 400, 30);
+        error.setVisible(false);
+        createQuestion.add(error);
+        
+        questionText = new JTextArea();
+        questionText.setBounds(frame.getWidth()/2, frame.getHeight()/2-250, 100, 100);
+        createQuestion.add(questionText);
+        
+        for(int i = 0; i < ansText.length;i++){
+            ansText[i] = new JTextField();
+            ans[i].setBounds(frame.getWidth()/2, frame.getHeight()/2-150+(i*50), 100, 30);
+            createQuestion.add(ansText[i]);
+        }
+        
+        for(int i = 0; i < ansButtons.length;i++){
+            ansButtons[i] = new JRadioButton();
+            ansButtons[i].setBounds(frame.getWidth()/2, frame.getHeight()/2-150+(i*50), 100, 30);
+            group.add(ansButtons[i]);
+            createQuestion.add(ansButtons[i]);
+        }
+        ansButtons[0].setSelected(true);
+        
+        enter.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,error,currentUser));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = createQuestion;
+        frame.add(createQuestion);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+>>>>>>> Stashed changes
 }

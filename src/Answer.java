@@ -75,9 +75,11 @@ public class Answer {
         answerText = text;
     }
     
-    public static void createAnswer(Connection c, int userID, String text) throws SQLException{
+    public static int createAnswer(Connection c, int userID, String text) throws SQLException{
         String setText = "insert into answer(answerText, creator) values(?, ?)";
+        String getText = "select answerID from answer where answerText = ?";
         
+        ResultSet rs;
         PreparedStatement prepStmt;
         
         try{
@@ -93,6 +95,18 @@ public class Answer {
             prepStmt.close();
         } catch (SQLException e){
             throw new SQLException("Can't execute statement.");
+        }
+        
+        try{
+            prepStmt = c.prepareStatement(getText);
+            prepStmt.setString(1, text);
+            
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException();
+            
+            return rs.getInt(1);
+        } catch (SQLException e){
+            throw new SQLException("Can't prep or execute statement.");
         }
     }
 }

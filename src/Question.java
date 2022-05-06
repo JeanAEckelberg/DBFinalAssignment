@@ -13,12 +13,13 @@ public class Question {
     private int questionID;
     private String questionText;
     private int userID;
-    private int correctIndex;
+    private Integer correctIndex;
     
     private ArrayList<Answer> answers;
     private ArrayList<Topic> topics;
     
     public Question(Connection c, int id){
+        correctIndex = null;
         String getQuestion = "Select * from question where questionID = ?";
         PreparedStatement prepStmt;
         ResultSet rs;
@@ -139,6 +140,10 @@ public class Question {
     
     public String getText(){
         return questionText;
+    }
+    
+    public int getID(){
+        return questionID;
     }
     
     public void setText(Connection c, int id, String text)throws SQLException{
@@ -268,31 +273,46 @@ public class Question {
         return answers.toArray(temp);
     }
     
-    public int getCorrectAns(){
+    public Integer getCorrectAns(){
+        if(correctIndex == null || correctIndex >= answers.size()) return null;
         return answers.get(correctIndex).getID();
     }
     
-    public static void createQuestion(Connection c, 
+    public static int createQuestion(Connection c, 
             int userID, String qText) throws SQLException{
         String setQuestion = "insert into question(questionText, creator) values(?, ?)";
+        String getQuestion = "select questionID from question where questionText = ?";
         
-        PreparedStatement prepStmt1;
+        ResultSet rs;
+        PreparedStatement prepStmt;
 
         try{
-             prepStmt1 = c.prepareStatement(setQuestion);
-             prepStmt1.setString(1, qText);
-             prepStmt1.setInt(2, userID);
+             prepStmt = c.prepareStatement(setQuestion);
+             prepStmt.setString(1, qText);
+             prepStmt.setInt(2, userID);
              
         } catch (SQLException e){
             throw new SQLException("Can't prep statement.");
         }
         
         try{
-            prepStmt1.executeUpdate();
-            prepStmt1.close();
+            prepStmt.executeUpdate();
+            prepStmt.close();
             
         } catch (SQLException e){
             throw new SQLException("Can't execute statement.");
+        }
+        
+        try{
+            prepStmt = c.prepareStatement(getQuestion);
+            prepStmt.setString(1, qText);
+            
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException();
+            
+            return rs.getInt(1);
+        } catch (SQLException e){
+            throw new SQLException("Can't prep or execute statement.");
         }
     }
 }
