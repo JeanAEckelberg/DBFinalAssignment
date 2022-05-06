@@ -338,7 +338,7 @@ public class Test {
         
     }
     
-    public static void createTest(Connection c,
+    public static int createTest(Connection c,
             int creatorID) throws SQLException {
         
         // Begin Transaction
@@ -393,6 +393,7 @@ public class Test {
             
             
             c.commit();
+            return nextID;
         
         } // end transaction
         
@@ -407,6 +408,7 @@ public class Test {
         }
         finally{ // always do this
             c.setAutoCommit(true); // set back to true to prevent problems elsewhere in application
+            return -1;
         }
         
     }
