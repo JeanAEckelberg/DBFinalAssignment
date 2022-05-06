@@ -77,7 +77,7 @@ public class Topic {
     public int getID(){
         return topicID;
     }
-    public static String getName(Connection c, int id) throws SQLException{
+    public  String getName(Connection c) throws SQLException{
         PreparedStatement prepStmt;
         ResultSet rs;
         String returnedName;
@@ -92,7 +92,7 @@ public class Topic {
         }
 
         try{
-            prepStmt.setInt(1, id);
+            prepStmt.setInt(1, this.topicID);
         } catch(SQLException e){
             throw new SQLException("Can't set ID");
         }
@@ -112,7 +112,7 @@ public class Topic {
 
     }
 
-    public static void setName(Connection c, int id, String newName) throws SQLException{
+    public  void setName(Connection c, String newName) throws SQLException{
         PreparedStatement prepStmt;
         String setName = "update topic set topicName = ? where topicID = ?";
         try{
@@ -126,7 +126,7 @@ public class Topic {
 
         try{
             prepStmt.setString(1, newName);
-            prepStmt.setInt(2, id);
+            prepStmt.setInt(2, this.topicID);
 
         } catch(SQLException e){
             throw new SQLException("Can't set ID or name");
@@ -140,7 +140,7 @@ public class Topic {
        
     }
 
-    public static String getDesc(Connection c, int id) throws SQLException{
+    public String getDesc(Connection c) throws SQLException{
         PreparedStatement prepStmt;
         ResultSet rs;
         String returnedDesc;
@@ -155,7 +155,7 @@ public class Topic {
         }
 
         try{
-            prepStmt.setInt(1, id);
+            prepStmt.setInt(1, this.topicID);
         } catch(SQLException e){
             throw new SQLException("Can't set ID");
         }
@@ -176,7 +176,7 @@ public class Topic {
     }
 
 
-    public static void setDesc(Connection c, int id, String newDesc) throws SQLException{
+    public void setDesc(Connection c, String newDesc) throws SQLException{
         PreparedStatement prepStmt;
         String setDesc = "update topic set topicDescription = ? where topicID = ?";
         try{
@@ -190,7 +190,7 @@ public class Topic {
 
         try{
             prepStmt.setString(1, newDesc);
-            prepStmt.setInt(2, id);
+            prepStmt.setInt(2, this.topicID);
 
         } catch(SQLException e){
             throw new SQLException("Can't set ID or desc");
