@@ -280,4 +280,7 @@ public class Test {
     public static void createTest(Connection c, Question[] questions, int creatorID){
         // Under construction
     }
+    public static void createTest(Connection c, int creatorID){
+        // Under construction
+    }
 }

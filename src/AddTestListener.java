@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.sql.*;
 
+
 public class AddTestListener implements ActionListener{
 
     private JTextField testname;
@@ -30,9 +31,16 @@ public class AddTestListener implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        try{
+        Test.createTest(c, currentUser.getID());
+        //ref.EditTest(currentUser);
+        }catch (Exception f){
+            
+        }
         /*
         User currentUser;
         try{
+            T
             currentUser = new User(c, user.getText(), pass.getText());
             ref.Dashboard(currentUser);
         } catch (Exception f){
