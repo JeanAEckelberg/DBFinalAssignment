@@ -119,4 +119,23 @@ public class Window {
         frame.setVisible(false);
         frame.remove(currentPane);
     }
+    
+     public void AddTopic(){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+    }
+    public void EditTopic(Topic currentTopic){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+    }
+    
+     public void AddQuestion(){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+    }
+    public void EditQuestion(Question currentQuestion){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+    }
+    
 }
