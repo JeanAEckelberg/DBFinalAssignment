@@ -120,7 +120,7 @@ public class Window {
         frame.remove(currentPane);
     }
    
-    public void AddTest(){
+    public void AddTest(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
         JLabel test, error;
@@ -153,7 +153,7 @@ public class Window {
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
         addtest.add(exitbutton);
         
-        createtest.addActionListener(new AddTestListener(this, c, testname));
+        createtest.addActionListener(new AddTestListener(this, c, testname, currentUser));
         exitbutton.addActionListener(new BackToLogInListener(this));
         currentPane = addtest;
         frame.add(addtest);

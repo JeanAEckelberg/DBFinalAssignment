@@ -16,14 +16,15 @@ public class AddTestListener implements ActionListener{
 
     private JTextField testname;
  
-   
+    private User currentUser;
     private Connection c;
     private Window ref;
     
-    public AddTestListener(Window ref, Connection c, JTextField testname){
+    public AddTestListener(Window ref, Connection c, JTextField testname, User currentUser){
         this.c = c;
         this.testname = testname;
         this.ref = ref;
+        this.currentUser = currentUser;
        
     }
     
