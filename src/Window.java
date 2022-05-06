@@ -144,6 +144,13 @@ public class Window {
         testname = new JTextField();
         testname.setBounds(frame.getWidth()/2 -400,frame.getHeight()/8 -20, 400, 30);
         addtest1.add(testname);
+        
+        //temp
+        DefaultListModel listModel = new DefaultListModel();
+        listModel.addElement("topic1");
+        topics = new JList(listModel);
+        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        addtest1.add(topics);
         /*
         topics = new JList(Search.search(topics));
         topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
@@ -154,7 +161,7 @@ public class Window {
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
         addtest1.add(exitbutton);
         
-        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser));
+        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, topics));
         exitbutton.addActionListener(new BackToLogInListener(this));
         currentPane = addtest1;
         frame.add(addtest1);
@@ -164,6 +171,37 @@ public class Window {
         
         
     }
+     public void AddTest2(User currentUser, JTextField testname, JList topics){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JPanel addtest2 = new JPanel();
+        addtest2.setSize(frame.getSize());
+        addtest2.setLayout(null);
+        JButton create;
+        JList questions;
+        //temporary
+        DefaultListModel listModel = new DefaultListModel();
+        listModel.addElement("samplequestion1");
+        listModel.addElement("samplequestion2");
+        questions = new JList(listModel);
+        questions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtest2.add(questions);
+        
+        create = new JButton("Next");
+        create.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtest2.add(create);
+        
+         JButton exitbutton = new JButton("Exit");
+        exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
+        addtest2.add(exitbutton);
+        
+        //will go back to dashboard later
+        exitbutton.addActionListener(new BackToLogInListener(this));
+        create.addActionListener(new AddTest2Listener(currentUser, testname, topics, questions));
+     }
+    
     
     
     public void EditTest(User currentUser, Test currentTest){
