@@ -119,9 +119,49 @@ public class Window {
         frame.setVisible(false);
         frame.remove(currentPane);
     }
+   
     public void AddTest(){
         frame.setVisible(false);
         frame.remove(currentPane);
+        JLabel test, error;
+        JTextField testname;
+        JButton addquestion, createtest;
+       
+        JPanel addtest = new JPanel();
+        addtest.setSize(frame.getSize());
+        addtest.setLayout(null);
+        
+        
+        createtest = new JButton("Create");
+        createtest.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtest.add(createtest);
+        
+        test = new JLabel("Test Name: ");
+        test.setBounds(frame.getWidth()/2-500, frame.getHeight()/8 -20, 100, 30);
+        addtest.add(test);
+        
+        testname = new JTextField();
+        testname.setBounds(frame.getWidth()/2 -400,frame.getHeight()/8 -20, 400, 30);
+        addtest.add(testname);
+        
+        
+        
+        
+        
+        
+        JButton exitbutton = new JButton("Exit");
+        exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
+        addtest.add(exitbutton);
+        
+        createtest.addActionListener(new AddTestListener(this, c, testname));
+        exitbutton.addActionListener(new BackToLogInListener(this));
+        currentPane = addtest;
+        frame.add(addtest);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+        
+        
     }
     public void EditTest(Test currentTest){
         frame.setVisible(false);

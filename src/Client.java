@@ -17,13 +17,13 @@ public class Client {
         
         // Open simple connection to DB
         String jdbcURL = "jdbc:postgresql://localhost:5432/FinalDB";
-        String username = "user";
-        String password = "resu";
+        String username = "postgres";
+        String password = "jgfpu2cq";
         Connection connection;
         try {
             connection = DriverManager.getConnection(jdbcURL,username,password);
             Window w = new Window("Discrete DB", 1280, 960, connection); //connection,
-            w.LogIn();
+            w.AddTest();
             /* Testing calls for methods
             //User.createUser(connection, "Jim", "1234");
             User user1 = new User(connection, "Jim", "1234");
