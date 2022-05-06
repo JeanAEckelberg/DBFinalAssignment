@@ -163,7 +163,7 @@ public class Window {
         
         
     }
-    public void EditTest(Test currentTest){
+    public void EditTest(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
     }

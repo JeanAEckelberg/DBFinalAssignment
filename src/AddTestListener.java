@@ -32,8 +32,8 @@ public class AddTestListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-        Test.createTest(c, currentUser.getID());
-        //ref.EditTest(currentUser);
+        int testid =Test.createTest(c, currentUser.getID());
+        ref.EditTest(currentUser, new Test(c, testid ));
         }catch (Exception f){
             
         }
