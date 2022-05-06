@@ -28,13 +28,6 @@ public class CreateTopicListener implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        try{
-            
-        } catch (Exception f){
-            
-        } finally {
-           
-        }
+       //ref.AddTopic();
     }
 }
