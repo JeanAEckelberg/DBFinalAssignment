@@ -119,4 +119,13 @@ public class Window {
         frame.setVisible(false);
         frame.remove(currentPane);
     }
+    public void AddTest(){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+    }
+    public void EditTest(Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+    }
+    
 }
