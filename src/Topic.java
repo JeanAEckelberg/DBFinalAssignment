@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.security.cert.CertPathValidatorException.Reason;
 import java.sql.*;
 //ill finish this class tomorrow after test
 public class Topic {
@@ -76,5 +77,139 @@ public class Topic {
     public int getID(){
         return topicID;
     }
+    public static String getName(Connection c, int id) throws SQLException{
+        PreparedStatement prepStmt;
+        ResultSet rs;
+        String returnedName;
+        String findName = "Select topicName from topic where topicID = ?";
+        try{
+            prepStmt = c.prepareStatement(findName);
+
+        }catch(SQLException e){
+            System.err.println("Can't prep statment");
+            System.exit(1);
+            return null;
+        }
+
+        try{
+            prepStmt.setInt(1, id);
+        } catch(SQLException e){
+            throw new SQLException("Can't set ID");
+        }
+
+        try{
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException("Nothing in result set");
+            returnedName = rs.getString(1);
+            rs.close();
+
+            
+
+        }catch(SQLException e){
+            throw new SQLException("Can't execute query");
+        }
+        return returnedName;
+
+    }
+
+    public static void setName(Connection c, int id, String newName) throws SQLException{
+        PreparedStatement prepStmt;
+        String setName = "update topic set topicName = ? where topicID = ?";
+        try{
+            prepStmt = c.prepareStatement(setName);
+
+        }catch(SQLException e){
+            System.err.println("Can't prep statment");
+            System.exit(1);
+            return;
+        }
+
+        try{
+            prepStmt.setString(1, newName);
+            prepStmt.setInt(2, id);
+
+        } catch(SQLException e){
+            throw new SQLException("Can't set ID or name");
+        }
+
+        try{
+            prepStmt.executeQuery();
+        }catch(SQLException e){
+            throw new SQLException("Can't execute query");
+        }
+       
+    }
+
+    public static String getDesc(Connection c, int id) throws SQLException{
+        PreparedStatement prepStmt;
+        ResultSet rs;
+        String returnedDesc;
+        String findDesc = "Select topicDescription from topic where topicID = ?";
+        try{
+            prepStmt = c.prepareStatement(findDesc);
+
+        }catch(SQLException e){
+            System.err.println("Can't prep statment");
+            System.exit(1);
+            return null;
+        }
+
+        try{
+            prepStmt.setInt(1, id);
+        } catch(SQLException e){
+            throw new SQLException("Can't set ID");
+        }
+
+        try{
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException("Nothing in result set");
+            returnedDesc = rs.getString(1);
+            rs.close();
+
+            
+
+        }catch(SQLException e){
+            throw new SQLException("Can't execute query");
+        }
+        return returnedDesc;
+
+    }
+
+
+    public static void setDesc(Connection c, int id, String newDesc) throws SQLException{
+        PreparedStatement prepStmt;
+        String setDesc = "update topic set topicDescription = ? where topicID = ?";
+        try{
+            prepStmt = c.prepareStatement(setDesc);
+
+        }catch(SQLException e){
+            System.err.println("Can't prep statment");
+            System.exit(1);
+            return;
+        }
+
+        try{
+            prepStmt.setString(1, newDesc);
+            prepStmt.setInt(2, id);
+
+        } catch(SQLException e){
+            throw new SQLException("Can't set ID or desc");
+        }
+
+        try{
+            prepStmt.executeQuery();
+        }catch(SQLException e){
+            throw new SQLException("Can't execute query");
+        }
+       
+    }
+
+
+    
+
+
+
+
+  
     
 }
