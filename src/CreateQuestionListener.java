@@ -25,11 +25,11 @@ import javax.swing.JTextField;
 public class CreateQuestionListener implements ActionListener{
    
    
-    private Connection c;
+  
     private Window ref;
     
-    public CreateQuestionListener(Window ref, Connection c){
-        this.c = c;
+    public CreateQuestionListener(Window ref){
+        
 
         this.ref = ref;
         

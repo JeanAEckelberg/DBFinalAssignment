@@ -16,11 +16,10 @@ import javax.swing.JTextField;
 public class CreateTestListener implements ActionListener{
    
    
-    private Connection c;
     private Window ref;
     
-    public CreateTestListener(Window ref, Connection c){
-        this.c = c;
+    public CreateTestListener(Window ref){
+      
 
         this.ref = ref;
         
@@ -29,12 +28,6 @@ public class CreateTestListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         
-        try{
-            
-        } catch (Exception f){
-            
-        } finally {
-           
-        }
+       
     }
 }

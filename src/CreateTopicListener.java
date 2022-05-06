@@ -16,11 +16,11 @@ import javax.swing.JTextField;
 public class CreateTopicListener implements ActionListener{
    
    
-    private Connection c;
+   
     private Window ref;
     
-    public CreateTopicListener(Window ref, Connection c){
-        this.c = c;
+    public CreateTopicListener(Window ref){
+       
 
         this.ref = ref;
         

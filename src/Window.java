@@ -157,14 +157,20 @@ public class Window {
         createQuestion.setBounds(frame.getWidth()/2 -40,frame.getHeight()/3 +30, 150, 30);
         dashboard.add(createQuestion);
         
+        JButton exitbutton = new JButton("Exit");
+        exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
+        dashboard.add(exitbutton);
+        
         searchbutton.addActionListener(new SearchListener(this,c, query));
-        createTopic.addActionListener(new CreateTopicListener(this,c));
-        createTest.addActionListener(new CreateTestListener(this,c));
-        createQuestion.addActionListener(new CreateQuestionListener(this,c));
+        createTopic.addActionListener(new CreateTopicListener(this));
+        createTest.addActionListener(new CreateTestListener(this));
+        createQuestion.addActionListener(new CreateQuestionListener(this));
+        exitbutton.addActionListener(new BackToLogInListener(this));
         currentPane = dashboard;
         frame.add(dashboard);
         frame.setLayout(null);
         frame.setVisible(true);
         
     }
+    
 }
