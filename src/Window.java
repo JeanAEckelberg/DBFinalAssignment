@@ -120,43 +120,44 @@ public class Window {
         frame.remove(currentPane);
     }
    
-    public void AddTest(User currentUser){
+    public void AddTest1(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
         JLabel test, error;
+        JList topics;
         JTextField testname;
-        JButton addquestion, createtest;
+        JButton addquestion, nextpage;
        
-        JPanel addtest = new JPanel();
-        addtest.setSize(frame.getSize());
-        addtest.setLayout(null);
+        JPanel addtest1 = new JPanel();
+        addtest1.setSize(frame.getSize());
+        addtest1.setLayout(null);
         
         
-        createtest = new JButton("Create");
-        createtest.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
-        addtest.add(createtest);
+        nextpage = new JButton("Next");
+        nextpage.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtest1.add(nextpage);
         
         test = new JLabel("Test Name: ");
         test.setBounds(frame.getWidth()/2-500, frame.getHeight()/8 -20, 100, 30);
-        addtest.add(test);
+        addtest1.add(test);
         
         testname = new JTextField();
         testname.setBounds(frame.getWidth()/2 -400,frame.getHeight()/8 -20, 400, 30);
-        addtest.add(testname);
-        
-        
-        
-        
-        
+        addtest1.add(testname);
+        /*
+        topics = new JList(Search.search(topics));
+        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        addtest1.add(topics);
+        */
         
         JButton exitbutton = new JButton("Exit");
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
-        addtest.add(exitbutton);
+        addtest1.add(exitbutton);
         
-        createtest.addActionListener(new AddTestListener(this, c, testname, currentUser));
+        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser));
         exitbutton.addActionListener(new BackToLogInListener(this));
-        currentPane = addtest;
-        frame.add(addtest);
+        currentPane = addtest1;
+        frame.add(addtest1);
         frame.setLayout(null);
         frame.setVisible(true);
         
