@@ -31,4 +31,13 @@ public class Search {
         
         return cstmt.executeQuery();
     }
+    
+    public ResultSet QuestionsByTopic(int topicID) throws SQLException{
+        String getQuestionsByTopic = "call getQuestionsInTopicByID(?)";
+        
+        CallableStatement cstmt = c.prepareCall(getQuestionsByTopic);
+        cstmt.setInt(1, topicID);
+        
+        return cstmt.executeQuery();
+    }
 }
