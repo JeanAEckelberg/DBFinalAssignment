@@ -46,6 +46,7 @@ create table if not exists test (
 	testID serial primary key,
 	numberOfQuestions int not null,
 	creator int,
+	testName varchar(50) unique not null,
 	foreign key (creator) references userTable (userID)
 );
 
@@ -131,7 +132,10 @@ create or replace function getTests ( keyValue varchar)
 			from questionInTest
 			where questionInTest.questionID in ( select question.questionID 
 												 from question
-												 where lower(questionText) like lower( concat('%', $1 , '%') ) );
+												 where lower(questionText) like lower( concat('%', $1 , '%') ) )
+			union select test.testID
+			from test
+			where lower(test.testName) like lower( concat('%', $1, '%') );
 			
 		end;
 	   $$
@@ -228,9 +232,9 @@ values (1, 3, true),
 	   (5, 1, false),
 	   (5, 2, true);
 	   
-insert into test (numberOfQuestions, creator)
-values (5, 1),
-	   (2, 6);
+insert into test (numberOfQuestions, creator, testName)
+values (5, 1, 'Sample Test 1'),
+	   (2, 6, 'Sample Test 2');
 	   
 insert into questionInTopic (questionID, topicID)
 values (1,1),
