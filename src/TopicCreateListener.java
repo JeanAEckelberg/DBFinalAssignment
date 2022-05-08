@@ -11,17 +11,19 @@ import javax.swing.JLabel;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.swing.JTextArea;
 
 public class TopicCreateListener implements ActionListener{
     private Connection c;
     private User currentUser;
-    private JTextField name, desc;
+    private JTextField name;
+    private JTextArea desc;
     private JLabel error;
     
     public TopicCreateListener(
             Connection c, 
             JTextField name, 
-            JTextField desc, 
+            JTextArea desc, 
             JLabel error, 
             User currentUser){
         this.c = c;

@@ -85,7 +85,7 @@ public class Window {
         signUp.add(enter);
         
         JButton back = new JButton("Back");
-        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(50, frame.getHeight()-50, 100, 30);
         signUp.add(back);
         
         user = new JLabel("Set Username: ");
@@ -122,32 +122,12 @@ public class Window {
         frame.remove(currentPane);
     }
     
-<<<<<<< Updated upstream
-     public void AddTopic(){
-        frame.setVisible(false);
-        frame.remove(currentPane);
-    }
-    public void EditTopic(Topic currentTopic){
-        frame.setVisible(false);
-        frame.remove(currentPane);
-    }
-    
-     public void AddQuestion(){
-        frame.setVisible(false);
-        frame.remove(currentPane);
-    }
-    public void EditQuestion(Question currentQuestion){
-        frame.setVisible(false);
-        frame.remove(currentPane);
-    }
-    
-=======
     public void CreateTopic(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
         JLabel topic, desc, error;
         JTextField name;
-        JTextField description;
+        JTextArea description;
         
         JPanel createTopic = new JPanel();
         createTopic.setSize(frame.getSize());
@@ -158,7 +138,7 @@ public class Window {
         createTopic.add(enter);
         
         JButton back = new JButton("Back");
-        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(50, frame.getHeight()-50, 100, 30);
         createTopic.add(back);
         
         topic = new JLabel("Set Topic Name: ");
@@ -178,7 +158,7 @@ public class Window {
         name.setBounds(frame.getWidth()/2, frame.getHeight()/2-200, 100, 30);
         createTopic.add(name);
         
-        description = new JTextField();
+        description = new JTextArea();
         description.setBounds(frame.getWidth()/2, frame.getHeight()/2-100, 100, 100);
         createTopic.add(description);
         
@@ -211,7 +191,7 @@ public class Window {
         createQuestion.add(enter);
         
         JButton back = new JButton("Back");
-        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(50, frame.getHeight()-50, 100, 30);
         createQuestion.add(back);
         
         question = new JLabel("Set Question Text: ");
@@ -254,5 +234,74 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
->>>>>>> Stashed changes
+    
+    public void EditTopic(User currentUser, Topic currentTopic){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JTextField name;
+        JTextArea description;
+        JLabel error;
+        
+        
+        JPanel editTopic = new JPanel();
+        editTopic.setSize(frame.getSize());
+        editTopic.setLayout(null);
+        
+        JButton enter = new JButton("Save");
+        enter.setBounds(frame.getWidth()-100, frame.getHeight()-50, 100, 30);
+        editTopic.add(enter);
+        
+        JButton remove = new JButton("Remove");
+        remove.setBounds(frame.getWidth()-250, frame.getHeight()-50, 100, 30);
+        editTopic.add(enter);
+        
+        JButton cancel = new JButton("Cancel");
+        cancel.setBounds(frame.getWidth()-400, frame.getHeight()-50, 100, 30);
+        editTopic.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(50, frame.getHeight()-50, 100, 30);
+        editTopic.add(back);
+        
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-200, 100, 30);
+        try{
+            name.setText(currentTopic.getName(c));
+        } catch (SQLException e){
+            name.setText("CRITICAL ERROR - TOPIC DNE");
+        }
+        editTopic.add(name);
+        
+        description = new JTextArea();
+        description.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-100, 100, 100);
+        try{
+            description.setText(currentTopic.getDesc(c));
+        } catch (SQLException e){
+            description.setText("CRITICAL ERROR - TOPIC DNE");
+        }
+        editTopic.add(description);
+        
+        
+        error = new JLabel("Question already exists!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2+300, 400, 30);
+        error.setVisible(false);
+        editTopic.add(error);
+        
+        
+        
+        enter.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,error,currentUser));
+        remove.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,error,currentUser));
+        cancel.addActionListener(new TopicEditCancelListener(error));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
+        currentPane = editTopic;
+        frame.add(editTopic);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void EditQuestion(User currentUser, Question currentQuestion){
+        
+    }
 }
