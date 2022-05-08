@@ -37,7 +37,7 @@ create table if not exists question (
 
 create table if not exists answer (
 	answerID serial primary key,
-	answerText varchar(200) unique not null,
+	answerText varchar(200) not null,
 	creator int,
 	foreign key (creator) references userTable(userID)
 );
