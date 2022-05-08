@@ -1,8 +1,8 @@
 /**
  * A class representing the Test entity in the Discrete Mathematics 
  * study tool application
- * @author Gregory Beaucalir, Carson Bring
- * @version May 7 2022
+ * @author Gregory Beaucalir
+ * @version May 8 2022
  */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -366,9 +366,9 @@ public class Test {
      * @param userID id of user attempting to modify the test
      * @throws SQLException 
      */
-    public void addQuestionToTest(Question question, int userID) throws SQLException{
+    public void addQuestionToTest(Question question, int userID) throws SQLException, IllegalArgumentException{
         
-        if (!validatePerms(c, userID)) return;
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("addQuestionToTest : Test : perms");
         
         String insertString = "insert into questionInTest (questionID, "
                 + "testID) values (?, " + testID + " )";
@@ -436,9 +436,9 @@ public class Test {
      * @param userID id of user attempting to modify the test
      * @throws SQLException 
      */
-    public void addTopicToTest (Topic topic, int userID) throws SQLException {
+    public void addTopicToTest (Topic topic, int userID) throws SQLException, IllegalArgumentException {
         
-        if (!validatePerms(c, userID)) return;
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("addTopicToTest : Test : perms");
         
         String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
         PreparedStatement insertStmt;
@@ -474,8 +474,8 @@ public class Test {
      * @param userID identifier of the user attempting to modify the test
      * @throws java.sql.SQLException
      */
-    public void removeQuestionFromTest(int questionID, int userID) throws SQLException{
-        if (!validatePerms(c, userID)) return;
+    public void removeQuestionFromTest(int questionID, int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeQuestionFromTest : Test : perms");
         
         // find the question in question
         Question temp = null;
@@ -529,8 +529,8 @@ public class Test {
      * @param userID identifier of the user attempting to modify the test
      * @throws java.sql.SQLException
      */
-    public void removeTopic(int topicID, int userID) throws SQLException{
-        if (!validatePerms(c, userID)) return;
+    public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTopic : Test : perms");
         
         // find the question in question
         Topic temp = null;
@@ -556,8 +556,8 @@ public class Test {
      * @param userID identifier of the user attempting to remove the test
      * @throws java.sql.SQLException
     */
-    public void removeTest(Connection c, int userID) throws SQLException{
-        if (!validatePerms(c, userID)) return;
+    public void removeTest(Connection c, int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTest : Test: perms");
         
         // prep work
         String deleteQsStr = "delete from questionInTest where testID = " + getTestID();
@@ -630,9 +630,11 @@ public class Test {
      * Method to change the name of a test
      * @param name name to update the testName to
      * @param userID identifier of the user attempting to make the change
+     * @throws java.sql.SQLException
+     * @throws IllegalArgumentException
      */
-    public void setTestName(String name, int userID) throws SQLException{
-        if (!validatePerms(c, userID)) return;
+    public void setTestName(String name, int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setTestName : Test : perms");
         
         String updateString = "update test testName = ? where testID = " + getTestID();
         PreparedStatement updateStmt;
@@ -662,83 +664,4 @@ public class Test {
         }
     }
     
-    // int returning createTest method
-    /*
-        public static int createTest(Connection c,
-            int creatorID) throws SQLException {
-        
-        // Begin Transaction
-        try{
-            c.setAutoCommit(false); // set to false in order to make a transaction
-        
-            // get the next testID for the linking table inserts
-            String nextIDString = "select count(*) from test";
-            PreparedStatement nextIDStmt;
-            int nextID  = -1;
-            ResultSet set;
-
-            try{
-                nextIDStmt = c.prepareStatement(nextIDString);
-            }
-            catch (SQLException e){
-                throw new SQLException("Can't prep statemtent to get the next testID in createTest of Test class");
-            }
-
-            try{
-                set = nextIDStmt.executeQuery();
-                if (!set.next()) throw new SQLException();
-                nextID = set.getInt(1);
-                set.close();
-            }
-            catch(SQLException e){
-                throw new SQLException("Can't execute statemtent to get the next testID in createTest of Test class");
-            }
-
-            // the test insertion
-            String insertTestString = "insert into test (numberOfQuestions, creator) values (?, ?)";
-            PreparedStatement insertTestStmt;
-
-            try{
-                insertTestStmt = c.prepareStatement(insertTestString);
-                insertTestStmt.setInt(1, 0);
-                insertTestStmt.setInt(2, creatorID);
-            }
-            catch (SQLException e){
-                throw new SQLException("Can't prep test insert statement in createTest of Test class.");
-            }
-
-            try{
-                insertTestStmt.executeUpdate();
-                insertTestStmt.close();
-            }
-            catch (SQLException e){
-                throw new SQLException("Can't execute test insert statement in createTest of Test class.");
-            }
-            
-           
-            
-            
-            c.commit();
-            return nextID;
-        
-        } // end transaction
-        
-        catch (SQLException exc){
-            try{
-                c.rollback(); // rollback on failure
-            }
-            catch (SQLException roll){
-                throw new SQLException("Problem rolling back transaction from error: " + exc.getMessage());
-            }
-            
-        }
-        finally{ // always do this
-            c.setAutoCommit(true); // set back to true to prevent problems elsewhere in application
-            return -1;
-        }
-        
-    }
-    
-    
-    */
 }

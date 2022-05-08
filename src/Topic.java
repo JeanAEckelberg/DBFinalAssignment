@@ -1,6 +1,7 @@
-import java.util.Scanner;
+
 import java.sql.*;
-//ill finish this class tomorrow after test
+
+
 public class Topic {
     private String name;
     private String description;
@@ -46,7 +47,8 @@ public class Topic {
 
     }
 
-    public static void createTopic(Connection c, String name, String description, int userID) throws SQLException{
+    public static void createTopic(Connection c, String name, String description, int userID) throws SQLException, IllegalArgumentException{
+        if (User.getPermissionLevel(c, userID) < 1) throw new IllegalArgumentException("createTopic : topic : perms");
         String insertString = "insert into topic(topicName, topicDescription, creator) values(?,?,?)";
         
         
@@ -77,4 +79,73 @@ public class Topic {
         return topicID;
     }
     
+    public int getCreator(){
+        return userID;
+    }
+    
+    public String getTopicName(){
+        return name;
+    }
+    
+    private boolean validatePerms(Connection c, int userID) throws SQLException{
+        int permLVL = User.getPermissionLevel(c, userID);
+        return permLVL > 0 || userID == this.userID;
+    }
+    
+    /**
+     * Make sure this is called only after all questions have been removed and the topic has been removed from the tests
+     * @param c
+     * @param userID
+     * @throws IllegalArgumentException
+     * @throws SQLException 
+     */
+    public void removeTopic(Connection c, int userID) throws IllegalArgumentException, SQLException{
+        if (userID != this.userID || User.getPermissionLevel(c, userID) < 1) 
+            throw new IllegalArgumentException("removeTopic : topic : perms");
+        
+        String rStr = "delete from topic where topicID = " + getID();
+        PreparedStatement rStmt;
+        
+        try{
+            rStmt = c.prepareStatement(rStr);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't prep statement in removeTopic of Topic");
+        }
+        
+        try{
+            rStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("can't execute statement in removeTopic of Topic");
+        }
+    }
+    
+    public void setTopicName(Connection c, int userID, String name) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setTopicName : topic : perms");
+        
+        String updateStr = "update topic set topicName = ? where topicID = " + getID();
+        PreparedStatement update;
+        
+        try{
+            update = c.prepareStatement(updateStr);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't prep stmt in setTopicName in Topic");
+        }
+        
+        try{
+            update.setString(1, name);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't set param in stmt in setTopicName in Topic");
+        }
+        
+        try{
+            update.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("can't execute stmt in setTopicName in Topic");
+        }
+    }
 }

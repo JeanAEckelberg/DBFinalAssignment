@@ -11,6 +11,8 @@ import java.sql.SQLException;
 public class Answer {
     private int answerID;
     private String answerText;
+    private int creatorID;
+    private Connection c;
     
     public Answer(Connection c, int id) throws SQLException{
         String getAnswer = "Select * from answer where answerID = ?";
@@ -36,7 +38,8 @@ public class Answer {
             if(!rs.next()) throw new SQLException();
             answerID = rs.getInt(1);
             answerText = rs.getString(2);
-            
+            creatorID = rs.getInt(3);
+            this.c = c;
             rs.close();
         } catch (SQLException e) {
             throw new SQLException("Can't execute query.");
@@ -51,8 +54,17 @@ public class Answer {
         return answerID;
     }
     
-    public void setText(Connection c, String text) throws SQLException{
-        
+    public int getCreator(){
+        return creatorID;
+    }
+    
+    private boolean validatePerms(int userID) throws SQLException{
+        int permLVL = User.getPermissionLevel(c, userID);
+        return permLVL > 1 || userID == creatorID;
+    }
+    
+    public void setText(Connection c, String text, int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("answer : setText : permissions");
         String setText = "update answer set answerText = ? where answerID = ?";
         
         PreparedStatement prepStmt;
@@ -95,4 +107,5 @@ public class Answer {
             throw new SQLException("Can't execute statement.");
         }
     }
+    
 }
