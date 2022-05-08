@@ -67,6 +67,54 @@ public class Window {
         frame.setVisible(true);
     }
     
+    public void SignUp(){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JLabel user, pass, error;
+        JTextField name;
+        JPasswordField key;
+        
+        JPanel signUp = new JPanel();
+        signUp.setSize(frame.getSize());
+        signUp.setLayout(null);
+        
+        JButton enter = new JButton("Sign Up");
+        enter.setBounds(frame.getWidth()/2-50, frame.getHeight()/2, 100, 30);
+        signUp.add(enter);
+        
+        JButton back = new JButton("Back");
+        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+        signUp.add(back);
+        
+        user = new JLabel("Set Username: ");
+        user.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100, 100, 30);
+        signUp.add(user);
+        
+        pass = new JLabel("Set Password: ");
+        pass.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-50, 100, 30);
+        signUp.add(pass);
+        
+        error = new JLabel("Username or Password Invalid!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-150, 400, 30);
+        error.setVisible(false);
+        signUp.add(error);
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2, frame.getHeight()/2-100, 100, 30);
+        signUp.add(name);
+        
+        key = new JPasswordField();
+        key.setBounds(frame.getWidth()/2, frame.getHeight()/2-50, 100, 30);
+        signUp.add(key);
+        
+        enter.addActionListener(new SignUpListener(this,c,error,name,key));
+        back.addActionListener(new BackToLogInListener(this));
+        currentPane = signUp;
+        frame.add(signUp);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
     public void Dashboard(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
