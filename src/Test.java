@@ -550,21 +550,20 @@ public class Test {
     }
     
     /**
-    * Method to remove a test from the database using a transaction to ensure 
+    * Method to remove this test from the database using a transaction to ensure 
     * there are not orphan records in linking tables or leaderboard
      * @param c connection to the database
-     * @param test Test object of the test to be removed from the database
      * @param userID identifier of the user attempting to remove the test
      * @throws java.sql.SQLException
     */
-    public void removeTest(Connection c, Test test, int userID) throws SQLException{
-        if (!test.validatePerms(c, userID)) return;
+    public void removeTest(Connection c, int userID) throws SQLException{
+        if (!validatePerms(c, userID)) return;
         
         // prep work
-        String deleteQsStr = "delete from questionInTest where testID = " + test.getTestID();
-        String deleteTsStr = "delete from topicInTest where testID = " + test.getTestID();
-        String deleteLeaderboardsStr = "delete from leaderboard where testID = " + test.getTestID();
-        String deleteTestStr = "delete from test where testID = " + test.getTestID();
+        String deleteQsStr = "delete from questionInTest where testID = " + getTestID();
+        String deleteTsStr = "delete from topicInTest where testID = " + getTestID();
+        String deleteLeaderboardsStr = "delete from leaderboard where testID = " + getTestID();
+        String deleteTestStr = "delete from test where testID = " + getTestID();
         PreparedStatement deleteQsStmt, deleteTsStmt, deleteLeadStmt, deleteTestStmt;
         
         // begin transaction
@@ -627,6 +626,41 @@ public class Test {
         return creatorID;
     }
     
+    /**
+     * Method to change the name of a test
+     * @param name name to update the testName to
+     * @param userID identifier of the user attempting to make the change
+     */
+    public void setTestName(String name, int userID) throws SQLException{
+        if (!validatePerms(c, userID)) return;
+        
+        String updateString = "update test testName = ? where testID = " + getTestID();
+        PreparedStatement updateStmt;
+        
+        try{
+            updateStmt = c.prepareStatement(updateString);
+        }
+        catch (SQLException e){
+            throw new SQLException("unable to prep statement in "
+                    + "setTestName in Test class");
+        }
+        
+        try{
+            updateStmt.setString(1, name);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't set the testName in "
+                    + "setTestName of Test Class");
+        }
+        
+        try{
+            updateStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute the update "
+                    + "statement in setTestName in Test class");
+        }
+    }
     
     // int returning createTest method
     /*
