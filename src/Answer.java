@@ -75,6 +75,10 @@ public class Answer {
         answerText = text;
     }
     
+    public void remove(Connection c, int id) throws SQLException{
+        
+    }
+    
     public static int createAnswer(Connection c, int userID, String text) throws SQLException{
         String setText = "insert into answer(answerText, creator) values(?, ?)";
         String getText = "select answerID from answer where answerText = ?";

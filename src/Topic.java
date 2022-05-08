@@ -46,6 +46,10 @@ public class Topic {
         }    
 
     }
+    
+    public void remove(Connection c, int id){
+        
+    }
 
     public static void createTopic(Connection c, String name, String description, int userID) throws SQLException{
         String insertString = "insert into topic(topicName, topicDescription, creator) values(?,?,?)";

@@ -25,7 +25,9 @@ public class TopicEditRemoveListener implements ActionListener{
         this.currentTopic = currentTopic;
         this.error = error;
     }
-    
-    
-    
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

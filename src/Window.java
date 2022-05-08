@@ -290,8 +290,8 @@ public class Window {
         
         
         
-        enter.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,error,currentUser));
-        remove.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,error,currentUser));
+        //enter.addActionListener(new TopicEditSaveListener(c,questionText,ansText,ansButtons,error,currentUser));
+        remove.addActionListener(new TopicEditRemoveListener(c,currentTopic,error,currentUser));
         cancel.addActionListener(new TopicEditCancelListener(error));
         back.addActionListener(new BackToDashboardListener(this, currentUser));
         

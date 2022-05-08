@@ -278,6 +278,10 @@ public class Question {
         return answers.get(correctIndex).getID();
     }
     
+    public void remove(Connection c, int id){
+        
+    }
+    
     public static int createQuestion(Connection c, 
             int userID, String qText) throws SQLException{
         String setQuestion = "insert into question(questionText, creator) values(?, ?)";
