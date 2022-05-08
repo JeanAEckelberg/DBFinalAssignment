@@ -148,4 +148,32 @@ public class Topic {
             throw new SQLException("can't execute stmt in setTopicName in Topic");
         }
     }
+    
+    public void setDescription(Connection c, int userID, String desc) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setDescription : topic : perms");
+        
+        String updateString = "update topic set topicDescription = ? where topicID = " + getID();
+        PreparedStatement update;
+        
+        try{
+            update = c.prepareStatement(updateString);
+        }
+        catch(SQLException e){
+            throw new SQLException("can't prep stmt in setDescription in Topic");
+        }
+        
+        try{
+            update.setString(1, description);
+        }
+        catch(SQLException e){
+            throw new SQLException("can't set string in setDescription in Topic");
+        }
+        
+        try{
+            update.executeUpdate();
+        }
+        catch(SQLException e){
+            throw new SQLException("can't perform update in setDescription in Topic");
+        }
+    }
 }
