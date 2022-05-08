@@ -5,7 +5,7 @@
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.Types;
 import java.sql.ResultSet;
 
@@ -15,29 +15,38 @@ public class Search {
     public Search(Connection c){ this.c = c; }
     
     public ResultSet Topics(String query) throws SQLException{
-        String getTopics = "call getTopics(?)";
+        String getTopics = "select getTopics(?)";
         
-        CallableStatement cstmt = c.prepareCall(getTopics);
-        cstmt.setString(1, query);
+        PreparedStatement prepStmt = c.prepareStatement(getTopics);
+        prepStmt.setString(1, query);
         
-        return cstmt.executeQuery();
+        return prepStmt.executeQuery();
     }
     
     public ResultSet Questions(String query) throws SQLException{
-        String getQuestions = "call getQuestions(?)";
+        String getQuestions = "select getQuestions(?)";
         
-        CallableStatement cstmt = c.prepareCall(getQuestions);
-        cstmt.setString(1, query);
+        PreparedStatement prepStmt = c.prepareStatement(getQuestions);
+        prepStmt.setString(1, query);
         
-        return cstmt.executeQuery();
+        return prepStmt.executeQuery();
+    }
+    
+    public ResultSet Tests(String query) throws SQLException{
+        String getTests = "select getTests(?)";
+        
+        PreparedStatement prepStmt = c.prepareStatement(getTests);
+        prepStmt.setString(1, query);
+        
+        return prepStmt.executeQuery();
     }
     
     public ResultSet QuestionsByTopic(int topicID) throws SQLException{
-        String getQuestionsByTopic = "call getQuestionsInTopicByID(?)";
+        String getQuestionsByTopic = "select getQuestionsInTopicByID(?)";
         
-        CallableStatement cstmt = c.prepareCall(getQuestionsByTopic);
-        cstmt.setInt(1, topicID);
+        PreparedStatement prepStmt = c.prepareStatement(getQuestionsByTopic);
+        prepStmt.setInt(1, topicID);
         
-        return cstmt.executeQuery();
+        return prepStmt.executeQuery();
     }
 }
