@@ -175,5 +175,5 @@ public class Window {
     public void Search(JTextField text ){
         frame.setVisible(false);
         frame.remove(currentPane);
-       
+    }
 }
