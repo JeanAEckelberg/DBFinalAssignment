@@ -216,7 +216,12 @@ values ('True', 4),
 	   ('Disjunction', 4),
 	   ('Not a logical expression', 4),
 	   ('Vacuous proof', 4),
-	   ('Trivial proof', 4);
+	   ('Trivial proof', 4),
+	   ('Conjunction', 4),
+	   ('Disjunction', 4),
+	   ('Not a logical expression', 4),
+	   ('True', 4),
+	   ('False', 4);
 	   
 insert into answerToQuestion (questionID, answerID, correct)
 values (1, 3, true),
@@ -224,13 +229,13 @@ values (1, 3, true),
 	   (1, 5, false),
 	   (2, 1, true),
 	   (2, 2, false),
-	   (3, 3, false),
-	   (3, 4, true),
-	   (3, 5, false),
+	   (3, 8, false),
+	   (3, 9, true),
+	   (3, 10, false),
 	   (4, 6, true),
 	   (4, 7, false),
-	   (5, 1, false),
-	   (5, 2, true);
+	   (5, 11, false),
+	   (5, 12, true);
 	   
 insert into test (numberOfQuestions, creator, testName)
 values (5, 1, 'Sample Test 1'),
