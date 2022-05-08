@@ -266,7 +266,7 @@ public class Test {
      * @throws java.sql.SQLException
      */
     public static void createTest(Connection c, ArrayList<Question> questions, 
-            int creatorID) throws SQLException {
+            int creatorID, String testName) throws SQLException {
         
         // Begin Transaction
         try{
@@ -299,13 +299,14 @@ public class Test {
 
             // the test insertion
             String insertTestString = "insert into test (numberOfQuestions, "
-                    + "creator) values (?, ?)";
+                    + "creator, testName) values (?, ?, ?)";
             PreparedStatement insertTestStmt;
 
             try{
                 insertTestStmt = c.prepareStatement(insertTestString);
                 insertTestStmt.setInt(1, questions.size());
                 insertTestStmt.setInt(2, creatorID);
+                insertTestStmt.setString(3, testName);
             }
             catch (SQLException e){
                 throw new SQLException("Can't prep test insert "
