@@ -36,6 +36,8 @@ public class TopicEditSaveListener implements ActionListener{
             currentTopic.setName(c, name.getText(),currentUser.getID());
             currentTopic.setDesc(c, desc.getText(),currentUser.getID());
             error.setText("Topic edited successfully!");
+        } catch (IllegalArgumentException i){
+            error.setText("You are not authorized to edit this topic!");
         } catch(SQLException f){
             error.setText("Topic name already exists!");
         } finally {

@@ -290,7 +290,7 @@ public class Window {
         
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2+300, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 400, 30);
         error.setVisible(false);
         editTopic.add(error);
         
@@ -298,7 +298,7 @@ public class Window {
         
         enter.addActionListener(new TopicEditSaveListener(c,currentTopic,name,description,error,currentUser));
         remove.addActionListener(new TopicEditRemoveListener(c,currentTopic,error,currentUser));
-        cancel.addActionListener(new TopicEditCancelListener(error));
+        cancel.addActionListener(new CancelListener(error));
         back.addActionListener(new BackToDashboardListener(this, currentUser));
         
         currentPane = editTopic;
@@ -308,6 +308,91 @@ public class Window {
     }
     
     public void EditQuestion(User currentUser, Question currentQuestion){
+        frame.setVisible(false);
+        frame.remove(currentPane);
         
+        JTextArea questionText;
+        JTextField[] ansText = new JTextField[4];
+        
+        JRadioButton[] ansButtons = new JRadioButton[4];
+        ButtonGroup group = new ButtonGroup();
+        
+        JLabel error;
+        
+        
+        JPanel editQuestion = new JPanel();
+        editQuestion.setSize(frame.getSize());
+        editQuestion.setLayout(null);
+        
+        JButton enter = new JButton("Save");
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
+        editQuestion.add(enter);
+        
+        JButton remove = new JButton("Remove");
+        remove.setBounds(frame.getWidth()-600, frame.getHeight()-300, 100, 30);
+        editQuestion.add(enter);
+        
+        JButton cancel = new JButton("Cancel");
+        cancel.setBounds(frame.getWidth()-800, frame.getHeight()-300, 100, 30);
+        editQuestion.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
+        editQuestion.add(back);
+        
+        
+        
+        error = new JLabel("Question already exists!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2+300, 400, 30);
+        error.setVisible(false);
+        editQuestion.add(error);
+        
+        // topics multiselect JList
+        
+        questionText = new JTextArea();
+        questionText.setLineWrap(true);
+        questionText.setWrapStyleWord(true);
+        questionText.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-250, 300, 100);
+        questionText.setText(currentQuestion.getText());
+        editQuestion.add(questionText);
+        
+        int answerSize = 0;
+        Answer[] answers = new Answer[4];
+        try{
+            answers = currentQuestion.getAnswers(c, currentUser.getID());
+            answerSize = answers.length;
+        } catch(SQLException e){
+            error.setText("Error fetching answers!");
+            error.setVisible(true);
+        }
+        
+        for(int i = 0; i < ansText.length;i++){
+            ansText[i] = new JTextField();
+            ansText[i].setBounds(frame.getWidth()/2, frame.getHeight()/2-150+(i*50), 100, 30);
+            editQuestion.add(ansText[i]);
+            if(i >= answerSize) continue;
+            ansText[i].setText(answers[i].getText());
+            
+        }
+        
+        for(int i = 0; i < ansButtons.length;i++){
+            ansButtons[i] = new JRadioButton();
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 100, 30);
+            group.add(ansButtons[i]);
+            editQuestion.add(ansButtons[i]);
+        }
+        
+        
+        
+        
+        enter.addActionListener(new TopicEditSaveListener(c,currentTopic,name,description,error,currentUser));
+        remove.addActionListener(new TopicEditRemoveListener(c,currentTopic,error,currentUser));
+        cancel.addActionListener(new CancelListener(error));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
+        currentPane = editQuestion;
+        frame.add(editQuestion);
+        frame.setLayout(null);
+        frame.setVisible(true);
     }
 }

@@ -8,14 +8,14 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
-public class TopicEditCancelListener implements ActionListener{
+public class CancelListener implements ActionListener{
     private JLabel error;
     
-    public TopicEditCancelListener(JLabel error){ this.error = error; }
+    public CancelListener(JLabel error){ this.error = error; }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        error.setText("Edit cancelled, press back to exit!");
+        error.setText("Edit cancelled, press back to exit.");
         error.setVisible(true);
     }
     

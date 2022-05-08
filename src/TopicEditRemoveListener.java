@@ -28,9 +28,16 @@ public class TopicEditRemoveListener implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        currentTopic.remove(c, currentUser.getID());
-        error.setText("Topic Deleted.");
-        currentTopic = null;
+        try{
+            currentTopic.remove(c, currentUser.getID());
+            error.setText("Topic Deleted.");
+            currentTopic = null;
+        } catch (IllegalArgumentException i){
+            error.setText("You are not authorized to remove this topic!");
+        } catch (SQLException f){
+            error.setText("Topic does not exist!");
+        }
+        
         error.setVisible(true);
     }
 }
