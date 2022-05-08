@@ -50,7 +50,7 @@ public class QuestionCreateListener implements ActionListener{
                         Answer.createAnswer(c, currentUser.getID(), ansTexts[i].getText()), 
                         ansButtons[i].isSelected());
             }
-            if(q.getCorrectAns() == null)  
+            if(q.getCorrectAns() == null) throw new IllegalArgumentException();
             error.setText("Question Created!");
         } catch(IllegalArgumentException i){
             error.setText("Must add and select an answer.");

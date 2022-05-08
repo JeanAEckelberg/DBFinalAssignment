@@ -28,6 +28,9 @@ public class TopicEditRemoveListener implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        currentTopic.remove(c, currentUser.getID());
+        error.setText("Topic Deleted.");
+        currentTopic = null;
+        error.setVisible(true);
     }
 }

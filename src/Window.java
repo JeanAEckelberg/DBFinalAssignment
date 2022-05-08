@@ -85,7 +85,7 @@ public class Window {
         signUp.add(enter);
         
         JButton back = new JButton("Back");
-        back.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
         signUp.add(back);
         
         user = new JLabel("Set Username: ");
@@ -138,15 +138,15 @@ public class Window {
         createTopic.add(enter);
         
         JButton back = new JButton("Back");
-        back.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
         createTopic.add(back);
         
         topic = new JLabel("Set Topic Name: ");
-        topic.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-200, 100, 30);
+        topic.setBounds(frame.getWidth()/2-200, frame.getHeight()/2-200, 100, 30);
         createTopic.add(topic);
         
         desc = new JLabel("Set Topic Description: ");
-        desc.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100, 100, 100);
+        desc.setBounds(frame.getWidth()/2-200, frame.getHeight()/2-100, 200, 100);
         createTopic.add(desc);
         
         error = new JLabel("Name already in use!");
@@ -155,11 +155,13 @@ public class Window {
         createTopic.add(error);
         
         name = new JTextField();
-        name.setBounds(frame.getWidth()/2, frame.getHeight()/2-200, 100, 30);
+        name.setBounds(frame.getWidth()/2+100, frame.getHeight()/2-200, 300, 30);
         createTopic.add(name);
         
         description = new JTextArea();
-        description.setBounds(frame.getWidth()/2, frame.getHeight()/2-100, 100, 100);
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        description.setBounds(frame.getWidth()/2+100, frame.getHeight()/2-100, 300, 100);
         createTopic.add(description);
         
         enter.addActionListener(new TopicCreateListener(c,name,description,error,currentUser));
@@ -187,35 +189,37 @@ public class Window {
         createQuestion.setLayout(null);
         
         JButton enter = new JButton("Create");
-        enter.setBounds(frame.getWidth()-150, frame.getHeight()-100, 100, 30);
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
         createQuestion.add(enter);
         
         JButton back = new JButton("Back");
-        back.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
         createQuestion.add(back);
         
         question = new JLabel("Set Question Text: ");
-        question.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-250, 100, 100);
+        question.setBounds(frame.getWidth()/2-400, frame.getHeight()/2-250, 100, 100);
         createQuestion.add(question);
         
         for(int i = 0; i < ans.length; i++){
             ans[i] = new JLabel("Set Answer: ");
-            ans[i].setBounds(frame.getWidth()/2-100, frame.getHeight()/2-150+(i*50), 100, 30);
+            ans[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 100, 30);
             createQuestion.add(ans[i]);
         }
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-300, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 400, 30);
         error.setVisible(false);
         createQuestion.add(error);
         
         questionText = new JTextArea();
-        questionText.setBounds(frame.getWidth()/2, frame.getHeight()/2-250, 100, 100);
+        questionText.setLineWrap(true);
+        questionText.setWrapStyleWord(true);
+        questionText.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-250, 300, 100);
         createQuestion.add(questionText);
         
         for(int i = 0; i < ansText.length;i++){
             ansText[i] = new JTextField();
-            ans[i].setBounds(frame.getWidth()/2, frame.getHeight()/2-150+(i*50), 100, 30);
+            ansText[i].setBounds(frame.getWidth()/2+150, frame.getHeight()/2-150+(i*50), 100, 30);
             createQuestion.add(ansText[i]);
         }
         
@@ -248,24 +252,24 @@ public class Window {
         editTopic.setLayout(null);
         
         JButton enter = new JButton("Save");
-        enter.setBounds(frame.getWidth()-100, frame.getHeight()-50, 100, 30);
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
         editTopic.add(enter);
         
         JButton remove = new JButton("Remove");
-        remove.setBounds(frame.getWidth()-250, frame.getHeight()-50, 100, 30);
+        remove.setBounds(frame.getWidth()-600, frame.getHeight()-300, 100, 30);
         editTopic.add(enter);
         
         JButton cancel = new JButton("Cancel");
-        cancel.setBounds(frame.getWidth()-400, frame.getHeight()-50, 100, 30);
+        cancel.setBounds(frame.getWidth()-800, frame.getHeight()-300, 100, 30);
         editTopic.add(enter);
         
         JButton back = new JButton("Back");
-        back.setBounds(50, frame.getHeight()-50, 100, 30);
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
         editTopic.add(back);
         
         
         name = new JTextField();
-        name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-200, 100, 30);
+        name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
         try{
             name.setText(currentTopic.getName(c));
         } catch (SQLException e){
@@ -274,7 +278,9 @@ public class Window {
         editTopic.add(name);
         
         description = new JTextArea();
-        description.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-100, 100, 100);
+        description.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-100, 300, 100);
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
         try{
             description.setText(currentTopic.getDesc(c));
         } catch (SQLException e){
@@ -290,7 +296,7 @@ public class Window {
         
         
         
-        //enter.addActionListener(new TopicEditSaveListener(c,questionText,ansText,ansButtons,error,currentUser));
+        enter.addActionListener(new TopicEditSaveListener(c,currentTopic,name,description,error,currentUser));
         remove.addActionListener(new TopicEditRemoveListener(c,currentTopic,error,currentUser));
         cancel.addActionListener(new TopicEditCancelListener(error));
         back.addActionListener(new BackToDashboardListener(this, currentUser));

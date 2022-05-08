@@ -240,7 +240,7 @@ public class Question {
         prepStmt.setBoolean(3, correct);
 
         prepStmt.executeUpdate();
-        
+        if(correct) correctIndex = answers.size();
         answers.add(temp);
     }
     
