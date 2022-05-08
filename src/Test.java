@@ -1,8 +1,8 @@
 /**
  * A class representing the Test entity in the Discrete Mathematics 
  * study tool application
- * @author Gregory Beaucalir
- * @version May 4 2022
+ * @author Gregory Beaucalir, Carson Bring
+ * @version May 7 2022
  */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +14,7 @@ public class Test {
     
     private int testID;
     private int creatorID;
+    private String testName;
     private ArrayList<Question> questions;
     private ArrayList<Topic> topics;
     private Connection c;
@@ -52,6 +53,7 @@ public class Test {
             if (!set.next()) throw new SQLException();
             this.testID = set.getInt(1);
             this.creatorID = set.getInt(3);
+            this.testName = set.getString(4);
             set.close();
         }
         catch (SQLException e){
@@ -64,7 +66,7 @@ public class Test {
     }
     
     /**
-    * Private helper method to check and see if the has permissions to modify/remove a test
+    * Private helper method to check and see if the user has permissions to modify/remove a test
     */
     private boolean validatePerms(Connection c, int id) throws SQLException {
         int permLvl = User.getPermissionLevel(c, id);
@@ -152,6 +154,7 @@ public class Test {
     
     /**
     * Method to get the number of questions associated with this test object
+    * @return number of questions
     */
     public int getNumQuestions(){
         return questions.size();
@@ -199,6 +202,7 @@ public class Test {
     
     /**
     * Method to get the number of topics associated with this test object
+    * @return number of topics
     */
     public int getNumTopics(){
         return topics.size();
@@ -245,6 +249,14 @@ public class Test {
     }
     
     /**
+     * Method to get the name of this test
+     * @return name of the test
+     */
+    public String getTestName(){
+        return testName;
+    }
+    
+    /**
      * A static method to insert a Test and it's questions into the database that 
      * uses a transaction to ensure that there are no orphaned questions or 
      * other problems
@@ -253,7 +265,7 @@ public class Test {
      * @param creatorID identifier of the user who made the test
      * @throws java.sql.SQLException
      */
-    public static void createTest(Connection c, Question[] questions, 
+    public static void createTest(Connection c, ArrayList<Question> questions, 
             int creatorID) throws SQLException {
         
         // Begin Transaction
@@ -270,7 +282,8 @@ public class Test {
                 nextIDStmt = c.prepareStatement(nextIDString);
             }
             catch (SQLException e){
-                throw new SQLException("Can't prep statemtent to get the next testID in createTest of Test class");
+                throw new SQLException("Can't prep statemtent to get "
+                        + "the next testID in createTest of Test class");
             }
 
             try{
@@ -280,20 +293,23 @@ public class Test {
                 set.close();
             }
             catch(SQLException e){
-                throw new SQLException("Can't execute statemtent to get the next testID in createTest of Test class");
+                throw new SQLException("Can't execute statemtent to get "
+                        + "the next testID in createTest of Test class");
             }
 
             // the test insertion
-            String insertTestString = "insert into test (numberOfQuestions, creator) values (?, ?)";
+            String insertTestString = "insert into test (numberOfQuestions, "
+                    + "creator) values (?, ?)";
             PreparedStatement insertTestStmt;
 
             try{
                 insertTestStmt = c.prepareStatement(insertTestString);
-                insertTestStmt.setInt(1, questions.length);
+                insertTestStmt.setInt(1, questions.size());
                 insertTestStmt.setInt(2, creatorID);
             }
             catch (SQLException e){
-                throw new SQLException("Can't prep test insert statement in createTest of Test class.");
+                throw new SQLException("Can't prep test insert "
+                        + "statement in createTest of Test class.");
             }
 
             try{
@@ -301,11 +317,13 @@ public class Test {
                 insertTestStmt.close();
             }
             catch (SQLException e){
-                throw new SQLException("Can't execute test insert statement in createTest of Test class.");
+                throw new SQLException("Can't execute test insert "
+                        + "statement in createTest of Test class.");
             }
             
             // the question insertion into the linking table
-            String insertQuestionsString = "insert into questionInTest (questionID, testID) values (?, " + nextID + " )";
+            String insertQuestionsString = "insert into questionInTest "
+                    + "(questionID, testID) values (?, " + nextID + " )";
             PreparedStatement insertQuestionsStmt;
             
             for (Question q : questions){
@@ -315,7 +333,8 @@ public class Test {
                     insertQuestionsStmt.executeUpdate();
                 }
                 catch (SQLException e){
-                    throw new SQLException("Problem adding Questions to the Test in createTest of Test class");
+                    throw new SQLException("Problem adding Questions "
+                            + "to the Test in createTest of Test class");
                 }
             }
             
@@ -328,7 +347,8 @@ public class Test {
                 c.rollback(); // rollback on failure
             }
             catch (SQLException roll){
-                throw new SQLException("Problem rolling back transaction from error: " + exc.getMessage());
+                throw new SQLException("Problem rolling back "
+                        + "transaction from error: " + exc.getMessage());
             }
             
         }
@@ -338,7 +358,208 @@ public class Test {
         
     }
     
-    public static int createTest(Connection c,
+    /**
+     * Method to add a single question to an existing test
+     * @param question question to be added
+     * @param userID id of user attempting to modify the test
+     * @throws SQLException 
+     */
+    public void addQuestionToTest(Question question, int userID) throws SQLException{
+        
+        if (!validatePerms(c, userID)) return;
+        
+        String insertString = "insert into questionInTest (questionID, "
+                + "testID) values (?, " + testID + " )";
+        PreparedStatement insertStmt;
+        
+        
+        try {
+            insertStmt = c.prepareStatement(insertString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep statement in "
+                    + "addQuestionToTest in Test class");
+        }
+        
+        try{
+            insertStmt.setInt(1, question.getID());
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't set questionID in "
+                    + "addQuestionToTest in Test class");
+        }
+        
+        try{
+            insertStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute update in "
+                    + "addQuestionToTest in Test class");
+        }
+        
+        questions.add(question);
+        
+        String updateString = "update test set numberOfQuestions = "
+                + "? where testID = " + testID;
+        PreparedStatement updateStmt;
+        
+        try{
+            updateStmt = c.prepareStatement(updateString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep update statement "
+                    + "in addQuestionToTest in Test class");
+        }
+        
+        try{
+            updateStmt.setInt(1, questions.size());
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't set numberOfQuestions "
+                    + "in addQuestionToTest in Test class");
+        }
+        
+        try{
+            updateStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute update of numberOfQuestions"
+                    + " in addQuestionToTest in Test class");
+        }
+    }
+    
+    /**
+     * Method to add a single Topic to an existing test
+     * @param topic topic to be added
+     * @param userID id of user attempting to modify the test
+     * @throws SQLException 
+     */
+    public void addTopicToTest (Topic topic, int userID) throws SQLException {
+        
+        if (!validatePerms(c, userID)) return;
+        
+        String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
+        PreparedStatement insertStmt;
+        
+        
+        try {
+            insertStmt = c.prepareStatement(insertString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep statement in addTopicToTest in Test class");
+        }
+        
+        try{
+            insertStmt.setInt(1, topic.getID());
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't set questionID in addTopicToTest in Test class");
+        }
+        
+        try{
+            insertStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute update in addTopicToTest in Test class");
+        }
+        
+        topics.add(topic);
+    }
+    
+    /**
+     * Method to remove a question from a test
+     * @param questionID identifier for the question being removed from the test
+     * @param userID identifier of the user attempting to modify the test
+     * @throws java.sql.SQLException
+     */
+    public void removeQuestionFromTest(int questionID, int userID) throws SQLException{
+        if (!validatePerms(c, userID)) return;
+        
+        // find the question in question
+        Question temp = null;
+        for (Question q : questions){
+            if (q.getID() == questionID) temp = q;
+        }
+        if (temp == null) return;
+        
+        // remove from linking table
+        String deleteString = "delete from questionInTest where questionID = " + questionID
+                + " and testID = " + testID;
+        PreparedStatement deleteStmt = c.prepareStatement(deleteString);
+        deleteStmt.executeUpdate();
+        
+        questions.remove(temp);
+        
+        // update numberOfQuestions
+        String updateString = "update test set numberOfQuestions = "
+                + "? where testID = " + testID;
+        PreparedStatement updateStmt;
+        
+        try{
+            updateStmt = c.prepareStatement(updateString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep update statement "
+                    + "in removeQuestionFromTest in Test class");
+        }
+        
+        try{
+            updateStmt.setInt(1, questions.size());
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't set numberOfQuestions "
+                    + "in removeQuestionFromTest in Test class");
+        }
+        
+        try{
+            updateStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute update of numberOfQuestions"
+                    + " in removeQuestionFromTest in Test class");
+        }
+    }
+    
+    
+    /**
+     * Method to remove a topic from a test
+     * @param topicID identifier of the topic being removed from the test
+     * @param userID identifier of the user attempting to modify the test
+     * @throws java.sql.SQLException
+     */
+    public void removeTopic(int topicID, int userID) throws SQLException{
+        if (!validatePerms(c, userID)) return;
+        
+        // find the question in question
+        Topic temp = null;
+        for (Topic t : topics){
+            if (t.getID() == topicID) temp = t;
+        }
+        if (temp == null) return;
+        
+        // remove from linking table
+        String deleteString = "delete from topicInTest where topicID = " + topicID
+                + " and testID = " + testID;
+        PreparedStatement deleteStmt = c.prepareStatement(deleteString);
+        deleteStmt.executeUpdate();
+        
+        topics.remove(temp);
+        
+    }
+    
+    /*
+    * Possible method to remove a test from the database
+    */
+    /*
+    public void removeTest(Connection c, int testID, int userID){
+        if (!validatePerms(c, userID)) return;
+    }
+    */
+    
+    
+    // int returning createTest method
+    /*
+        public static int createTest(Connection c,
             int creatorID) throws SQLException {
         
         // Begin Transaction
@@ -414,82 +635,5 @@ public class Test {
     }
     
     
-    /**
-     * Method to add a single question to an existing test
-     * @param question question to be added
-     * @param userID id of user attempting to modify the test
-     * @throws SQLException 
-     */
-    public void addQuestionToTest(Question question, int userID) throws SQLException{
-        
-        if (!validatePerms(c, userID)) return;
-        
-        String insertString = "insert into questionInTest (questionID, testID) values (?, " + testID + " )";
-        PreparedStatement insertStmt;
-        
-        
-        try {
-            insertStmt = c.prepareStatement(insertString);
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't prep statement in addQuestionToTest in Test class");
-        }
-        
-        try{
-            insertStmt.setInt(1, question.getID());
-        }
-        catch (SQLException e) {
-            throw new SQLException("Can't set questionID in addQuestionToTest in Test class");
-        }
-        
-        try{
-            insertStmt.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't execute update in addQuestionToTest in Test class");
-        }
-        
-        questions.add(question);
-        
-    }
-    
-    /**
-     * Method to add a single Topic to an existing test
-     * @param topic topic to be added
-     * @param userID id of user attempting to modify the test
-     * @throws SQLException 
-     */
-    public void addTopicToTest (Topic topic, int userID) throws SQLException {
-        
-        if (!validatePerms(c, userID)) return;
-        
-        String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
-        PreparedStatement insertStmt;
-        
-        
-        try {
-            insertStmt = c.prepareStatement(insertString);
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't prep statement in addTopicToTest in Test class");
-        }
-        
-        try{
-            insertStmt.setInt(1, topic.getID());
-        }
-        catch (SQLException e) {
-            throw new SQLException("Can't set questionID in addTopicToTest in Test class");
-        }
-        
-        try{
-            insertStmt.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't execute update in addTopicToTest in Test class");
-        }
-        
-        topics.add(topic);
-    }
-    
-    
+    */
 }
