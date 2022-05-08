@@ -263,6 +263,7 @@ public class Test {
      * @param c Connection to the database
      * @param questions An array of questions already in the database
      * @param creatorID identifier of the user who made the test
+     * @param testName name of the test
      * @throws java.sql.SQLException
      */
     public static void createTest(Connection c, ArrayList<Question> questions, 
@@ -548,14 +549,83 @@ public class Test {
         
     }
     
-    /*
-    * Possible method to remove a test from the database
+    /**
+    * Method to remove a test from the database using a transaction to ensure 
+    * there are not orphan records in linking tables or leaderboard
+     * @param c connection to the database
+     * @param test Test object of the test to be removed from the database
+     * @param userID identifier of the user attempting to remove the test
+     * @throws java.sql.SQLException
     */
-    /*
-    public void removeTest(Connection c, int testID, int userID){
-        if (!validatePerms(c, userID)) return;
+    public void removeTest(Connection c, Test test, int userID) throws SQLException{
+        if (!test.validatePerms(c, userID)) return;
+        
+        // prep work
+        String deleteQsStr = "delete from questionInTest where testID = " + test.getTestID();
+        String deleteTsStr = "delete from topicInTest where testID = " + test.getTestID();
+        String deleteLeaderboardsStr = "delete from leaderboard where testID = " + test.getTestID();
+        String deleteTestStr = "delete from test where testID = " + test.getTestID();
+        PreparedStatement deleteQsStmt, deleteTsStmt, deleteLeadStmt, deleteTestStmt;
+        
+        // begin transaction
+        try{
+            c.setAutoCommit(false);
+            
+            try{
+                deleteQsStmt = c.prepareStatement(deleteQsStr);
+                deleteTsStmt = c.prepareStatement(deleteTsStr);
+                deleteLeadStmt = c.prepareStatement(deleteLeaderboardsStr);
+                deleteTestStmt = c.prepareStatement(deleteTestStr);
+            }
+            catch (SQLException e){
+                throw new SQLException("Can't prep the deletion statements in "
+                        + "removeTest in Test class");
+            }
+            
+            try{
+                deleteQsStmt.executeUpdate();
+                deleteTsStmt.executeUpdate();
+                deleteLeadStmt.executeUpdate();
+                deleteTestStmt.executeUpdate();
+            }
+            catch (SQLException e){
+                throw new SQLException("Can't execute deletion statements in "
+                        + "removeTest in Test class");
+            }
+            
+            c.commit();
+            // end of transaction
+        }
+        catch (SQLException exc){
+            try{
+                c.rollback(); // rollback on failure
+            }
+            catch (SQLException roll){
+                throw new SQLException("Problem rolling back "
+                        + "transaction from error: " + exc.getMessage());
+            }
+            
+        }
+        finally{ // always do this
+            c.setAutoCommit(true); // set back to true to prevent problems elsewhere in application
+        }
     }
-    */
+    
+    /**
+     * Getter method for the testID
+     * @return testID
+     */
+    public int getTestID(){
+        return testID;
+    }
+    
+    /**
+     * Getter method for the creatorID
+     * @return creatorID
+     */
+    public int getCreatorID(){
+        return creatorID;
+    }
     
     
     // int returning createTest method
