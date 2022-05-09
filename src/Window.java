@@ -229,7 +229,7 @@ public class Window {
         addtest1.add(exitbutton);
         
         nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, topics));
-        exitbutton.addActionListener(new BackToLogInListener(this));
+        exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = addtest1;
         frame.add(addtest1);
         frame.setLayout(null);
@@ -267,6 +267,7 @@ public class Window {
         //will go back to dashboard later
         exitbutton.addActionListener(new BackToLogInListener(this));
         create.addActionListener(new AddTest2Listener(currentUser, testname, topics, questions));
+        exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
      }
     
     
