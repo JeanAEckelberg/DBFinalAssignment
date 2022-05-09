@@ -56,7 +56,7 @@ public class AddTestTopicsListener implements ActionListener{
         }catch(IllegalArgumentException iae){
             System.err.println("Not authorized");
         }
-            
+        ref.EditTestHome(currentUser, currentTest); 
             
         
     }

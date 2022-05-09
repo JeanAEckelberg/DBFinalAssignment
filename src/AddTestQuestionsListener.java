@@ -57,7 +57,7 @@ public class AddTestQuestionsListener implements ActionListener{
             System.err.println("Not authorized");
         }
             
-            
+        ref.EditTestHome(currentUser, currentTest);
         
     }
     

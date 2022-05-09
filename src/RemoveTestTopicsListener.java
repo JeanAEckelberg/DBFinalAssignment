@@ -55,7 +55,7 @@ public class RemoveTestTopicsListener implements ActionListener{
             System.err.println("sqlerror");
         }
             
-            
+        ref.EditTestHome(currentUser, currentTest);
         
     }
     

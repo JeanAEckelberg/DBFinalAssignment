@@ -1,4 +1,7 @@
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,32 +19,29 @@ import javax.swing.JTextField;
  *
  * @author carso
  */
-public class EditTestNameListener implements ActionListener{
+public class RemoveTestListener implements ActionListener {
     private Window ref;
     private Connection c;
-    private Test currentTest;
-    private JTextField name;
     private User currentUser;
-    public EditTestNameListener(Window ref, Connection c, Test currentTest, User currentUser, JTextField name){
+    private Test currentTest;
+    public RemoveTestListener(Window ref, Connection c, User currentUser, Test currentTest){
         this.ref = ref;
         this.c = c;
-        this.currentTest = currentTest;
-        this.name = name;
         this.currentUser = currentUser;
+        this.currentTest = currentTest;
     }
-    
-    
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-            try {
-                this.currentTest.setTestName(this.name.getText(),this.currentUser.getID());
-            } catch (SQLException ex) {
-               System.err.println("SQL error");
-            } catch (IllegalArgumentException ex) {
-                System.err.println("Not authorized");
-            }
-        ref.EditTestHome(currentUser, currentTest);
+        try {
+            currentTest.removeTest(c, currentUser.getID());
+        } catch (SQLException ex) {
+            System.err.println("sqlerror");
+            
+
+        } catch (IllegalArgumentException ex) {
+            System.err.println("Not authorized");
+        }
+        ref.Dashboard(currentUser);
         
     }
     
