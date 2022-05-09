@@ -15,13 +15,13 @@ import java.sql.*;
 
 public class AddTest2Listener implements ActionListener{
 
-    private JTextField testname;
-    private JList topic;
+    private String testname;
+    private String topic;
     private User currentUser;
     private Connection c;
     private Window ref;
     private JList questions;
-    public AddTest2Listener(Window ref, Connection c, JTextField testname, User currentUser, JList topic, JList questions){
+    public AddTest2Listener(Window ref, Connection c,  User currentUser, String testname, String topic, JList questions){
         this.c = c;
         this.testname = testname;
         this.ref = ref;

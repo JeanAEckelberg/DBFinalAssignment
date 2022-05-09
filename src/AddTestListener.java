@@ -32,7 +32,7 @@ public class AddTestListener implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        ref.AddTest2(currentUser, testname, topic);
+        ref.AddTest2(currentUser, testname.getText(), (String)topic.getSelectedValue());
         /*
         User currentUser;
         try{

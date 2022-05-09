@@ -238,7 +238,7 @@ public class Window {
         
         
     }
-     public void AddTest2(User currentUser, JTextField testname, JList topics){
+     public void AddTest2(User currentUser, String testname, String TopicName){
         frame.setVisible(false);
         frame.remove(currentPane);
         
@@ -248,7 +248,12 @@ public class Window {
         JButton create;
         JList questions;
         //temporary
+        Search s = new Search(c);
         DefaultListModel listModel = new DefaultListModel();
+        try{
+            ResultSet questionRS = s.Questions("");
+            
+        }catch(SQLException){}
         listModel.addElement("samplequestion1");
         listModel.addElement("samplequestion2");
         questions = new JList(listModel);
@@ -266,7 +271,7 @@ public class Window {
         
         //will go back to dashboard later
         exitbutton.addActionListener(new BackToLogInListener(this));
-        create.addActionListener(new AddTest2Listener(currentUser, testname, topics, questions));
+        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, TopicName, questions));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
      }
     
