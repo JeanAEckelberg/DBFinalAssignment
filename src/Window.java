@@ -279,6 +279,10 @@ public class Window {
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
         addtest2.add(exitbutton);
         
+        JLabel selectquestions = new JLabel("Select Questions");
+        selectquestions.setBounds(frame.getWidth()/2 -500,frame.getHeight()/8 -20, 100, 30);
+        addtest2.add(selectquestions);
+        
         //will go back to dashboard later
         
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
