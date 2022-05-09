@@ -282,12 +282,8 @@ public class Window {
         
         try{
             rs = s.Topics("");
-            Statement l = rs.getStatement();
-            do{
-                rs = l.getResultSet();
-                while(rs.next())
-                    allTopics.add(new Topic(c, rs.getInt(1)));
-            } while(l.getMoreResults());
+            while(rs.next())
+                allTopics.add(new Topic(c, rs.getInt(1)));
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);
