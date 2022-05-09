@@ -18,7 +18,7 @@ import javax.swing.JTextField;
  *
  * @author carso
  */
-public class RemoveTestTopicsListener implements ActionListener{
+public class AddTestTopicsListener implements ActionListener{
     private Window ref;
     private Connection c;
     private Test currentTest;
@@ -26,7 +26,7 @@ public class RemoveTestTopicsListener implements ActionListener{
     private User currentUser;
     private JList topics;
     private ArrayList<Integer> topicIds;
-    public RemoveTestTopicsListener(Window ref, Connection c, Test currentTest, User currentUser, JList topics, ArrayList<Integer> topicIds){
+    public AddTestTopicsListener(Window ref, Connection c, Test currentTest, User currentUser, JList topics, ArrayList<Integer> topicIds){
         this.ref = ref;
         this.c = c;
         this.currentTest = currentTest;
@@ -40,7 +40,7 @@ public class RemoveTestTopicsListener implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         try{
             ArrayList<Topic> selectedTopics = new ArrayList<Topic>();
-            currentTest.removeAllTopics(currentUser.getID());
+            
             
             int[] temp = topics.getSelectedIndices();
             

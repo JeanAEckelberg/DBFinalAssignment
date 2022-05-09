@@ -439,4 +439,62 @@ public class Window {
         frame.setVisible(true);
     }
     
+    public void AddTestTopics(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        ArrayList<Integer> idsOfTopics = new ArrayList<Integer>();
+        Topic[] topicsInTest = currentTest.getTopics();
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel addtesttopics  = new JPanel();
+        addtesttopics.setSize(frame.getSize());
+        addtesttopics.setLayout(null);
+        
+        
+        
+        Search s = new Search(c);
+        
+        try{
+            ResultSet topicRS = s.Topics("");
+            int count = 0;
+            while(topicRS.next()){
+                Topic topic = new Topic(c, topicRS.getInt(1));
+                Boolean inTest = false;
+                for(int i =0; i < topicsInTest.length; i++){
+                    if(topic.getID() == topicsInTest[i].getID()){
+                        inTest = true;
+                    }
+                        
+                }
+                if( !inTest){
+                    idsOfTopics.add(topicRS.getInt(1));
+               
+                    listModel.addElement( topic.getTopicName());
+                    
+                }
+            }
+        }catch(SQLException sasd){
+            listModel.addElement("No topics found");
+        }
+        
+        
+        
+        JList topics = new JList(listModel);
+        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtesttopics.add(topics);
+        
+        JButton save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtesttopics.add(save);
+        
+        
+        
+        save.addActionListener(new AddTestTopicsListener(this, c , currentTest, currentUser, topics, idsOfTopics));
+        currentPane = addtesttopics;
+        frame.add(addtesttopics);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
 }
