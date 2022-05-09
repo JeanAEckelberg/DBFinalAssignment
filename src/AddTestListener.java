@@ -27,7 +27,11 @@ public class AddTestListener implements ActionListener{
         this.testname = testname;
         this.ref = ref;
         this.currentUser = currentUser;
-        this.topicId = idsOfTopics.get(topics.getSelectedIndex());
+        try{
+            this.topicId = idsOfTopics.get(topics.getSelectedIndex());
+        }catch(Exception e){
+            this.topicId = -1;
+        }
        
     }
     

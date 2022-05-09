@@ -250,7 +250,7 @@ public class Window {
         JButton create;
         JList questions;
         ArrayList<Integer> questionIDList = new ArrayList<Integer>();
-        ArrayList<Integer> selectedQuestionIDList = new ArrayList<Integer>();
+        
 
         //temporary
         Search s = new Search(c);
@@ -282,7 +282,7 @@ public class Window {
         //will go back to dashboard later
         
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
-        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicId, questions));
+        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicId, questions, questionIDList));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
      }
     
