@@ -507,6 +507,38 @@ public class Test {
         topics.add(topic);
     }
     
+     public void addTopicToTest (Topic topic) throws SQLException, IllegalArgumentException {
+        
+       
+        
+        String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
+        PreparedStatement insertStmt;
+        
+        
+        try {
+            insertStmt = c.prepareStatement(insertString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep statement in addTopicToTest in Test class");
+        }
+        
+        try{
+            insertStmt.setInt(1, topic.getID());
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't set questionID in addTopicToTest in Test class");
+        }
+        
+        try{
+            insertStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute update in addTopicToTest in Test class");
+        }
+        
+        topics.add(topic);
+    }
+    
     /**
      * Method to remove a question from a test
      * @param questionID identifier for the question being removed from the test
