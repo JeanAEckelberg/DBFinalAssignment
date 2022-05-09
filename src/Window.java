@@ -281,7 +281,7 @@ public class Window {
         
         
         try{
-            rs = s.Questions("");
+            rs = s.Topics("");
             Statement l = rs.getStatement();
             do{
                 rs = l.getResultSet();
