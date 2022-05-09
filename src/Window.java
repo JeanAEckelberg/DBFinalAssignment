@@ -318,4 +318,24 @@ public class Window {
         frame.setVisible(true);
     }
     
+    
+    public void EditTestName(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+       
+        
+        JPanel edittesthome = new JPanel();
+        edittesthome.setSize(frame.getSize());
+        edittesthome.setLayout(null);
+        
+        
+        
+        
+        
+        currentPane = edittesthome;
+        frame.add(edittesthome);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
 }
