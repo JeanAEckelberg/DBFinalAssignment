@@ -276,7 +276,7 @@ public class Question {
     }
     
     public Answer[] getAnswers(Connection c, int userID) throws SQLException, IllegalArgumentException {
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("getAnswers : question : perms");
+        //if (!validatePerms(c, userID)) throw new IllegalArgumentException("getAnswers : question : perms");
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
     }

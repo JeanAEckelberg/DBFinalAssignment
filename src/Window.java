@@ -119,4 +119,39 @@ public class Window {
         frame.setVisible(false);
         frame.remove(currentPane);
     }
+    
+    /**
+     * Search page UI
+     * @param currentUser user using the page
+     */
+    public void ResultsPage(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JLabel tests, questions, topics, notFound;
+        JButton test, topic, question, next, previous;
+        JButton takeTest, edit, delete;
+        JLabel[] results;
+        JTextField querey;
+        
+        //Under construction
+        JPanel resultsPage = new JPanel();
+        resultsPage.setSize(frame.getSize());
+        resultsPage.setLayout(null);
+        
+        JButton enterQuerey = new JButton("Search");
+        enterQuerey.setBounds(frame.getWidth()- 150, frame.getHeight()%4 + 2, 100, 30);
+        resultsPage.add(enterQuerey);
+        
+        querey = new JTextField();
+        querey.setBounds(1, 1, 500, 20);
+        resultsPage.add(querey);
+        
+        
+        currentPane = resultsPage;
+        frame.add(resultsPage);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+    }
 }

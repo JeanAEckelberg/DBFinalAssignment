@@ -22,8 +22,12 @@ public class Client {
         Connection connection;
         try {
             connection = DriverManager.getConnection(jdbcURL,username,password);
-            Window w = new Window("Discrete DB", 1280, 960, connection); //connection,
-            w.LogIn();
+            Window w = new Window("Discrete DB", 825, 480, connection); //connection,
+            //w.LogIn();
+            //w.ResultsPage(new User(connection, "Milksoplimit", "p455word"));
+            Test t = new Test(connection, 1);
+            System.out.print(t.pullTopTen()[0][1]);
+            //w.SignUp();
             /* Testing calls for methods
             //User.createUser(connection, "Jim", "1234");
             User user1 = new User(connection, "Jim", "1234");
