@@ -282,7 +282,7 @@ public class Question {
     }
     
 
-    public Answer[] getAnswers() throws SQLException, IllegalArgumentException {
+    public Answer[] getAnswers() throws SQLException {
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
     }
