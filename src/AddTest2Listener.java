@@ -48,6 +48,7 @@ public class AddTest2Listener implements ActionListener{
             questionList.add(new Question(c, this.selectedQuestionIds.get(i)));
         }
         try{
+            
             Test.createTest(c, questionList, this.currentUser.getID(), this.testname);
         }catch(SQLException se){
             System.out.println("couldn't create test");

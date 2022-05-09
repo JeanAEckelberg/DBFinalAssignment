@@ -297,9 +297,20 @@ public class Window {
     
     
     
-    public void EditTest(User currentUser, Test currentTest){
+    public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
+        JPanel edittesthome = new JPanel();
+        edittesthome.setSize(frame.getSize());
+        edittesthome.setLayout(null);
+        
+        
+        
+        
+        currentPane = edittesthome;
+        frame.add(edittesthome);
+        frame.setLayout(null);
+        frame.setVisible(true);
     }
     
 }
