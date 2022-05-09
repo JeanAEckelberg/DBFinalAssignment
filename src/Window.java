@@ -230,7 +230,7 @@ public class Window {
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
         addtest1.add(exitbutton);
         
-        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, idsOfTopics.get(topics.getSelectedIndex())));
+        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, idsOfTopics, topics));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = addtest1;
         frame.add(addtest1);
@@ -249,23 +249,29 @@ public class Window {
         addtest2.setLayout(null);
         JButton create;
         JList questions;
+        ArrayList<Integer> questionIDList = new ArrayList<Integer>();
+        ArrayList<Integer> selectedQuestionIDList = new ArrayList<Integer>();
+
         //temporary
         Search s = new Search(c);
         DefaultListModel listModel = new DefaultListModel();
         try{
             ResultSet questionRS = s.Questions("");
             while(questionRS.next()){
-                listModel.addElement(questionRS.getString(1));
+                Question q = new Question(c, questionRS.getInt(1));
+                questionIDList.add(questionRS.getInt(1));
+                listModel.addElement(q.getText());
+                
             }
         }catch(SQLException e){}
-        listModel.addElement("samplequestion1");
-        listModel.addElement("samplequestion2");
+        
+        
         questions = new JList(listModel);
         questions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
         questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         addtest2.add(questions);
         
-        create = new JButton("Next");
+        create = new JButton("Create");
         create.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
         addtest2.add(create);
         
@@ -274,8 +280,9 @@ public class Window {
         addtest2.add(exitbutton);
         
         //will go back to dashboard later
-        exitbutton.addActionListener(new BackToLogInListener(this));
-        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, TopicName, questions));
+        
+        exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
+        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicId, questions));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
      }
     

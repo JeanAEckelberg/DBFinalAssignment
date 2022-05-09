@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 
 public class AddTestListener implements ActionListener{
@@ -21,12 +22,12 @@ public class AddTestListener implements ActionListener{
     private Connection c;
     private Window ref;
     
-    public AddTestListener(Window ref, Connection c, JTextField testname, User currentUser, int topicId){
+    public AddTestListener(Window ref, Connection c, JTextField testname, User currentUser, ArrayList<Integer> idsOfTopics,JList topics  ){
         this.c = c;
         this.testname = testname;
         this.ref = ref;
         this.currentUser = currentUser;
-        this.topicId = topicId;
+        this.topicId = idsOfTopics.get(topics.getSelectedIndex());
        
     }
     

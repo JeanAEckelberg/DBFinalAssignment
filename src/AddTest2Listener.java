@@ -11,34 +11,36 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 
 public class AddTest2Listener implements ActionListener{
 
     private String testname;
-    private String topic;
+    private int topicId;
     private User currentUser;
     private Connection c;
     private Window ref;
-    private JList questions;
-    public AddTest2Listener(Window ref, Connection c,  User currentUser, String testname, String topic, JList questions){
+    private JList questionsJLIST;
+    public AddTest2Listener(Window ref, Connection c,  User currentUser, String testname, int topicId, JList questionJLIST){
         this.c = c;
         this.testname = testname;
         this.ref = ref;
         this.currentUser = currentUser;
-        this.topic = topic;
-        this.questions = questions;
+        this.topicId = topicId;
+        this.questionsJLIST = questionJLIST;
        
     }
     
     @Override
    public void actionPerformed(ActionEvent e) {
         
-        
+        ArrayList<Question> questionList = new ArrayList<Question>();
+        //QuestionList
             
             
             
-            Question q = new Question(c,Question.createQuestion(c, currentUser.getID(), qText.getText()));
+            //Test t = new Test(c,Question.createQuestion(c, currentUser.getID(), qText.getText()));
             /*
             for(int i = 0; i < ansTexts.length; i++){
                 if(ansTexts[i].getText().equals("")) continue;
