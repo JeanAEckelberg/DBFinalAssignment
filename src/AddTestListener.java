@@ -38,15 +38,20 @@ public class AddTestListener implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        ArrayList<Integer> selectedTopicIds = new ArrayList<Integer>();
+        
         try{
-            this.topicId = this.idsOfTopics.get(this.topics.getSelectedIndex());
+            int[] temp = this.topics.getSelectedIndices();
+            for(int i = 0; i < temp.length; i++){
+                selectedTopicIds.add(idsOfTopics.get(temp[i]));
+            }
         }catch(Exception ee){
             System.err.print("Topic not selected");
             ref.AddTest1(currentUser);
             this.topicId = -1;
             
         }
-        ref.AddTest2(currentUser, testname.getText(), topicId);
+        ref.AddTest2(currentUser, testname.getText(), selectedTopicIds);
         /*
         User currentUser;
         try{

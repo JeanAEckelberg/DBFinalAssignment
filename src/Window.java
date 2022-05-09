@@ -240,7 +240,7 @@ public class Window {
         
         
     }
-     public void AddTest2(User currentUser, String testname, int topicId){
+     public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
         frame.setVisible(false);
         frame.remove(currentPane);
         
@@ -256,13 +256,14 @@ public class Window {
         Search s = new Search(c);
         DefaultListModel listModel = new DefaultListModel();
         try{
-            System.out.println(topicId);
-            ResultSet questionRS = s.QuestionsByTopic(topicId);
-            while(questionRS.next()){
-                Question q = new Question(c, questionRS.getInt(1));
-                questionIDList.add(questionRS.getInt(1));
-                listModel.addElement(q.getText());
-                
+           for(int i = 0; i < topicIds.size(); i++){
+                ResultSet questionRS = s.QuestionsByTopic(topicIds.get(i));
+                while(questionRS.next()){
+                    Question q = new Question(c, questionRS.getInt(1));
+                    questionIDList.add(questionRS.getInt(1));
+                    listModel.addElement(q.getText());
+
+                }
             }
         }catch(SQLException e){}
         
@@ -287,7 +288,7 @@ public class Window {
         //will go back to dashboard later
         
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
-        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicId, questions, questionIDList));
+        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicIds, questions, questionIDList));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = addtest2;
         frame.add(addtest2);
@@ -300,7 +301,7 @@ public class Window {
     public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-        JButton removeQuestion, addQuestion,  ;
+        //JButton removeQuestion, addQuestion,  ;
         
         
         JPanel edittesthome = new JPanel();

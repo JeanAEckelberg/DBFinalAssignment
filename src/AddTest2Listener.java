@@ -24,12 +24,13 @@ public class AddTest2Listener implements ActionListener{
     private ArrayList<Integer> selectedQuestionIds;
     private ArrayList<Integer> idsOfQuestions;
     private JList questionJLIST;
-    public AddTest2Listener(Window ref, Connection c,  User currentUser, String testname, int topicId, JList questionJLIST, ArrayList<Integer> idsOfQuestions){
+    private ArrayList<Integer> idsOfTopics;
+    public AddTest2Listener(Window ref, Connection c,  User currentUser, String testname,ArrayList<Integer>  idsOfTopics, JList questionJLIST, ArrayList<Integer> idsOfQuestions){
         this.c = c;
         this.testname = testname;
         this.ref = ref;
         this.currentUser = currentUser;
-        this.topicId = topicId;
+        this.idsOfTopics = idsOfTopics;
         //this.selectedQuestionIds = questionJLIST;
         this.questionJLIST = questionJLIST;
         this.idsOfQuestions = idsOfQuestions;
