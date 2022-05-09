@@ -19,8 +19,8 @@ public class Search {
         
         CallableStatement cStmt = c.prepareCall(getTopics);
         cStmt.setString(1, query);
-        System.out.println(cStmt.getFetchSize());
-        cStmt.setFetchSize(1000);
+
+        cStmt.setMaxRows(10000);
         
         return cStmt.executeQuery();
     }
