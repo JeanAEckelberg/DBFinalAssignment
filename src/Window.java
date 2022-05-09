@@ -282,6 +282,8 @@ public class Window {
         
         try{
             rs = s.Questions("");
+            rs.last();
+            System.err.println(rs.getRow());
             while(rs.next())
                 allTopics.add(new Topic(c, rs.getInt(1))); 
         } catch (SQLException e) {

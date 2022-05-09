@@ -19,8 +19,6 @@ public class Search {
         
         CallableStatement cStmt = c.prepareCall(getTopics);
         cStmt.setString(1, query);
-
-        cStmt.setMaxRows(10000);
         
         return cStmt.executeQuery();
     }
