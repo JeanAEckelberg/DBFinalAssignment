@@ -6,9 +6,11 @@ drop table if exists answer cascade;
 drop table if exists test cascade;
 drop table if exists leaderboard, answerToQuestion, questionInTopic, topicInTest, questionInTest;
 drop view if exists HighScores;
-drop function if exists getUserQuestionsAndAnswers;
-drop function if exists getUserTests;
-drop function if exists getUserTopics;
+drop function if exists getQuestions;
+drop function if exists getTests;
+drop function if exists getTopics;
+drop function if exists getQuestionsInTopicByID;
+drop function if exists getQuestionsInTopicByDescription;
 
 -- create tables if needed
 create table if not exists userTable (
@@ -98,35 +100,44 @@ create view HighScores as
 	order by score;
 
 
-create or replace function getUserQuestionsAndAnswers ( userID int)
-	returns table (quesstionID int, answerID int)
+create or replace function getQuestions ( keyValue varchar)
+	returns table (questionID int)
 	as $$
 		begin
 			return query
  
-			select answerToQuestion.questionID, answerToQuestion.answerID 
-			from answerToQuestion
-			where questionID in (select questionID from question where $1 = creator);
+			select question.questionID 
+			from question
+			where lower(questionText) like lower( concat('%', $1 , '%') );
 			
 		end;
 	   $$
 	language 'plpgsql';
 	
-create or replace function getUserTests ( userID int)
+create or replace function getTests ( keyValue varchar)
 	returns table (testID int)
 	as $$
+	
 		begin
 			return query
  
-			select test.testID
-			from test
-			where $1 = creator;
+			select topicInTest.testID
+			from topicInTest
+			where topicInTest.topicID in ( select topic.topicID
+										   from topic
+										   where lower(topicName) like lower(concat('%', $1, '%') ) or 
+										  	lower(topicDescription) like lower(concat('%', $1, '%') ) )
+			union select questionInTest.testID
+			from questionInTest
+			where questionInTest.questionID in ( select question.questionID 
+												 from question
+												 where lower(questionText) like lower( concat('%', $1 , '%') ) );
 			
 		end;
 	   $$
 	language 'plpgsql';
 	
-create or replace function getUserTopics ( userID int)
+create or replace function getTopics ( keyValue varchar)
 	returns table (topicID int)
 	as $$
 		begin
@@ -134,7 +145,35 @@ create or replace function getUserTopics ( userID int)
  
 			select topic.topicID
 			from topic
-			where $1 = creator;
+			where lower(topicName) like lower(concat('%', $1, '%') ) or lower(topicDescription) like lower( concat('%', $1, '%') );
+			
+		end;
+	   $$
+	language 'plpgsql';
+	
+create or replace function getQuestionsInTopicByID ( topicId int )
+	returns table (questionID int)
+	as $$
+		begin
+			return query
+ 
+			select questionInTopic.questionID
+			from questionInTopic
+			where questionInTopic.topicID = $1;
+			
+		end;
+	   $$
+	language 'plpgsql';
+	
+create or replace function getQuestionsInTopicByDescription ( keyValue varchar )
+	returns table (questionID int)
+	as $$
+		begin
+			return query
+ 
+			select questionInTopic.questionID
+			from questionInTopic
+			where questionInTopic.topicID in (select topic.topicID from topic where lower(topicDescription) like lower(concat( '%', $1 , '%')  ) );
 			
 		end;
 	   $$
@@ -153,16 +192,11 @@ values ('BigMoney', 'salvia', 0),
 	   
 	   
 insert into topic (topicName, topicDescription, creator)
-values ('Symbolic Logic', 'Symbolic logic is a way to represent 
-		logical expressions by using symbols and variables in place of 
-		natural language, such as English, in order to remove vagueness.', 4),
+values ('Symbolic Logic', 'Symbolic logic is a way to represent logical expressions by using symbols and variables in place of natural language, such as English, in order to remove vagueness.', 4),
 		
 	   ('Proofs', 'Proof, in logic, an argument that establishes the validity of a proposition.', 4),
 	   
-	   ('Sets', 'A set is the mathematical model for a collection of different 
-		things; a set contains elements or members, which can be mathematical 
-		objects of any kind: numbers, symbols, points in space, lines, other 
-		geometrical shapes, variables, or even other sets.', 7);
+	   ('Sets', 'A set is the mathematical model for a collection of different things; a set contains elements or members, which can be mathematical objects of any kind: numbers, symbols, points in space, lines, other geometrical shapes, variables, or even other sets.', 7);
 	   
 insert into question (questionText, creator)
 values ('A ^ B', 4),
@@ -226,10 +260,14 @@ values (4, 1, 100.0, '00:01:02.1'); -- intervals are written in 'HH:mm:ss.s' whe
 /* Sample Quereys for Demonstration purposes */
 --select * from HighScores;
 
---select * from getUserQuestionsAndAnswers(4);
-
---select * from getUserTests(6);
-
---select * from getUserTopics(7);
-
 --select userID from userTable where username = 'Milksoplimit' and password = 'p455word';
+
+--select getQuestions('empty');
+
+--select getTopics('Proof');
+
+--select getTests('logic');
+
+--select getQuestionsInTopicByID(1);
+
+--select getQuestionsInTopicByDescription('Logic');
