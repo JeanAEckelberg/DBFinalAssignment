@@ -6,6 +6,7 @@
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 
 public class Search {
@@ -14,12 +15,12 @@ public class Search {
     public Search(Connection c){ this.c = c; }
     
     public ResultSet Topics(String query) throws SQLException{
-        String getTopics = "select getTopics(?)";
+        String getTopics = "call getTopics(?)";
         
-        PreparedStatement prepStmt = c.prepareStatement(getTopics);
-        prepStmt.setString(1, query);
+        CallableStatement cStmt = c.prepareCall(getTopics);
+        cStmt.setString(1, query);
         
-        return prepStmt.executeQuery();
+        return cStmt.executeQuery();
     }
     
     public ResultSet Questions(String query) throws SQLException{
