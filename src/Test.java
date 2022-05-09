@@ -384,8 +384,7 @@ public class Test {
         
         try{
             insertStmt.setInt(1, question.getID());
-        }
-        catch (SQLException e) {
+        }catch (SQLException e) {
             throw new SQLException("Can't set questionID in "
                     + "addQuestionToTest in Test class");
         }
