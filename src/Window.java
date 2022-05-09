@@ -121,6 +121,63 @@ public class Window {
     public void Dashboard(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
+        JLabel search, greeting, menu;
+        JTextField query;
+        JPanel dashboard = new JPanel();
+        dashboard.setSize(frame.getSize());
+        dashboard.setLayout(null);
+        
+        greeting = new JLabel("Hello "+ currentUser.getUserName() + "!");
+        greeting.setBounds(frame.getWidth()/2-500, frame.getHeight()/20 -20, 100, 30);
+        dashboard.add(greeting);
+        
+        JButton searchbutton = new JButton("Search");
+        searchbutton.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        dashboard.add(searchbutton);
+        
+        search = new JLabel("Search Query ");
+        search.setBounds(frame.getWidth()/2-500, frame.getHeight()/8 -20, 100, 30);
+        dashboard.add(search);
+        
+        query = new JTextField();
+        query.setBounds(frame.getWidth()/2 -400,frame.getHeight()/8 -20, 400, 30);
+        dashboard.add(query);
+        
+        menu = new JLabel("Menu");
+        menu.setBounds(frame.getWidth()/2 +20, frame.getHeight()/4 -20, 100, 30);
+        dashboard.add(menu);
+        
+        
+        JButton createTopic = new JButton("Create Topic");
+        createTopic.setBounds(frame.getWidth()/2 +80,frame.getHeight()/3 -20, 150, 30);
+        dashboard.add(createTopic);
+        
+        JButton createTest = new JButton("Create Test");
+        createTest.setBounds(frame.getWidth()/2 -160,frame.getHeight()/3 -20, 150, 30);
+        dashboard.add(createTest);
+        
+        JButton createQuestion = new JButton("Create Question");
+        createQuestion.setBounds(frame.getWidth()/2 -40,frame.getHeight()/3 +30, 150, 30);
+        dashboard.add(createQuestion);
+        
+        JButton exitbutton = new JButton("Exit");
+        exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
+        dashboard.add(exitbutton);
+        
+        searchbutton.addActionListener(new SearchListener(this,c, query));
+        createTopic.addActionListener(new CreateTopicListener(this));
+        createTest.addActionListener(new CreateTestListener(this));
+        createQuestion.addActionListener(new CreateQuestionListener(this));
+        exitbutton.addActionListener(new BackToLogInListener(this));
+        currentPane = dashboard;
+        frame.add(dashboard);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+    }
+    public void Search(JTextField text ){
+        frame.setVisible(false);
+        frame.remove(currentPane);
     }
     
     public void CreateTopic(User currentUser){
