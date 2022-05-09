@@ -282,8 +282,10 @@ public class Window {
         
         try{
             rs = s.Questions("");
-            while(rs.next())
+            while(rs.next()){
+                if(rs.wasNull()) continue;
                 allTopics.add(new Topic(c, rs.getInt(1)));
+            }   
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);
