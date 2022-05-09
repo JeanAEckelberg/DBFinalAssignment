@@ -196,7 +196,7 @@ public class Window {
         createTopic.setLayout(null);
         
         JButton enter = new JButton("Create");
-        enter.setBounds(frame.getWidth()/2-100, frame.getHeight()/2, 100, 30);
+        enter.setBounds(frame.getWidth()/2-100, frame.getHeight()/2+100, 100, 30);
         createTopic.add(enter);
         
         JButton back = new JButton("Back");
@@ -275,17 +275,15 @@ public class Window {
         }
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-450, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-425, 400, 30);
         error.setVisible(false);
         createQuestion.add(error);
         
         
         try{
             rs = s.Questions("");
-            while(rs.next()){
-                if(rs.wasNull()) continue;
-                allTopics.add(new Topic(c, rs.getInt(1)));
-            }   
+            while(rs.next())
+                allTopics.add(new Topic(c, rs.getInt(1)));  
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);
@@ -313,8 +311,14 @@ public class Window {
             }
         });
         
-        topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
-        createQuestion.add(topics);
+        
+        //topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        
+        createQuestion.add(scrollPane);
         
         questionText = new JTextArea();
         questionText.setLineWrap(true);
