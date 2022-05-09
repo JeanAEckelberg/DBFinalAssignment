@@ -236,6 +236,7 @@ public class Window {
     public void CreateQuestion(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
+        Search s = new Search(c);
         JLabel question, error;
         JLabel[] ans = new JLabel[4];
         
@@ -279,7 +280,7 @@ public class Window {
         
         
         try{
-           rs = Search.Questions("");
+           rs = s.Questions("");
            while(rs.next()){
                allTopics.add(new Topic(c, rs.getInt(1)));
            }
@@ -292,7 +293,7 @@ public class Window {
         
         try{
             for(int i = 0; i < names.length; i++)
-                names[i] = allTopics.get(i).getName(c);
+                names[i] = allTopics.get(i).getName();
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);
@@ -373,7 +374,7 @@ public class Window {
         name = new JTextField();
         name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
         try{
-            name.setText(currentTopic.getName(c));
+            name.setText(currentTopic.getName());
         } catch (SQLException e){
             name.setText("CRITICAL ERROR - TOPIC DNE");
         }
@@ -384,7 +385,7 @@ public class Window {
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
         try{
-            description.setText(currentTopic.getDesc(c));
+            description.setText(currentTopic.getDesc());
         } catch (SQLException e){
             description.setText("CRITICAL ERROR - TOPIC DNE");
         }
@@ -412,6 +413,8 @@ public class Window {
     public void EditQuestion(User currentUser, Question currentQuestion){
         frame.setVisible(false);
         frame.remove(currentPane);
+        
+        Search s = new Search(c);
         
         JTextArea questionText;
         JTextField[] ansText = new JTextField[4];
@@ -455,7 +458,7 @@ public class Window {
         
         // topics multiselect JList
         try{
-           rs = Search.Questions("");
+           rs = s.Questions("");
            while(rs.next()){
                allTopics.add(new Topic(c, rs.getInt(1)));
            }
@@ -468,8 +471,8 @@ public class Window {
         Topic[] currentTopics = new Topic[0];
         try{
             for(int i = 0; i < names.length; i++)
-                names[i] = allTopics.get(i).getName(c);
-            currentTopics = currentQuestion.getTopics(c, currentUser.getID());
+                names[i] = allTopics.get(i).getName();
+            currentTopics = currentQuestion.getTopics();
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);
@@ -511,7 +514,7 @@ public class Window {
         int answerSize = 0;
         Answer[] answers = new Answer[4];
         try{
-            answers = currentQuestion.getAnswers(c);
+            answers = currentQuestion.getAnswers();
             answerSize = answers.length;
         } catch(SQLException e){
             error.setText("Error fetching answers!");

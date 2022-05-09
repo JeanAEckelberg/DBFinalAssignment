@@ -49,22 +49,22 @@ public class QuestionEditSaveListener implements ActionListener{
             
             if(!hasCorrectAnswer) throw new IllegalArgumentException();
             
-            currentQuestion.removeAllTopics(c, currentUser.getID());
+            currentQuestion.removeAllTopics(currentUser.getID());
             int[] indices = topics.getSelectedIndices();
             for(int i : indices){
-                currentQuestion.addTopic(c, currentUser.getID(), allTopics.get(i).getID());
+                currentQuestion.addTopic(currentUser.getID(), allTopics.get(i).getID());
             }
             
-            Answer[] answers = currentQuestion.getAnswers(c);
+            Answer[] answers = currentQuestion.getAnswers();
             
             for(int i = 0; i < answers.length; i++){
-                currentQuestion.removeAnswer(c, currentUser.getID(), answers[i].getID());
-                answers[i].remove(c, currentUser.getID());
+                currentQuestion.removeAnswer(currentUser.getID(), answers[i].getID());
+                //answers[i].remove(currentUser.getID()); // comented for redundancy
             }
             
             for(int i = 0; i < ansTexts.length; i++){
                 if(ansTexts[i].getText().equals("")) continue;
-                currentQuestion.addAnswer(c, 
+                currentQuestion.addAnswer( 
                         currentUser.getID(),
                         Answer.createAnswer(c, currentUser.getID(), ansTexts[i].getText()), 
                         ansButtons[i].isSelected());

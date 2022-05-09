@@ -29,7 +29,7 @@ public class TopicEditRemoveListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-            currentTopic.remove(c, currentUser.getID());
+            currentTopic.remove(currentUser.getID());
             error.setText("Topic Deleted.");
             currentTopic = null;
         } catch (IllegalArgumentException i){

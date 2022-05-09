@@ -602,7 +602,7 @@ public class Test {
      */
     public void removeQuestion(int questionID, int userID)throws SQLException, IllegalArgumentException {
         removeQuestionLink(questionID, userID);
-        new Question(c, questionID).removeQuestion(userID);
+        new Question(c, questionID).remove(userID);
         
     }
     
@@ -642,7 +642,7 @@ public class Test {
      */
     public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
         removeTopicLinks(topicID, userID);
-        new Topic(c, topicID).removeTopic(c, userID);
+        new Topic(c, topicID).remove(userID);
     }    
     
     /**

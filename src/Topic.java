@@ -7,6 +7,7 @@ public class Topic {
     private String description;
     private int topicID;
     private int userID;
+    Connection c;
     
     
     Topic(Connection c, int id) throws SQLException{
@@ -39,16 +40,12 @@ public class Topic {
             name = rs.getString(2);
             description = rs.getString(3);
             userID = rs.getInt(4);
-            
+            this.c = c;
             rs.close();
         } catch (SQLException e) {
             throw new SQLException("Can't execute query.");
         }    
 
-    }
-    
-    public void remove(Connection c, int id){
-        
     }
 
     public static void createTopic(Connection c, String name, String description, int userID) throws SQLException, IllegalArgumentException{
@@ -75,14 +72,16 @@ public class Topic {
         }
     }
     
-    public String getDescription(){
+    /*
+    public String getDesc(){
         return description;
     }
+    */
     
     public int getID(){
         return topicID;
     }
-    public  String getName(Connection c) throws SQLException{
+    public  String getName() throws SQLException{
         PreparedStatement prepStmt;
         ResultSet rs;
         String returnedName;
@@ -117,7 +116,8 @@ public class Topic {
 
     }
 
-    public  void setName(Connection c, String newName) throws SQLException{
+    /*
+    public  void setName(String newName) throws SQLException{
         PreparedStatement prepStmt;
         String setName = "update topic set topicName = ? where topicID = ?";
         try{
@@ -144,8 +144,10 @@ public class Topic {
         }
        
     }
+    */
 
-    public String getDesc(Connection c) throws SQLException{
+    
+    public String getDesc() throws SQLException{
         PreparedStatement prepStmt;
         ResultSet rs;
         String returnedDesc;
@@ -179,9 +181,9 @@ public class Topic {
         return returnedDesc;
 
     }
+    
 
-
-    public void setDesc(Connection c, String newDesc) throws SQLException{
+    public void setDesc(String newDesc) throws SQLException{
         PreparedStatement prepStmt;
         String setDesc = "update topic set topicDescription = ? where topicID = ?";
         try{
@@ -209,14 +211,6 @@ public class Topic {
        
     }
 
-
-    
-
-
-
-
-  
-    
     public int getCreator(){
         return userID;
     }
@@ -225,19 +219,18 @@ public class Topic {
         return name;
     }
     
-    private boolean validatePerms(Connection c, int userID) throws SQLException{
+    private boolean validatePerms(int userID) throws SQLException{
         int permLVL = User.getPermissionLevel(c, userID);
         return permLVL > 0 || userID == this.userID;
     }
     
     /**
      * Make sure this is called only after all questions have been removed and the topic has been removed from the tests
-     * @param c
      * @param userID
      * @throws IllegalArgumentException
      * @throws SQLException 
      */
-    public void removeTopic(Connection c, int userID) throws IllegalArgumentException, SQLException{
+    public void remove( int userID) throws IllegalArgumentException, SQLException{
         if (userID != this.userID || User.getPermissionLevel(c, userID) < 1) 
             throw new IllegalArgumentException("removeTopic : topic : perms");
         
@@ -259,8 +252,8 @@ public class Topic {
         }
     }
     
-    public void setTopicName(Connection c, int userID, String name) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setTopicName : topic : perms");
+    public void setName(int userID, String name) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("setTopicName : topic : perms");
         
         String updateStr = "update topic set topicName = ? where topicID = " + getID();
         PreparedStatement update;
@@ -287,8 +280,8 @@ public class Topic {
         }
     }
     
-    public void setDescription(Connection c, int userID, String desc) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setDescription : topic : perms");
+    public void setDesc(int userID, String desc) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("setDescription : topic : perms");
         
         String updateString = "update topic set topicDescription = ? where topicID = " + getID();
         PreparedStatement update;

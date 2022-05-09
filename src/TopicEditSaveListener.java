@@ -33,8 +33,8 @@ public class TopicEditSaveListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-            currentTopic.setName(c, name.getText(),currentUser.getID());
-            currentTopic.setDesc(c, desc.getText(),currentUser.getID());
+            currentTopic.setName(currentUser.getID(), name.getText());
+            currentTopic.setDesc(currentUser.getID(), desc.getText());
             error.setText("Topic edited successfully!");
         } catch (IllegalArgumentException i){
             error.setText("You are not authorized to edit this topic!");

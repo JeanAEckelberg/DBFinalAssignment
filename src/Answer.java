@@ -63,7 +63,7 @@ public class Answer {
         return permLVL > 1 || userID == creatorID;
     }
     
-    public void setText(Connection c, String text, int userID) throws SQLException, IllegalArgumentException{
+    public void setText(String text, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(userID)) throw new IllegalArgumentException("answer : setText : permissions");
         String setText = "update answer set answerText = ? where answerID = ?";
         
@@ -87,9 +87,6 @@ public class Answer {
         answerText = text;
     }
     
-    public void remove(Connection c, int id) throws SQLException{
-        
-    }
     
     public static int createAnswer(Connection c, int userID, String text) throws SQLException{
         String setText = "insert into answer(answerText, creator) values(?, ?)";
@@ -126,7 +123,7 @@ public class Answer {
         }
     }
     
-    public void deleteAnswer(int userID) throws SQLException, IllegalArgumentException{
+    public void remove(int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(userID)) 
             throw new IllegalArgumentException("deleteAnswer : answer : perms");
         String breakStr = "delete from answerToQuestion where answerID = " + getID();

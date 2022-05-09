@@ -27,7 +27,7 @@ public class QuestionEditRemoveListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-            currentQuestion.remove(c, currentUser.getID());
+            currentQuestion.remove(currentUser.getID());
             error.setText("Topic Deleted.");
             currentQuestion = null;
         } catch (IllegalArgumentException i){

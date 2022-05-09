@@ -52,11 +52,11 @@ public class QuestionCreateListener implements ActionListener{
             
             int[] indices = topics.getSelectedIndices();
             for(int i : indices){
-                q.addTopic(c, currentUser.getID(), allTopics.get(i).getID());
+                q.addTopic(currentUser.getID(), allTopics.get(i).getID());
             }
             for(int i = 0; i < ansTexts.length; i++){
                 if(ansTexts[i].getText().equals("")) continue;
-                q.addAnswer(c, 
+                q.addAnswer( 
                         currentUser.getID(),
                         Answer.createAnswer(c, currentUser.getID(), ansTexts[i].getText()), 
                         ansButtons[i].isSelected());
