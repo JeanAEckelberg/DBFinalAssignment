@@ -424,7 +424,8 @@ public class Test {
         
         try{
             insertStmt.setInt(1, question.getID());
-        }catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new SQLException("Can't set questionID in "
                     + "addQuestionToTest in Test class");
         }
@@ -506,6 +507,37 @@ public class Test {
         topics.add(topic);
     }
     
+     public void addTopicToTest (Topic topic) throws SQLException, IllegalArgumentException {
+        
+       
+        
+        String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
+        PreparedStatement insertStmt;
+        
+        
+        try {
+            insertStmt = c.prepareStatement(insertString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep statement in addTopicToTest in Test class");
+        }
+        
+        try{
+            insertStmt.setInt(1, topic.getID());
+        }
+        catch (SQLException e) {
+            throw new SQLException("Can't set questionID in addTopicToTest in Test class");
+        }
+        
+        try{
+            insertStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute update in addTopicToTest in Test class");
+        }
+        
+        topics.add(topic);
+    }
     
     /**
      * Method to remove a question from a test
@@ -793,4 +825,25 @@ public class Test {
         return (Question[]) questions.toArray();
     }
     
+    /**
+     * Method to remove all topics from a test
+     */
+    public void removeAllTopics(int userID)throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) 
+            throw new IllegalArgumentException("removeAllTopics : test : perms");
+        for(Topic t : topics){
+            removeTopic(userID, t.getID());
+        }
+    }
+    
+    /**
+     * Method to remove all questions from a test
+     */
+    public void removeAllQuestions(int userID) throws SQLException, IllegalArgumentException{
+        if(!validatePerms(c, userID))
+            throw new IllegalArgumentException("removeAllQuestions : test : perms");
+        for(Question q : questions){
+            removeQuestionFromTest(userID, q.getID());
+        }
+    }
 }
