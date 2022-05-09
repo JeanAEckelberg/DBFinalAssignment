@@ -322,18 +322,28 @@ public class Window {
     public void EditTestName(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-       
+        JTextField name;
+        JButton save;
         
-        JPanel edittesthome = new JPanel();
-        edittesthome.setSize(frame.getSize());
-        edittesthome.setLayout(null);
+        JPanel edittestname  = new JPanel();
+        edittestname.setSize(frame.getSize());
+        edittestname.setLayout(null);
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
+        name.setText(currentTest.getTestName());
+        edittestname.add(name);
         
         
+        save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +150, frame.getHeight()/2-150, 300, 30);
+        edittestname.add(save);
         
         
+        save.addActionListener(new EditTestNameListener(this, c , currentTest, currentUser, name));
         
-        currentPane = edittesthome;
-        frame.add(edittesthome);
+        currentPane = edittestname;
+        frame.add(edittestname);
         frame.setLayout(null);
         frame.setVisible(true);
     }
