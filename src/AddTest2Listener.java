@@ -22,6 +22,8 @@ public class AddTest2Listener implements ActionListener{
     private Connection c;
     private Window ref;
     private ArrayList<Integer> selectedQuestionIds;
+    private ArrayList<Integer> idsOfQuestions;
+    private JList questionJLIST;
     public AddTest2Listener(Window ref, Connection c,  User currentUser, String testname, int topicId, JList questionJLIST, ArrayList<Integer> idsOfQuestions){
         this.c = c;
         this.testname = testname;
@@ -29,22 +31,24 @@ public class AddTest2Listener implements ActionListener{
         this.currentUser = currentUser;
         this.topicId = topicId;
         //this.selectedQuestionIds = questionJLIST;
-        int[] templist = questionJLIST.getSelectedIndices();
-        for( int i = 0; i < templist.length; i++){
-            selectedQuestionIds.add(idsOfQuestions.get(templist[i]));
-        }
+        this.questionJLIST = questionJLIST;
+        this.idsOfQuestions = idsOfQuestions;
        
     }
     
     @Override
    public void actionPerformed(ActionEvent e) {
-        
+        this.selectedQuestionIds = new ArrayList<Integer>();
+        int[] templist = this.questionJLIST.getSelectedIndices();
+        for( int i = 0; i < templist.length; i++){
+            this.selectedQuestionIds.add(this.idsOfQuestions.get(templist[i]));
+        }
         ArrayList<Question> questionList = new ArrayList<Question>();
-        for( int i = 0; i < selectedQuestionIds.size(); i++){
-            questionList.add(new Question(c, selectedQuestionIds.get(i)));
+        for( int i = 0; i < this.selectedQuestionIds.size(); i++){
+            questionList.add(new Question(c, this.selectedQuestionIds.get(i)));
         }
         try{
-            Test.createTest(c, questionList, currentUser.getID(), testname);
+            Test.createTest(c, questionList, this.currentUser.getID(), this.testname);
         }catch(SQLException se){
             System.out.println("couldn't create test");
         }
