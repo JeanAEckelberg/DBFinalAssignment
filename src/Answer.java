@@ -108,4 +108,42 @@ public class Answer {
         }
     }
     
+    public void deleteAnswer(int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) 
+            throw new IllegalArgumentException("deleteAnswer : answer : perms");
+        String breakStr = "delete from answerToQuestion where answerID = " + getID();
+        PreparedStatement breakStmt;
+        
+        try{
+            breakStmt = c.prepareStatement(breakStr);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't prep stmt deleteAnswer");
+        }
+        
+        try{
+            breakStmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("can't execute stmt deleteAnswer");
+        }
+        
+        String removeStr = "delete from answer where anserID = " + getID();
+        PreparedStatement remove;
+        
+        try{
+            remove = c.prepareStatement(removeStr);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't prep stmt deleteAnswer");
+        }
+        
+        try{
+            remove.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("cant execute stmt deletAnswer");
+        }
+        
+    }
 }

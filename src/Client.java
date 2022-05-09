@@ -41,7 +41,7 @@ public class Client {
             q1.addTopic(connection, 4, 4);
             Topic[] test = q1.getTopics(connection, 4, 0);
             for (Topic item : test) System.out.println(item.getDescription());
-            q1.removeTopic(connection, 4, 4);
+            q1.removeTopicLinks(connection, 4, 4);
             test = q1.getTopics(connection, 4, 0);
             for (Topic item : test) System.out.println(item.getDescription());
             */

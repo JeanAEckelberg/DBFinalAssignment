@@ -14,6 +14,7 @@ public class Question {
     private String questionText;
     private int userID;
     private int correctIndex;
+    private Connection c;
     
     private ArrayList<Answer> answers;
     private ArrayList<Topic> topics;
@@ -57,6 +58,7 @@ public class Question {
         topics = new ArrayList<>();
         pullAnswers(c);
         pullTopics(c);
+        this.c = c;
     }
     
     private void pullAnswers(Connection c){
@@ -307,5 +309,36 @@ public class Question {
         } catch (SQLException e){
             throw new SQLException("Can't execute statement.");
         }
+    }
+    
+    public void removeQuestion( int userID)throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) 
+            throw new IllegalArgumentException("removeQuestion : question : perms");
+        Topic[] topics = getTopics(null, 0);
+        for(Topic t : topics) removeTopic(c, userID, t.getID());
+        Answer[] answers = getAnswers(null, 0);
+        for(Answer a : answers){
+            removeAnswer(c, userID, a.getID());
+            a.deleteAnswer(userID);
+        }
+        
+        String deleteStr = "delete from question where questionID = " + getID();
+        PreparedStatement stmt;
+        
+        try{
+            stmt = c.prepareStatement(deleteStr);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't prep stmt removeQuestion");
+        }
+        
+        try{
+            stmt.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("can't execute stmt removeQuestion");
+        }
+        
+        
     }
 }
