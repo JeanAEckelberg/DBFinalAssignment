@@ -196,7 +196,7 @@ public class Window {
         createTopic.setLayout(null);
         
         JButton enter = new JButton("Create");
-        enter.setBounds(frame.getWidth()/2-50, frame.getHeight()/2, 100, 30);
+        enter.setBounds(frame.getWidth()/2-100, frame.getHeight()/2, 100, 30);
         createTopic.add(enter);
         
         JButton back = new JButton("Back");
@@ -212,18 +212,18 @@ public class Window {
         createTopic.add(desc);
         
         error = new JLabel("Name already in use!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-250, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-300, 400, 30);
         error.setVisible(false);
         createTopic.add(error);
         
         name = new JTextField();
-        name.setBounds(frame.getWidth()/2+100, frame.getHeight()/2-200, 300, 30);
+        name.setBounds(frame.getWidth()/2, frame.getHeight()/2-200, 300, 30);
         createTopic.add(name);
         
         description = new JTextArea();
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
-        description.setBounds(frame.getWidth()/2+100, frame.getHeight()/2-100, 300, 100);
+        description.setBounds(frame.getWidth()/2, frame.getHeight()/2-100, 300, 100);
         createTopic.add(description);
         
         enter.addActionListener(new TopicCreateListener(c,name,description,error,currentUser));
@@ -281,10 +281,13 @@ public class Window {
         
         
         try{
-           rs = s.Questions("");
-           while(rs.next()){
-               allTopics.add(new Topic(c, rs.getInt(1)));
-           }
+            System.err.println("Here");
+            rs = s.Questions("");
+            System.err.println("RS made.");
+            while(rs.next()){
+                System.err.println(rs.getInt(1));
+                allTopics.add(new Topic(c, rs.getInt(1)));
+            }
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);
@@ -312,7 +315,7 @@ public class Window {
             }
         });
         
-        topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-300, 300, 30);
+        topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-3500, 300, 1000);
         createQuestion.add(topics);
         
         questionText = new JTextArea();
