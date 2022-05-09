@@ -488,11 +488,83 @@ public class Window {
         save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
         addtesttopics.add(save);
         
+        JButton back = new JButton("Back");
+        back.setBounds(frame.getWidth()/2 -300,frame.getHeight()/8 -20, 100, 30);
+        addtesttopics.add(back);
+        
+        
+        back.addActionListener(new BackToEditTestHomeListener(this, currentUser, currentTest));
         
         
         save.addActionListener(new AddTestTopicsListener(this, c , currentTest, currentUser, topics, idsOfTopics));
         currentPane = addtesttopics;
         frame.add(addtesttopics);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void AddTestQuestions(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        ArrayList<Integer> idsOfQuestions = new ArrayList<Integer>();
+        Question[] questionsInTest = currentTest.getQuestions();
+        
+        Topic[] topicsInTest = currentTest.getTopics();
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel addtestquestions  = new JPanel();
+        addtestquestions.setSize(frame.getSize());
+        addtestquestions.setLayout(null);
+        
+        
+        
+        Search s = new Search(c);
+        
+        try{
+            for(int i = 0; i < topicsInTest.length; i++){
+                ResultSet topicRS = s.QuestionsByTopic(topicsInTest[i].getID());
+                
+                while(topicRS.next()){
+                    Topic topic = new Topic(c, topicRS.getInt(1));
+                    Boolean inTest = false;
+                    for(int j =0; j < questionsInTest.length; i++){
+                        if(topic.getID() == questionsInTest[j].getID()){
+                            inTest = true;
+                        }
+
+                    }
+                    if( !inTest){
+                        idsOfQuestions.add(topicRS.getInt(1));
+
+                        listModel.addElement( topic.getTopicName());
+
+                    }
+                }
+            }
+        }catch(SQLException sasd){
+            listModel.addElement("No questions found (might not have any topics)");
+        }
+        
+        
+        
+        JList questions = new JList(listModel);
+        questions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtestquestions.add(questions);
+        
+        JButton save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtestquestions.add(save);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(frame.getWidth()/2 -300,frame.getHeight()/8 -20, 100, 30);
+        addtestquestions.add(back);
+        
+        
+        back.addActionListener(new BackToEditTestHomeListener(this, currentUser, currentTest));
+        save.addActionListener(new AddTestQuestionsListener(this, c , currentTest, currentUser, questions, idsOfQuestions));
+        currentPane = addtestquestions;
+        frame.add(addtestquestions);
         frame.setLayout(null);
         frame.setVisible(true);
     }

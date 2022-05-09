@@ -18,38 +18,38 @@ import javax.swing.JTextField;
  *
  * @author carso
  */
-public class AddTestTopicsListener implements ActionListener{
+public class AddTestQuestionsListener implements ActionListener{
     private Window ref;
     private Connection c;
     private Test currentTest;
    
     private User currentUser;
-    private JList topics;
-    private ArrayList<Integer> topicIds;
-    public AddTestTopicsListener(Window ref, Connection c, Test currentTest, User currentUser, JList topics, ArrayList<Integer> topicIds){
+    private JList questions;
+    private ArrayList<Integer> questionIds;
+    public AddTestQuestionsListener(Window ref, Connection c, Test currentTest, User currentUser, JList questions, ArrayList<Integer> questionIds){
         this.ref = ref;
         this.c = c;
         this.currentTest = currentTest;
         this.currentUser = currentUser;
-        this.topicIds = topicIds;
-        this.topics = topics;
+        this.questionIds = questionIds;
+        this.questions = questions;
     }
     
     
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-            ArrayList<Topic> selectedTopics = new ArrayList<Topic>();
+            ArrayList<Question> selectedQuestions = new ArrayList<Question>();
             
             
-            int[] temp = topics.getSelectedIndices();
+            int[] temp = questions.getSelectedIndices();
             
             for(int i = 0; i < temp.length; i++){
-                selectedTopics.add(new Topic(c, topicIds.get(temp[i])));
+                selectedQuestions.add(new Question(c, questionIds.get(temp[i])));
             }
             
-            for( Topic topic : selectedTopics){
-                currentTest.addTopicToTest(topic, currentUser.getID());
+            for( Question question : selectedQuestions){
+                currentTest.addQuestionToTest(question, currentUser.getID());
             }
         }catch(SQLException sqe){
             System.err.println("sqlerror");
