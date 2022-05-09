@@ -3,7 +3,6 @@
  * @author Jean
  */
 
-import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -11,20 +10,21 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-
-public class QuestionCreateListener implements ActionListener{
+public class QuestionEditSaveListener implements ActionListener{
     private Connection c;
     private JTextArea qText;
     private JTextField[] ansTexts;
     private JRadioButton[] ansButtons;
     private JLabel error;
     private User currentUser;
+    private Question currentQuestion;
     private ArrayList<Topic> allTopics;
     private JList topics;
 
-    public QuestionCreateListener(Connection c, JTextArea qText, JTextField[] ansTexts, JRadioButton[] ansButtons, JList topics, ArrayList<Topic> allTopics, JLabel error, User currentUser) {
+    public QuestionEditSaveListener(Connection c, JTextArea qText, JTextField[] ansTexts, JRadioButton[] ansButtons, JList topics, ArrayList<Topic> allTopics, JLabel error, Question currentQuestion, User currentUser) {
         this.c = c;
         this.qText = qText;
         this.ansTexts = ansTexts;
@@ -33,6 +33,7 @@ public class QuestionCreateListener implements ActionListener{
         this.allTopics = allTopics;
         this.error = error;
         this.currentUser = currentUser;
+        this.currentQuestion = currentQuestion;
     }
 
     @Override
@@ -48,29 +49,34 @@ public class QuestionCreateListener implements ActionListener{
             
             if(!hasCorrectAnswer) throw new IllegalArgumentException();
             
-            Question q = new Question(c,Question.createQuestion(c, currentUser.getID(), qText.getText()));
-            
+            currentQuestion.removeAllTopics(c, currentUser.getID());
             int[] indices = topics.getSelectedIndices();
             for(int i : indices){
-                q.addTopic(c, currentUser.getID(), allTopics.get(i).getID());
+                currentQuestion.addTopic(c, currentUser.getID(), allTopics.get(i).getID());
             }
+            
+            Answer[] answers = currentQuestion.getAnswers(c);
+            
+            for(int i = 0; i < answers.length; i++){
+                currentQuestion.removeAnswer(c, currentUser.getID(), answers[i].getID());
+                answers[i].remove(c, currentUser.getID());
+            }
+            
             for(int i = 0; i < ansTexts.length; i++){
                 if(ansTexts[i].getText().equals("")) continue;
-                q.addAnswer(c, 
+                currentQuestion.addAnswer(c, 
                         currentUser.getID(),
                         Answer.createAnswer(c, currentUser.getID(), ansTexts[i].getText()), 
                         ansButtons[i].isSelected());
             }
-            if(q.getCorrectAns() == null) throw new IllegalArgumentException();
-            error.setText("Question Created!");
+            if(currentQuestion.getCorrectAns() == null) throw new IllegalArgumentException();
+            error.setText("Edit Saved Successfully!");
         } catch(IllegalArgumentException i){
-            error.setText("Must add and select an answer.");
+            error.setText("Must add and select an answer or you are not authorized.");
         }catch(Exception f) {
             error.setText("Question Already Exists.");
         } finally {
             error.setVisible(true);
         }
     }
-    
-    
 }

@@ -6,6 +6,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class Window {
@@ -184,6 +185,11 @@ public class Window {
         JRadioButton[] ansButtons = new JRadioButton[4];
         ButtonGroup group = new ButtonGroup();
         
+        JList topics;
+        ResultSet rs;
+        ArrayList<Topic> allTopics = new ArrayList<>();
+        String[] names;
+        
         JPanel createQuestion = new JPanel();
         createQuestion.setSize(frame.getSize());
         createQuestion.setLayout(null);
@@ -211,6 +217,42 @@ public class Window {
         error.setVisible(false);
         createQuestion.add(error);
         
+        
+        try{
+           rs = Search.Questions("");
+           while(rs.next()){
+               allTopics.add(new Topic(c, rs.getInt(1)));
+           }
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+        
+        names = new String[allTopics.size()];
+        
+        try{
+            for(int i = 0; i < names.length; i++)
+                names[i] = allTopics.get(i).getName(c);
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+        
+        topics = new JList<>(names);
+        
+        topics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        topics.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 100, 30);
+        createQuestion.add(topics);
+        
         questionText = new JTextArea();
         questionText.setLineWrap(true);
         questionText.setWrapStyleWord(true);
@@ -231,7 +273,7 @@ public class Window {
         }
         ansButtons[0].setSelected(true);
         
-        enter.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,error,currentUser));
+        enter.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,topics,allTopics,error,currentUser));
         back.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = createQuestion;
         frame.add(createQuestion);
@@ -319,6 +361,10 @@ public class Window {
         
         JLabel error;
         
+        JList topics;
+        ResultSet rs;
+        ArrayList<Topic> allTopics = new ArrayList<>();
+        String[] names;
         
         JPanel editQuestion = new JPanel();
         editQuestion.setSize(frame.getSize());
@@ -348,6 +394,52 @@ public class Window {
         editQuestion.add(error);
         
         // topics multiselect JList
+        try{
+           rs = Search.Questions("");
+           while(rs.next()){
+               allTopics.add(new Topic(c, rs.getInt(1)));
+           }
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+        
+        names = new String[allTopics.size()];
+        Topic[] currentTopics = new Topic[0];
+        try{
+            for(int i = 0; i < names.length; i++)
+                names[i] = allTopics.get(i).getName(c);
+            currentTopics = currentQuestion.getTopics(c, currentUser.getID());
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+         
+        int[] currentTopicIndicies = new int[currentTopics.length];
+        int counter = 0;
+        for(int i = 0; i < allTopics.size(); i++){
+            for(int j = 0; j < currentTopics.length; j++){
+                if(allTopics.get(i).getID() != currentTopics[i].getID()) continue;
+                
+                currentTopicIndicies[counter++] = i;
+            }
+        }
+        
+        topics = new JList<>(names);
+        
+        topics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        topics.setSelectedIndices(currentTopicIndicies);
+        topics.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 100, 30);
+        editQuestion.add(topics);
         
         questionText = new JTextArea();
         questionText.setLineWrap(true);
@@ -359,7 +451,7 @@ public class Window {
         int answerSize = 0;
         Answer[] answers = new Answer[4];
         try{
-            answers = currentQuestion.getAnswers(c, currentUser.getID());
+            answers = currentQuestion.getAnswers(c);
             answerSize = answers.length;
         } catch(SQLException e){
             error.setText("Error fetching answers!");
@@ -385,8 +477,8 @@ public class Window {
         
         
         
-        enter.addActionListener(new TopicEditSaveListener(c,currentTopic,name,description,error,currentUser));
-        remove.addActionListener(new TopicEditRemoveListener(c,currentTopic,error,currentUser));
+        enter.addActionListener(new QuestionEditSaveListener(c,questionText,ansText,ansButtons,topics,allTopics,error,currentQuestion,currentUser));
+        remove.addActionListener(new QuestionEditRemoveListener(c,currentQuestion,error,currentUser));
         cancel.addActionListener(new CancelListener(error));
         back.addActionListener(new BackToDashboardListener(this, currentUser));
         

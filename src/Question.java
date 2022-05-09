@@ -254,6 +254,9 @@ public class Question {
         }
         if(temp == null) return;
         
+        if(answers.indexOf(temp) == correctIndex){ correctIndex = null; }
+        
+        if(answers.indexOf(temp) < correctIndex) { correctIndex--; }
         
         //Delete from linking table
         String decouple = "delete from answerToQuestion where questionID = ? and answerID = ?";
