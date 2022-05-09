@@ -265,12 +265,12 @@ public class Window {
         createQuestion.add(back);
         
         question = new JLabel("Set Question Text: ");
-        question.setBounds(frame.getWidth()/2-400, frame.getHeight()/2-250, 100, 100);
+        question.setBounds(frame.getWidth()/2-300, frame.getHeight()/2-250, 200, 100);
         createQuestion.add(question);
         
         for(int i = 0; i < ans.length; i++){
             ans[i] = new JLabel("Set Answer: ");
-            ans[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 100, 30);
+            ans[i].setBounds(frame.getWidth()/2-300, frame.getHeight()/2-100+(i*50), 100, 30);
             createQuestion.add(ans[i]);
         }
         
@@ -312,7 +312,7 @@ public class Window {
             }
         });
         
-        topics.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 100, 30);
+        topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-300, 300, 30);
         createQuestion.add(topics);
         
         questionText = new JTextArea();
@@ -323,13 +323,13 @@ public class Window {
         
         for(int i = 0; i < ansText.length;i++){
             ansText[i] = new JTextField();
-            ansText[i].setBounds(frame.getWidth()/2+150, frame.getHeight()/2-150+(i*50), 100, 30);
+            ansText[i].setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100+(i*50), 300, 30);
             createQuestion.add(ansText[i]);
         }
         
         for(int i = 0; i < ansButtons.length;i++){
             ansButtons[i] = new JRadioButton();
-            ansButtons[i].setBounds(frame.getWidth()/2, frame.getHeight()/2-150+(i*50), 100, 30);
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 100, 30);
             group.add(ansButtons[i]);
             createQuestion.add(ansButtons[i]);
         }
