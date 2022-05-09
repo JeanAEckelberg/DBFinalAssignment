@@ -252,8 +252,10 @@ public class Window {
         DefaultListModel listModel = new DefaultListModel();
         try{
             ResultSet questionRS = s.Questions("");
-            
-        }catch(SQLException){}
+            while(questionRS.next()){
+                listModel.addElement(questionRS.getString(1));
+            }
+        }catch(SQLException e){}
         listModel.addElement("samplequestion1");
         listModel.addElement("samplequestion2");
         questions = new JList(listModel);
