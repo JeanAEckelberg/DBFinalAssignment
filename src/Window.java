@@ -301,7 +301,7 @@ public class Window {
     public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-        //JButton removeQuestion, addQuestion,  ;
+        JButton removeQuestions, addQuestions, removetest,   ;
         
         
         JPanel edittesthome = new JPanel();
