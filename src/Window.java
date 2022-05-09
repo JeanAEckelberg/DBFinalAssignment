@@ -256,7 +256,7 @@ public class Window {
         Search s = new Search(c);
         DefaultListModel listModel = new DefaultListModel();
         try{
-            ResultSet questionRS = s.Questions("");
+            ResultSet questionRS = s.QuestionsByTopic(topicId);
             while(questionRS.next()){
                 Question q = new Question(c, questionRS.getInt(1));
                 questionIDList.add(questionRS.getInt(1));
@@ -284,6 +284,10 @@ public class Window {
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
         create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicId, questions, questionIDList));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = addtest2;
+        frame.add(addtest2);
+        frame.setLayout(null);
+        frame.setVisible(true);
      }
     
     

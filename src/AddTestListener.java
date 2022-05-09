@@ -37,6 +37,7 @@ public class AddTestListener implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("hello");
         ref.AddTest2(currentUser, testname.getText(), topicId);
         /*
         User currentUser;

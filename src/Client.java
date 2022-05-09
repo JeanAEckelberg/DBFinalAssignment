@@ -23,10 +23,11 @@ public class Client {
         try {
             connection = DriverManager.getConnection(jdbcURL,username,password);
             Window w = new Window("Discrete DB", 1280, 960, connection); //connection,
+            
               User user1 = new User(connection, "Jim", "1234");
             w.AddTest1(user1);
             /* Testing calls for methods
-            //User.createUser(connection, "Jim", "1234");
+            User.createUser(connection, "Jim", "1234");
             User user1 = new User(connection, "Jim", "1234");
             System.out.println(user1.getUserName());
             //Topic.createTopic(connection, "Test", "Test Description", 8);
