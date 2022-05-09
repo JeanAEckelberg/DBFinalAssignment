@@ -124,17 +124,28 @@ public class Window {
      * Search page UI
      * @param currentUser user using the page
      */
-    public void ResultsPage(User currentUser){
+    public void SearchPage(User currentUser){
+        
+        /*
+        The idea with this method is to provide a search page that allows a user
+         to querey the db and filter the results
+        for questions and topics the edit and delete buttons should be diplayed and
+        associated with each instance of the topics and questions
+        the same for tests, except users can also take tests.
+        there will be between 5 ans 10 results on each page and the user will be able to 
+        page through the results of their search
+        */
+        
         frame.setVisible(false);
         frame.remove(currentPane);
         
-        JLabel tests, questions, topics, notFound;
-        JButton test, topic, question, next, previous;
-        JButton takeTest, edit, delete;
+        JLabel notFound;
+        JRadioButton[] filters = new JRadioButton[3];
+        JButton takeTest, edit, delete, next, previous;
         JLabel[] results;
         JTextField querey;
         
-        //Under construction
+        // under construction
         JPanel resultsPage = new JPanel();
         resultsPage.setSize(frame.getSize());
         resultsPage.setLayout(null);
@@ -147,6 +158,9 @@ public class Window {
         querey.setBounds(1, 1, 500, 20);
         resultsPage.add(querey);
         
+        filters[0] = new JRadioButton("Test");
+        filters[1] = new JRadioButton("Topic");
+        filters[2] = new JRadioButton("Question");
         
         currentPane = resultsPage;
         frame.add(resultsPage);
