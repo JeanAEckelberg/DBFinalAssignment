@@ -65,6 +65,45 @@ public class Test {
         topics = pullTopics();
     }
     
+     public Test(Connection c, String testName) throws SQLException {
+        
+        questions = new ArrayList<>();
+        topics = new ArrayList<>();
+        
+        String quereyString = "Select * from test where testName = ?;";
+        PreparedStatement quereyStatement;
+        ResultSet set;
+        
+        try{
+            quereyStatement = c.prepareStatement(quereyString);
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't prep statement in Test class.");
+        }
+        
+        try{
+            quereyStatement.setString(1, testName);
+        } catch (SQLException e) {
+            throw new SQLException("Can't set testName");
+        }
+        
+        try{
+            set = quereyStatement.executeQuery();
+            if (!set.next()) throw new SQLException();
+            this.testID = set.getInt(1);
+            this.creatorID = set.getInt(3);
+            this.testName = set.getString(4);
+            set.close();
+        }
+        catch (SQLException e){
+            throw new SQLException("Can't execute query in Test class constructor.");
+        }
+        
+        this.c = c;
+        questions = pullQuestions();
+        topics = pullTopics();
+    }
+    
     /**
     * Private helper method to check and see if the user has permissions to modify/remove a test
     */
