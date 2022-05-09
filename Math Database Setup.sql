@@ -37,7 +37,7 @@ create table if not exists question (
 
 create table if not exists answer (
 	answerID serial primary key,
-	answerText varchar(200) unique not null,
+	answerText varchar(200) not null,
 	creator int,
 	foreign key (creator) references userTable(userID)
 );
@@ -46,6 +46,7 @@ create table if not exists test (
 	testID serial primary key,
 	numberOfQuestions int not null,
 	creator int,
+	testName varchar(50) unique not null,
 	foreign key (creator) references userTable (userID)
 );
 
@@ -131,7 +132,10 @@ create or replace function getTests ( keyValue varchar)
 			from questionInTest
 			where questionInTest.questionID in ( select question.questionID 
 												 from question
-												 where lower(questionText) like lower( concat('%', $1 , '%') ) );
+												 where lower(questionText) like lower( concat('%', $1 , '%') ) )
+			union select test.testID
+			from test
+			where lower(test.testName) like lower( concat('%', $1, '%') );
 			
 		end;
 	   $$
@@ -212,7 +216,12 @@ values ('True', 4),
 	   ('Disjunction', 4),
 	   ('Not a logical expression', 4),
 	   ('Vacuous proof', 4),
-	   ('Trivial proof', 4);
+	   ('Trivial proof', 4),
+	   ('Conjunction', 4),
+	   ('Disjunction', 4),
+	   ('Not a logical expression', 4),
+	   ('True', 4),
+	   ('False', 4);
 	   
 insert into answerToQuestion (questionID, answerID, correct)
 values (1, 3, true),
@@ -220,17 +229,17 @@ values (1, 3, true),
 	   (1, 5, false),
 	   (2, 1, true),
 	   (2, 2, false),
-	   (3, 3, false),
-	   (3, 4, true),
-	   (3, 5, false),
+	   (3, 8, false),
+	   (3, 9, true),
+	   (3, 10, false),
 	   (4, 6, true),
 	   (4, 7, false),
-	   (5, 1, false),
-	   (5, 2, true);
+	   (5, 11, false),
+	   (5, 12, true);
 	   
-insert into test (numberOfQuestions, creator)
-values (5, 1),
-	   (2, 6);
+insert into test (numberOfQuestions, creator, testName)
+values (5, 1, 'Sample Test 1'),
+	   (2, 6, 'Sample Test 2');
 	   
 insert into questionInTopic (questionID, topicID)
 values (1,1),
