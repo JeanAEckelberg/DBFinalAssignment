@@ -74,48 +74,11 @@ public class Topic {
         }
     }
     
-    /*
-    public String getDesc(){
-        return description;
-    }
-    */
-    
     public int getID(){
         return topicID;
     }
     public  String getName() throws SQLException{
-        PreparedStatement prepStmt;
-        ResultSet rs;
-        String returnedName;
-        String findName = "Select topicName from topic where topicID = ?";
-        try{
-            prepStmt = c.prepareStatement(findName);
-
-        }catch(SQLException e){
-            System.err.println("Can't prep statment");
-            System.exit(1);
-            return null;
-        }
-
-        try{
-            prepStmt.setInt(1, this.topicID);
-        } catch(SQLException e){
-            throw new SQLException("Can't set ID");
-        }
-
-        try{
-            rs = prepStmt.executeQuery();
-            if(!rs.next()) throw new SQLException("Nothing in result set");
-            returnedName = rs.getString(1);
-            rs.close();
-
-            
-
-        }catch(SQLException e){
-            throw new SQLException("Can't execute query");
-        }
-        return returnedName;
-
+        return name;
     }
 
     /*
@@ -150,75 +113,11 @@ public class Topic {
 
     
     public String getDesc() throws SQLException{
-        PreparedStatement prepStmt;
-        ResultSet rs;
-        String returnedDesc;
-        String findDesc = "Select topicDescription from topic where topicID = ?";
-        try{
-            prepStmt = c.prepareStatement(findDesc);
-
-        }catch(SQLException e){
-            System.err.println("Can't prep statment");
-            System.exit(1);
-            return null;
-        }
-
-        try{
-            prepStmt.setInt(1, this.topicID);
-        } catch(SQLException e){
-            throw new SQLException("Can't set ID");
-        }
-
-        try{
-            rs = prepStmt.executeQuery();
-            if(!rs.next()) throw new SQLException("Nothing in result set");
-            returnedDesc = rs.getString(1);
-            rs.close();
-
-            
-
-        }catch(SQLException e){
-            throw new SQLException("Can't execute query");
-        }
-        return returnedDesc;
-
-    }
-    
-
-    public void setDesc(String newDesc) throws SQLException{
-        PreparedStatement prepStmt;
-        String setDesc = "update topic set topicDescription = ? where topicID = ?";
-        try{
-            prepStmt = c.prepareStatement(setDesc);
-
-        }catch(SQLException e){
-            System.err.println("Can't prep statment");
-            System.exit(1);
-            return;
-        }
-
-        try{
-            prepStmt.setString(1, newDesc);
-            prepStmt.setInt(2, this.topicID);
-
-        } catch(SQLException e){
-            throw new SQLException("Can't set ID or desc");
-        }
-
-        try{
-            prepStmt.executeQuery();
-        }catch(SQLException e){
-            throw new SQLException("Can't execute query");
-        }
-       
+        return description;
     }
 
     public int getCreator(){
         return userID;
-    }
-    
-    public String getTopicName(){
-        return name;
     }
     
     private boolean validatePerms(int userID) throws SQLException{

@@ -328,7 +328,7 @@ public class Window {
         
         for(int i = 0; i < ansButtons.length;i++){
             ansButtons[i] = new JRadioButton();
-            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 100, 30);
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 30, 30);
             group.add(ansButtons[i]);
             createQuestion.add(ansButtons[i]);
         }
