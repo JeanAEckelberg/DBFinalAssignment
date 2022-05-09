@@ -15,11 +15,13 @@ public class SignUpListener implements ActionListener{
     private JPasswordField pass;
     private JLabel errorMsg;
     private Connection c;
+
     
     public SignUpListener(Connection c, JLabel error, JTextField user, JPasswordField pass){
         this.c = c;
         this.user = user;
         this.pass = pass;
+
         errorMsg = error;
     }
     

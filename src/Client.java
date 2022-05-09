@@ -22,6 +22,7 @@ public class Client {
         Connection connection;
         try {
             connection = DriverManager.getConnection(jdbcURL,username,password);
+
             
             Window w = new Window("Discrete DB", 1280, 960, connection); //connection,
            //w.SignUp();
@@ -29,6 +30,7 @@ public class Client {
             User user1 = new User(connection, "Jim", "1234");
             w.Dashboard(user1);
             //w.LogIn();
+
             /* Testing calls for methods
             //User.createUser(connection, "Jim", "1234");
             User user1 = new User(connection, "Jim", "1234");
@@ -42,7 +44,7 @@ public class Client {
             q1.addTopic(connection, 4, 4);
             Topic[] test = q1.getTopics(connection, 4, 0);
             for (Topic item : test) System.out.println(item.getDescription());
-            q1.removeTopic(connection, 4, 4);
+            q1.removeTopicLinks(connection, 4, 4);
             test = q1.getTopics(connection, 4, 0);
             for (Topic item : test) System.out.println(item.getDescription());
             */

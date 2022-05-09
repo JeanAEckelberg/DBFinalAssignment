@@ -86,7 +86,9 @@ public class Window {
         signUp.add(enter);
         
         JButton back = new JButton("Back");
+
         back.setBounds(200, frame.getHeight()-300, 100, 30);
+
         signUp.add(back);
         
         user = new JLabel("Set Username: ");
@@ -111,6 +113,7 @@ public class Window {
         signUp.add(key);
         
         enter.addActionListener(new SignUpListener(c,error,name,key));
+
         back.addActionListener(new BackToLogInListener(this));
         currentPane = signUp;
         frame.add(signUp);
@@ -543,5 +546,54 @@ public class Window {
         frame.add(editQuestion);
         frame.setLayout(null);
         frame.setVisible(true);
+    }
+    
+    /**
+     * Search page UI
+     * @param currentUser user using the page
+     */
+    public void SearchPage(User currentUser){
+        
+        /*
+        The idea with this method is to provide a search page that allows a user
+         to querey the db and filter the results
+        for questions and topics the edit and delete buttons should be diplayed and
+        associated with each instance of the topics and questions
+        the same for tests, except users can also take tests.
+        there will be between 5 ans 10 results on each page and the user will be able to 
+        page through the results of their search
+        */
+        
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JLabel notFound;
+        JRadioButton[] filters = new JRadioButton[3];
+        JButton takeTest, edit, delete, next, previous;
+        JLabel[] results;
+        JTextField querey;
+        
+        // under construction
+        JPanel resultsPage = new JPanel();
+        resultsPage.setSize(frame.getSize());
+        resultsPage.setLayout(null);
+        
+        JButton enterQuerey = new JButton("Search");
+        enterQuerey.setBounds(frame.getWidth()- 150, frame.getHeight()%4 + 2, 100, 30);
+        resultsPage.add(enterQuerey);
+        
+        querey = new JTextField();
+        querey.setBounds(1, 1, 500, 20);
+        resultsPage.add(querey);
+        
+        filters[0] = new JRadioButton("Test");
+        filters[1] = new JRadioButton("Topic");
+        filters[2] = new JRadioButton("Question");
+        
+        currentPane = resultsPage;
+        frame.add(resultsPage);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
     }
 }
