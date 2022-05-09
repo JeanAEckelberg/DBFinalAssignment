@@ -146,8 +146,22 @@ public class Window {
         addtest1.add(testname);
         
         //temp
+        Search s = new Search(c);
         DefaultListModel listModel = new DefaultListModel();
-        listModel.addElement("topic1");
+        try{
+            ResultSet topicRS = s.Topics("");
+            int count = 0;
+            while(topicRS.next()){
+                
+                listModel.addElement(topicRS.getString(1));
+                count++;
+            }
+        }catch(SQLException sasd){
+            listModel.addElement("No topics found");
+        }
+        
+        
+        
         topics = new JList(listModel);
         topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
         addtest1.add(topics);
