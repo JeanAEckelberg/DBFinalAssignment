@@ -256,6 +256,7 @@ public class Window {
         Search s = new Search(c);
         DefaultListModel listModel = new DefaultListModel();
         try{
+            System.out.println(topicId);
             ResultSet questionRS = s.QuestionsByTopic(topicId);
             while(questionRS.next()){
                 Question q = new Question(c, questionRS.getInt(1));

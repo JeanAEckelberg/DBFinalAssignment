@@ -21,23 +21,31 @@ public class AddTestListener implements ActionListener{
     private User currentUser;
     private Connection c;
     private Window ref;
-    
+    private ArrayList<Integer> idsOfTopics;
+    private JList topics;
     public AddTestListener(Window ref, Connection c, JTextField testname, User currentUser, ArrayList<Integer> idsOfTopics,JList topics  ){
+        
         this.c = c;
         this.testname = testname;
         this.ref = ref;
         this.currentUser = currentUser;
-        try{
-            this.topicId = idsOfTopics.get(topics.getSelectedIndex());
-        }catch(Exception e){
-            this.topicId = -1;
-        }
+        this.idsOfTopics = idsOfTopics;
+        this.topics = topics;
+        
        
     }
     
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-       
+        try{
+            this.topicId = this.idsOfTopics.get(this.topics.getSelectedIndex());
+        }catch(Exception ee){
+            System.err.print("Topic not selected");
+            ref.AddTest1(currentUser);
+            this.topicId = -1;
+            
+        }
         ref.AddTest2(currentUser, testname.getText(), topicId);
         /*
         User currentUser;
@@ -51,7 +59,7 @@ public class AddTestListener implements ActionListener{
         }
 */
         
-    }
     
+    }
     
 }
