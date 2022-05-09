@@ -392,4 +392,51 @@ public class Window {
         frame.setVisible(true);
     }
     
+    
+    
+    
+    
+    public void RemoveTestQuestions(User currentUser, Test currentTest){
+         frame.setVisible(false);
+        frame.remove(currentPane);
+        JList testquestions;
+        JButton save;
+        ArrayList<Integer> questionIds = new ArrayList<Integer>();
+                
+                
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel removetestquestions  = new JPanel();
+        removetestquestions.setSize(frame.getSize());
+        removetestquestions.setLayout(null);
+
+        
+        save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        removetestquestions.add(save);
+        
+        Question[] questions = currentTest.getQuestions();
+        
+        for(int i = 0; i < questions.length; i++){
+            listModel.addElement(questions[i].getText());
+            questionIds.add(questions[i].getID());
+        }
+        
+        testquestions = new JList(listModel);
+        testquestions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        testquestions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        if(testquestions.getModel().getSize() - 1 >= 0){
+            testquestions.setSelectionInterval(0, testquestions.getModel().getSize() -1);
+        }
+        
+        removetestquestions.add(testquestions);
+        
+       
+        save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testquestions, questionIds));
+        currentPane = removetestquestions;
+        frame.add(removetestquestions);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
 }
