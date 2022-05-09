@@ -6,9 +6,11 @@ drop table if exists answer cascade;
 drop table if exists test cascade;
 drop table if exists leaderboard, answerToQuestion, questionInTopic, topicInTest, questionInTest;
 drop view if exists HighScores;
-drop function if exists getUserQuestionsAndAnswers;
-drop function if exists getUserTests;
-drop function if exists getUserTopics;
+drop function if exists getQuestions;
+drop function if exists getTests;
+drop function if exists getTopics;
+drop function if exists getQuestionsInTopicByID;
+drop function if exists getQuestionsInTopicByDescription;
 
 -- create tables if needed
 create table if not exists userTable (
@@ -35,7 +37,7 @@ create table if not exists question (
 
 create table if not exists answer (
 	answerID serial primary key,
-	answerText varchar(200) unique not null,
+	answerText varchar(200) not null,
 	creator int,
 	foreign key (creator) references userTable(userID)
 );
@@ -44,6 +46,7 @@ create table if not exists test (
 	testID serial primary key,
 	numberOfQuestions int not null,
 	creator int,
+	testName varchar(50) unique not null,
 	foreign key (creator) references userTable (userID)
 );
 
@@ -98,35 +101,47 @@ create view HighScores as
 	order by score;
 
 
-create or replace function getUserQuestionsAndAnswers ( userID int)
-	returns table (quesstionID int, answerID int)
+create or replace function getQuestions ( keyValue varchar)
+	returns table (questionID int)
 	as $$
 		begin
 			return query
  
-			select answerToQuestion.questionID, answerToQuestion.answerID 
-			from answerToQuestion
-			where questionID in (select questionID from question where $1 = creator);
+			select question.questionID 
+			from question
+			where lower(questionText) like lower( concat('%', $1 , '%') );
 			
 		end;
 	   $$
 	language 'plpgsql';
 	
-create or replace function getUserTests ( userID int)
+create or replace function getTests ( keyValue varchar)
 	returns table (testID int)
 	as $$
+	
 		begin
 			return query
  
-			select test.testID
+			select topicInTest.testID
+			from topicInTest
+			where topicInTest.topicID in ( select topic.topicID
+										   from topic
+										   where lower(topicName) like lower(concat('%', $1, '%') ) or 
+										  	lower(topicDescription) like lower(concat('%', $1, '%') ) )
+			union select questionInTest.testID
+			from questionInTest
+			where questionInTest.questionID in ( select question.questionID 
+												 from question
+												 where lower(questionText) like lower( concat('%', $1 , '%') ) )
+			union select test.testID
 			from test
-			where $1 = creator;
+			where lower(test.testName) like lower( concat('%', $1, '%') );
 			
 		end;
 	   $$
 	language 'plpgsql';
 	
-create or replace function getUserTopics ( userID int)
+create or replace function getTopics ( keyValue varchar)
 	returns table (topicID int)
 	as $$
 		begin
@@ -134,7 +149,35 @@ create or replace function getUserTopics ( userID int)
  
 			select topic.topicID
 			from topic
-			where $1 = creator;
+			where lower(topicName) like lower(concat('%', $1, '%') ) or lower(topicDescription) like lower( concat('%', $1, '%') );
+			
+		end;
+	   $$
+	language 'plpgsql';
+	
+create or replace function getQuestionsInTopicByID ( topicId int )
+	returns table (questionID int)
+	as $$
+		begin
+			return query
+ 
+			select questionInTopic.questionID
+			from questionInTopic
+			where questionInTopic.topicID = $1;
+			
+		end;
+	   $$
+	language 'plpgsql';
+	
+create or replace function getQuestionsInTopicByDescription ( keyValue varchar )
+	returns table (questionID int)
+	as $$
+		begin
+			return query
+ 
+			select questionInTopic.questionID
+			from questionInTopic
+			where questionInTopic.topicID in (select topic.topicID from topic where lower(topicDescription) like lower(concat( '%', $1 , '%')  ) );
 			
 		end;
 	   $$
@@ -153,16 +196,11 @@ values ('BigMoney', 'salvia', 0),
 	   
 	   
 insert into topic (topicName, topicDescription, creator)
-values ('Symbolic Logic', 'Symbolic logic is a way to represent 
-		logical expressions by using symbols and variables in place of 
-		natural language, such as English, in order to remove vagueness.', 4),
+values ('Symbolic Logic', 'Symbolic logic is a way to represent logical expressions by using symbols and variables in place of natural language, such as English, in order to remove vagueness.', 4),
 		
 	   ('Proofs', 'Proof, in logic, an argument that establishes the validity of a proposition.', 4),
 	   
-	   ('Sets', 'A set is the mathematical model for a collection of different 
-		things; a set contains elements or members, which can be mathematical 
-		objects of any kind: numbers, symbols, points in space, lines, other 
-		geometrical shapes, variables, or even other sets.', 7);
+	   ('Sets', 'A set is the mathematical model for a collection of different things; a set contains elements or members, which can be mathematical objects of any kind: numbers, symbols, points in space, lines, other geometrical shapes, variables, or even other sets.', 7);
 	   
 insert into question (questionText, creator)
 values ('A ^ B', 4),
@@ -178,7 +216,12 @@ values ('True', 4),
 	   ('Disjunction', 4),
 	   ('Not a logical expression', 4),
 	   ('Vacuous proof', 4),
-	   ('Trivial proof', 4);
+	   ('Trivial proof', 4),
+	   ('Conjunction', 4),
+	   ('Disjunction', 4),
+	   ('Not a logical expression', 4),
+	   ('True', 4),
+	   ('False', 4);
 	   
 insert into answerToQuestion (questionID, answerID, correct)
 values (1, 3, true),
@@ -186,17 +229,17 @@ values (1, 3, true),
 	   (1, 5, false),
 	   (2, 1, true),
 	   (2, 2, false),
-	   (3, 3, false),
-	   (3, 4, true),
-	   (3, 5, false),
+	   (3, 8, false),
+	   (3, 9, true),
+	   (3, 10, false),
 	   (4, 6, true),
 	   (4, 7, false),
-	   (5, 1, false),
-	   (5, 2, true);
+	   (5, 11, false),
+	   (5, 12, true);
 	   
-insert into test (numberOfQuestions, creator)
-values (5, 1),
-	   (2, 6);
+insert into test (numberOfQuestions, creator, testName)
+values (5, 1, 'Sample Test 1'),
+	   (2, 6, 'Sample Test 2');
 	   
 insert into questionInTopic (questionID, topicID)
 values (1,1),
@@ -226,10 +269,14 @@ values (4, 1, 100.0, '00:01:02.1'); -- intervals are written in 'HH:mm:ss.s' whe
 /* Sample Quereys for Demonstration purposes */
 --select * from HighScores;
 
---select * from getUserQuestionsAndAnswers(4);
-
---select * from getUserTests(6);
-
---select * from getUserTopics(7);
-
 --select userID from userTable where username = 'Milksoplimit' and password = 'p455word';
+
+--select getQuestions('empty');
+
+--select getTopics('Proof');
+
+--select getTests('logic');
+
+--select getQuestionsInTopicByID(1);
+
+--select getQuestionsInTopicByDescription('Logic');
