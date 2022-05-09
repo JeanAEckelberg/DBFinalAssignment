@@ -32,20 +32,31 @@ public class AddTest2Listener implements ActionListener{
     }
     
     @Override
-    public void actionPerformed(ActionEvent e) {
+   public void actionPerformed(ActionEvent e) {
         
-        /*
-        User currentUser;
-        try{
-            T
-            currentUser = new User(c, user.getText(), pass.getText());
-            ref.Dashboard(currentUser);
-        } catch (Exception f){
-            pass.selectAll();
-            errorMsg.setVisible(true);
+        
+            
+            
+            
+            Question q = new Question(c,Question.createQuestion(c, currentUser.getID(), qText.getText()));
+            /*
+            for(int i = 0; i < ansTexts.length; i++){
+                if(ansTexts[i].getText().equals("")) continue;
+                q.addAnswer(c, 
+                        currentUser.getID(),
+                        Answer.createAnswer(c, currentUser.getID(), ansTexts[i].getText()), 
+                        ansButtons[i].isSelected());
+            }
+            if(q.getCorrectAns() == null) throw new IllegalArgumentException();
+            error.setText("Question Created!");
+        } catch(IllegalArgumentException i){
+            error.setText("Must add and select an answer.");
+        }catch(Exception f) {
+            error.setText("Question Already Exists.");
+        } finally {
+            error.setVisible(true);
         }
 */
-        
     }
     
     

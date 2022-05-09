@@ -4,6 +4,7 @@
  */
 
 import java.sql.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class Window {
@@ -180,7 +181,7 @@ public class Window {
         JList topics;
         JTextField testname;
         JButton addquestion, nextpage;
-       
+        ArrayList<Integer> idsOfTopics = new ArrayList<Integer>();
         JPanel addtest1 = new JPanel();
         addtest1.setSize(frame.getSize());
         addtest1.setLayout(null);
@@ -205,8 +206,9 @@ public class Window {
             ResultSet topicRS = s.Topics("");
             int count = 0;
             while(topicRS.next()){
-                
-                listModel.addElement(topicRS.getString(1));
+                idsOfTopics.add(topicRS.getInt(1));
+                Topic topic = new Topic(c, topicRS.getInt(1));
+                listModel.addElement( topic.getTopicName());
                 count++;
             }
         }catch(SQLException sasd){
@@ -228,7 +230,7 @@ public class Window {
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
         addtest1.add(exitbutton);
         
-        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, topics));
+        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, idsOfTopics.get(topics.getSelectedIndex())));
         exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = addtest1;
         frame.add(addtest1);
@@ -238,7 +240,7 @@ public class Window {
         
         
     }
-     public void AddTest2(User currentUser, String testname, String TopicName){
+     public void AddTest2(User currentUser, String testname, int topicId){
         frame.setVisible(false);
         frame.remove(currentPane);
         
