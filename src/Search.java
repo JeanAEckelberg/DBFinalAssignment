@@ -19,8 +19,10 @@ public class Search {
         
         CallableStatement cStmt = c.prepareCall(getTopics);
         cStmt.setString(1, query);
-        
-        return cStmt.executeQuery();
+        ResultSet rs = cStmt.executeQuery();
+        //rs.setFetchSize(1000);
+        System.out.println(rs.getFetchSize());
+        return rs;
     }
     
     public ResultSet Questions(String query) throws SQLException{
