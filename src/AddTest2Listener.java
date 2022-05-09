@@ -52,6 +52,9 @@ public class AddTest2Listener implements ActionListener{
         }catch(SQLException se){
             System.out.println("couldn't create test");
         }
+        
+        
+        ref.Dashboard(currentUser);
         //QuestionList
             
             
