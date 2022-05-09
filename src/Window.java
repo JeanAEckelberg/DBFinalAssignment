@@ -3,6 +3,8 @@
  * @author Jean, Greg, Carson
  */
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -302,7 +304,7 @@ public class Window {
     public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-        //JButton removeQuestions, addQuestions, removetest,   ;
+        JButton removeQuestions, addQuestions, removeTopics, addTopics, removeTest, editname  ;
         
         
         JPanel edittesthome = new JPanel();
@@ -310,8 +312,75 @@ public class Window {
         edittesthome.setLayout(null);
         
         
+        editname = new JButton("Edit Name");
+        editname.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 -500, 100, 30);
+        edittesthome.add(editname);
         
         
+        removeQuestions = new JButton("Remove Questions");
+        removeQuestions.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 -300, 100, 30);
+        edittesthome.add(removeQuestions);
+        
+        addQuestions = new JButton("Add Questions");
+        addQuestions.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 -100, 100, 30);
+        edittesthome.add(addQuestions);
+        
+        removeTopics = new JButton("Remove Topics");
+        removeTopics.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 +100, 100, 30);
+        edittesthome.add(removeTopics);
+        
+        addTopics = new JButton("Add Topics");
+        addTopics.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 +300, 100, 30);
+        edittesthome.add(addTopics);
+        
+        removeTest = new JButton("REMOVE TEST");
+        removeTest.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 +500, 100, 30);
+        edittesthome.add(removeTest);
+        Window ref = this;
+     
+        
+        
+        editname.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.EditTestName(currentUser, currentTest);
+            }
+        
+        });
+        
+        removeQuestions.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.RemoveTestQuestions(currentUser, currentTest);
+            }
+        
+        });
+        
+        addQuestions.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.AddTestQuestions(currentUser, currentTest);
+            }
+        
+        });
+        
+        removeTopics.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.RemoveTestTopics(currentUser, currentTest);
+            }
+        
+        });
+        
+        addTopics.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.AddTestTopics(currentUser, currentTest);
+            }
+        
+        });
+        
+        removeTest.addActionListener(new RemoveTestListener(this, c, currentUser, currentTest));
         
         currentPane = edittesthome;
         frame.add(edittesthome);
