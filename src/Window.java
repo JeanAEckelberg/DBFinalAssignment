@@ -168,9 +168,9 @@ public class Window {
         dashboard.add(exitbutton);
         
         searchbutton.addActionListener(new SearchListener(this,c, query));
-        createTopic.addActionListener(new CreateTopicListener(this));
-        createTest.addActionListener(new CreateTestListener(this));
-        createQuestion.addActionListener(new CreateQuestionListener(this));
+        createTopic.addActionListener(new CreateTopicListener(this, currentUser) );
+        createTest.addActionListener( new CreateTestListener(this, currentUser) );
+        createQuestion.addActionListener(new CreateQuestionListener(this , currentUser) );
         exitbutton.addActionListener(new BackToLogInListener(this));
         currentPane = dashboard;
         frame.add(dashboard);
@@ -178,6 +178,7 @@ public class Window {
         frame.setVisible(true);
         
     }
+    
     public void Search(JTextField text ){
         frame.setVisible(false);
         frame.remove(currentPane);
@@ -549,6 +550,10 @@ public class Window {
         frame.add(editQuestion);
         frame.setLayout(null);
         frame.setVisible(true);
+    }
+    
+    public void CreateTest(User currentUser){
+        
     }
     
     /**
