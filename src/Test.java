@@ -754,4 +754,25 @@ public class Test {
         return (Question[]) questions.toArray();
     }
     
+    /**
+     * Method to remove all topics from a test
+     */
+    public void removeAllTopics(int userID)throws SQLException, IllegalArgumentException{
+        if (!validatePerms(c, userID)) 
+            throw new IllegalArgumentException("removeAllTopics : test : perms");
+        for(Topic t : topics){
+            removeTopic(userID, t.getID());
+        }
+    }
+    
+    /**
+     * Method to remove all questions from a test
+     */
+    public void removeAllQuestions(int userID) throws SQLException, IllegalArgumentException{
+        if(!validatePerms(c, userID))
+            throw new IllegalArgumentException("removeAllQuestions : test : perms");
+        for(Question q : questions){
+            removeQuestionFromTest(userID, q.getID());
+        }
+    }
 }
