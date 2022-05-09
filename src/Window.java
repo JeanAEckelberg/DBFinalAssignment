@@ -275,14 +275,13 @@ public class Window {
         }
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-450, 400, 30);
         error.setVisible(false);
         createQuestion.add(error);
         
         
         try{
             rs = s.Questions("");
-            rs.next();
             while(rs.next())
                 allTopics.add(new Topic(c, rs.getInt(1)));
         } catch (SQLException e) {
@@ -312,7 +311,7 @@ public class Window {
             }
         });
         
-        topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-3500, 300, 1000);
+        topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
         createQuestion.add(topics);
         
         questionText = new JTextArea();
