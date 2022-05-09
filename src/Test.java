@@ -739,4 +739,19 @@ public class Test {
         
         return toReturn;
     }
+    
+    /**
+     * getter for the topics in this test
+     */
+    public Topic[] getTopics(){
+        return (Topic[]) topics.toArray();
+    }
+    
+    /**
+     * getter for the questions in this test
+     */
+    public Question[] getQuestions(){
+        return (Question[]) questions.toArray();
+    }
+    
 }

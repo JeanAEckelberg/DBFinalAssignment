@@ -220,7 +220,7 @@ public class Question {
     }
     
     public Topic[] getTopics(Connection c, int userID) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("getTopics : question : perms");
+        //if (!validatePerms(c, userID)) throw new IllegalArgumentException("getTopics : question : perms");
         Topic[] temp = new Topic[0];
         return topics.toArray(temp);
     }
