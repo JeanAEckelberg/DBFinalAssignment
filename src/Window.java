@@ -317,6 +317,7 @@ public class Window {
         scrollPane.setViewportView(topics);
         topics.setLayoutOrientation(JList.VERTICAL);
         scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         createQuestion.add(scrollPane);
         
