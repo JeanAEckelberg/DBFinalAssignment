@@ -16,11 +16,13 @@ public class Search {
     
     public ResultSet Topics(String query) throws SQLException{
         String getTopics = "call getTopics(?)";
+        String getTopics2 = "Select topicID from topic";
         
+        PreparedStatement prepStmt = c.prepareStatement(getTopics2);
         CallableStatement cStmt = c.prepareCall(getTopics);
         cStmt.setString(1, query);
         
-        return cStmt.executeQuery();
+        return prepStmt.executeQuery();
     }
     
     public ResultSet Questions(String query) throws SQLException{
