@@ -219,6 +219,7 @@ public class Window {
         
         topics = new JList(listModel);
         topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         addtest1.add(topics);
         /*
         topics = new JList(Search.search(topics));
@@ -301,7 +302,7 @@ public class Window {
     public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-        JButton removeQuestions, addQuestions, removetest,   ;
+        //JButton removeQuestions, addQuestions, removetest,   ;
         
         
         JPanel edittesthome = new JPanel();
@@ -344,6 +345,49 @@ public class Window {
         
         currentPane = edittestname;
         frame.add(edittestname);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void RemoveTestTopics(User currentUser, Test currentTest){
+         frame.setVisible(false);
+        frame.remove(currentPane);
+        JList testtopics;
+        JButton save;
+        ArrayList<Integer> topicIds = new ArrayList<Integer>();
+                
+                
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel removetesttopics  = new JPanel();
+        removetesttopics.setSize(frame.getSize());
+        removetesttopics.setLayout(null);
+
+        
+        save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        removetesttopics.add(save);
+        
+        Topic[] topics = currentTest.getTopics();
+        
+        for(int i = 0; i < topics.length; i++){
+            listModel.addElement(topics[i].getTopicName());
+            topicIds.add(topics[i].getID());
+        }
+        
+        testtopics = new JList(listModel);
+        testtopics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        testtopics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        if(testtopics.getModel().getSize() - 1 >= 0){
+            testtopics.setSelectionInterval(0, testtopics.getModel().getSize() -1);
+        }
+        
+        removetesttopics.add(testtopics);
+        
+       
+        save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testtopics, topicIds));
+        currentPane = removetesttopics;
+        frame.add(removetesttopics);
         frame.setLayout(null);
         frame.setVisible(true);
     }
