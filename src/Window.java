@@ -281,13 +281,9 @@ public class Window {
         
         
         try{
-            System.err.println("Here");
             rs = s.Questions("");
-            System.err.println("RS made.");
-            while(rs.next()){
-                System.err.println(rs.getInt(1));
+            while(rs.next())
                 allTopics.add(new Topic(c, rs.getInt(1)));
-            }
         } catch (SQLException e) {
             error.setText("Error fetching topics!");
             error.setVisible(true);

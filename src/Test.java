@@ -54,6 +54,7 @@ public class Test {
             this.testID = set.getInt(1);
             this.creatorID = set.getInt(3);
             this.testName = set.getString(4);
+            if(set.wasNull()) testName = "";
             set.close();
         }
         catch (SQLException e){

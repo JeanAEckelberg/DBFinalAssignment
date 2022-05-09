@@ -38,7 +38,9 @@ public class Topic {
             
             topicID = rs.getInt(1);
             name = rs.getString(2);
+            if(rs.wasNull()) name = "";
             description = rs.getString(3);
+            if(rs.wasNull()) description = "";
             userID = rs.getInt(4);
             this.c = c;
             rs.close();

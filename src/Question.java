@@ -48,6 +48,7 @@ public class Question {
             if(!rs.next()) throw new SQLException();
             questionID = rs.getInt(1);
             questionText = rs.getString(2);
+            if(rs.wasNull()) questionText = "";
             userID = rs.getInt(3);
             
             rs.close();

@@ -38,6 +38,7 @@ public class Answer {
             if(!rs.next()) throw new SQLException();
             answerID = rs.getInt(1);
             answerText = rs.getString(2);
+            if(rs.wasNull()) answerText = "";
             creatorID = rs.getInt(3);
             this.c = c;
             rs.close();
