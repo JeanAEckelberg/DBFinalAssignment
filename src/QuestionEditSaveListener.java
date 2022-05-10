@@ -59,7 +59,7 @@ public class QuestionEditSaveListener implements ActionListener{
             
             for(int i = 0; i < answers.length; i++){
                 currentQuestion.removeAnswer(currentUser.getID(), answers[i].getID());
-                //answers[i].remove(currentUser.getID()); // comented for redundancy
+                //answers[i].remove(currentUser.getID()); // commented for redundancy
             }
             
             for(int i = 0; i < ansTexts.length; i++){
@@ -75,8 +75,7 @@ public class QuestionEditSaveListener implements ActionListener{
             error.setText("Must add and select an answer or you are not authorized.");
         }catch(Exception f) {
             error.setText("Question Already Exists.");
-        } finally {
-            error.setVisible(true);
         }
+        error.setVisible(true);
     }
 }

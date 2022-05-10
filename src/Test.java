@@ -297,9 +297,7 @@ public class Test {
     }
     
     /**
-     * A static method to insert a Test and it's questions into the database that 
-     * uses a transaction to ensure that there are no orphaned questions or 
-     * other problems
+     * A static method to insert a Test into the database
      * @param c Connection to the database
      * @param creatorID identifier of the user who made the test
      * @param testName name of the test
@@ -486,7 +484,8 @@ public class Test {
      * @throws java.sql.SQLException
      */
     public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTopicLinks : Test : perms");
+        if (!validatePerms(c, userID)) 
+            throw new IllegalArgumentException("removeTopicLinks : Test : perms");
         
         // find the question in question
         Topic temp = null;
@@ -629,15 +628,15 @@ public class Test {
      * @param userID user taking the test
      * @param timeTaken long value of time taken in milliseconds
      */
-    public void addToLeaderborad(int userID, long timeTaken)throws SQLException{
+    public void addToLeaderboard(int userID, long timeTaken)throws SQLException{
+        int hours = (int) (timeTaken / (1000*60*60));
+        timeTaken -=hours*(1000*60*60);
+        int minutes = (int) (timeTaken/(1000*60));
+        timeTaken -= minutes*1000*60;
+        double seconds = timeTaken/1000.0;
         
-        double seconds = (double) timeTaken / 1000 / 60 ;
-        int minutes = (int) ((timeTaken / (1000*60)) % 60);
-        int hours   = (int) ((timeTaken / (1000*60*60)) % 24);
-        
-        String intervalString = String.format("%02d:%02d,%02.2f", hours, minutes, seconds);
-        
-        String insertStr = "insert into leaderboard (userID, testID, score, timeElapsed) values(?,?,?,?)";
+        String intervalString = String.format("%02d:%02d:%04.1f", hours, minutes, seconds);
+        String insertStr = "insert into leaderboard (userID, testID, score, timeElapsed) values (?,?,?,?)";
         PreparedStatement insertStmt;
         
         try{
@@ -650,7 +649,7 @@ public class Test {
         try{
             insertStmt.setInt(1, userID);
             insertStmt.setInt(2, getTestID());
-            insertStmt.setFloat(3, (float) 100.0);
+            insertStmt.setDouble(3, 100.0);
             insertStmt.setString(4, intervalString);
         }
         catch (SQLException e){
@@ -663,6 +662,7 @@ public class Test {
         catch(SQLException e){
             throw new SQLException("can't execute in addToLeaderboard in test");
         }
+        
     }
     
     /**
@@ -673,7 +673,8 @@ public class Test {
     public String[][] pullTopTen() throws SQLException{
         String[][] toReturn = new String[10][2];
         String searchStr = "select userName, timeElapsed from leaderboard, "
-                + "userTable where testID = " + getTestID() + " and leaderboard.userID = userTable.userID";
+                + "userTable where testID = " + getTestID() + " and leaderboard.userID = userTable.userID "
+                + "order by timeElapsed";
         PreparedStatement searchStmt;
         ResultSet set;
         
@@ -686,8 +687,12 @@ public class Test {
         
         try{
             set = searchStmt.executeQuery();
-            if (!set.next()) throw new SQLException();
             for (int i = 0; i < 10; i++){
+                if(!set.next()){
+                    toReturn[i][0] = "";
+                    toReturn[i][1] = "";
+                    continue;
+                }
                 toReturn[i][0] = set.getString(1);
                 toReturn[i][1] = set.getString(2);
             }
@@ -704,14 +709,15 @@ public class Test {
      * getter for the topics in this test
      */
     public Topic[] getTopics(){
-        return (Topic[]) topics.toArray();
+        Topic[] temp = new Topic[0];
+        return topics.toArray(temp);
     }
     
     /**
      * getter for the questions in this test
      */
     public Question[] getQuestions(){
-        return (Question[]) questions.toArray();
+        return  questions.toArray(new Question[0]);
     }
     
     /**
@@ -720,8 +726,9 @@ public class Test {
     public void removeAllTopics(int userID)throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) 
             throw new IllegalArgumentException("removeAllTopics : test : perms");
-        for(Topic t : topics){
-            removeTopic(userID, t.getID());
+        Topic[] tArray = topics.toArray(new Topic[0]);
+        for(Topic t : tArray){
+            removeTopic(t.getID(), userID);
         }
     }
     
@@ -731,8 +738,9 @@ public class Test {
     public void removeAllQuestions(int userID) throws SQLException, IllegalArgumentException{
         if(!validatePerms(c, userID))
             throw new IllegalArgumentException("removeAllQuestions : test : perms");
-        for(Question q : questions){
-            removeQuestion(userID, q.getID());
+        Question[] questionArray = questions.toArray(new Question[0]);
+        for(Question q : questionArray){
+            removeQuestion(q.getID(), userID);
         }
     }
 }

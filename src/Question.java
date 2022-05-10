@@ -166,14 +166,18 @@ public class Question {
              prepStmt.setString(1, text);
              prepStmt.setInt(2, questionID);
         } catch (SQLException e){
-            throw new SQLException("Can't prep statement.");
+            System.err.println("Can't prep statement.");
+            System.exit(1);
+            return;
         }
         
         try{
             prepStmt.executeUpdate();
             prepStmt.close();
         } catch (SQLException e){
-            throw new SQLException("Can't execute statement.");
+            System.err.println("Can't execute statement.");
+            System.exit(1);
+            return;
         }
         
         questionText = text;
@@ -223,14 +227,14 @@ public class Question {
         topics.remove(temp);
     }
     
-    public Topic[] getTopics() throws SQLException, IllegalArgumentException{
+    public Topic[] getTopics(){
         Topic[] temp = new Topic[0];
         return topics.toArray(temp);
     }
     
     public void addAnswer(int userID, int ansID, boolean correct) throws SQLException, IllegalArgumentException {
         if (!validatePerms(userID)) throw new IllegalArgumentException("addAnswer : question : perms");
-        
+        System.out.println(answers.size());
         for(Answer a : answers){
             if(a.getID() == ansID) return;
         }
@@ -247,6 +251,7 @@ public class Question {
 
         prepStmt.executeUpdate();
         if(correct) correctIndex = answers.size();
+        System.out.println(correctIndex);
         answers.add(temp);
     }
     
@@ -255,12 +260,15 @@ public class Question {
         
         //This may cause issues if removing isn't working
         Answer temp = null;
+
         for(Answer a : answers){
             if(a.getID() == ansID) temp = a;
         }
-        if(temp == null || correctIndex == null) return;
         
-        if(answers.indexOf(temp) == correctIndex){ correctIndex = null; }
+        if(temp == null) return;
+        
+        if(correctIndex == null){}
+        else if(answers.indexOf(temp) == correctIndex){ correctIndex = null; }
         else if(answers.indexOf(temp) < correctIndex) { correctIndex--; }
         
         //Delete from linking table
@@ -273,15 +281,13 @@ public class Question {
         prepStmt.executeUpdate();
         
         // delete answer itself
-        String deleteStr = "delete from answer where answerID = " + temp.getID();
-        PreparedStatement dStmt = c.prepareStatement(deleteStr);
-        dStmt.executeUpdate();
+        temp.remove(userID);
         
         answers.remove(temp);
     }
     
 
-    public Answer[] getAnswers() throws SQLException {
+    public Answer[] getAnswers() {
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
     }
