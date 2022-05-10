@@ -325,7 +325,6 @@ public class Window {
         });
         
         
-        //topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(topics);
         topics.setLayoutOrientation(JList.VERTICAL);
@@ -478,7 +477,7 @@ public class Window {
         
         // topics multiselect JList
         try{
-           rs = s.Questions("");
+           rs = s.Topics("");
            while(rs.next()){
                allTopics.add(new Topic(c, rs.getInt(1)));
            }
@@ -521,9 +520,15 @@ public class Window {
         });
         
         topics.setSelectedIndices(currentTopicIndicies);
-        topics.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 100, 30);
-        editQuestion.add(topics);
         
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        editQuestion.add(scrollPane);
+
         questionText = new JTextArea();
         questionText.setLineWrap(true);
         questionText.setWrapStyleWord(true);
@@ -552,7 +557,7 @@ public class Window {
         
         for(int i = 0; i < ansButtons.length;i++){
             ansButtons[i] = new JRadioButton();
-            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 100, 30);
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 30, 30);
             group.add(ansButtons[i]);
             editQuestion.add(ansButtons[i]);
         }
