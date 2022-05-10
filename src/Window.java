@@ -647,6 +647,13 @@ public class Window {
         
         
         for(int i = 0; i < results.length; i++){
+            if(tests.isEmpty()) {
+                results[i] = new JButton("No Results Found");
+                results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
+                resultsPage.add(results[i]);
+                continue;
+            }
+            
             Test currentTest = tests.get(Math.min(Math.max(0,tests.size()-1), cursor+i));
             results[i] = new JButton(currentTest.getTestName());
             take[i] = new JButton("Take Test");
@@ -799,6 +806,13 @@ public class Window {
         
         
         for(int i = 0; i < results.length; i++){
+            if(topics.isEmpty()) {
+                results[i] = new JButton("No Results Found");
+                results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
+                resultsPage.add(results[i]);
+                continue;
+            }
+            
             Topic currentTopic = topics.get(Math.min(Math.max(0,topics.size()-1), cursor+i));
             results[i] = new JButton(currentTopic.getName());
             results[i].setBounds(resultsPage.getWidth()/2 - 150, 200+(i*60), 300, 50);
@@ -946,6 +960,13 @@ public class Window {
         
         
         for(int i = 0; i < results.length; i++){
+            if(questions.isEmpty()) {
+                results[i] = new JButton("No Results Found");
+                results[i].setBounds(resultsPage.getWidth()/2 - 150, 200+(i*60), 300, 50);
+                resultsPage.add(results[i]);
+                continue;
+            }
+            
             Question currentQuestion = questions.get(Math.min(Math.max(0,questions.size()-1), cursor+i));
             results[i] = new JButton(currentQuestion.getText());
             results[i].setBounds(resultsPage.getWidth()/2 - 150, 200+(i*60), 300, 50);
