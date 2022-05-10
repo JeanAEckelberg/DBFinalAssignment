@@ -17,18 +17,19 @@ public class CreateTestListener implements ActionListener{
    
    
     private Window ref;
+    private User currentUser;
     
-    public CreateTestListener(Window ref){
+    public CreateTestListener(Window ref, User u1){
       
 
         this.ref = ref;
+        currentUser = u1;
         
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        //ref.AddTest();
+        ref.CreateTest(currentUser);
       
-       
     }
 }

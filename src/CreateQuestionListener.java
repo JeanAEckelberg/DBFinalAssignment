@@ -27,23 +27,17 @@ public class CreateQuestionListener implements ActionListener{
    
   
     private Window ref;
+    private User currentUser;
     
-    public CreateQuestionListener(Window ref){
+    public CreateQuestionListener(Window ref, User currentUser){
         
 
         this.ref = ref;
-        
+        this.currentUser = currentUser;
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        
-        try{
-            
-        } catch (Exception f){
-            
-        } finally {
-           
-        }
+            ref.CreateQuestion(currentUser);
     }
 }

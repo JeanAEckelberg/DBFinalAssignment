@@ -18,16 +18,18 @@ public class CreateTopicListener implements ActionListener{
    
    
     private Window ref;
+    private User currentUser;
     
-    public CreateTopicListener(Window ref){
+    public CreateTopicListener(Window ref, User u1){
        
 
         this.ref = ref;
+        currentUser = u1;
         
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-       //ref.AddTopic();
+       ref.CreateTopic(currentUser);
     }
 }
