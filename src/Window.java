@@ -304,13 +304,8 @@ public class Window {
         
         names = new String[allTopics.size()];
         
-        try{
             for(int i = 0; i < names.length; i++)
                 names[i] = allTopics.get(i).getName();
-        } catch (SQLException e) {
-            error.setText("Error fetching topics!");
-            error.setVisible(true);
-        }
         
         topics = new JList<>(names);
         
@@ -392,11 +387,11 @@ public class Window {
         
         name = new JTextField();
         name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
-        try{
+        // try{                                           Kept for in case null poiter or other issue
             name.setText(currentTopic.getName());
-        } catch (SQLException e){
-            name.setText("CRITICAL ERROR - TOPIC DNE");
-        }
+        //} catch (SQLException e){
+        //    name.setText("CRITICAL ERROR - TOPIC DNE");
+        //}
         editTopic.add(name);
         
         description = new JTextArea();
@@ -586,6 +581,61 @@ public class Window {
      */
     public void SearchPage(User currentUser){
         
+        /*
+        The idea with this method is to provide a search page that allows a user
+         to querey the db and filter the results
+        for questions and topics the edit and delete buttons should be diplayed and
+        associated with each instance of the topics and questions
+        the same for tests, except users can also take tests.
+        there will be between 5 ans 10 results on each page and the user will be able to 
+        page through the results of their search
+        */
+        
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JLabel notFound;
+        JRadioButton[] filters = new JRadioButton[3];
+        JButton takeTest, edit, delete, next, previous;
+        JLabel[] results;
+        JTextField querey;
+        
+        // under construction
+        JPanel resultsPage = new JPanel();
+        resultsPage.setSize(frame.getSize());
+        resultsPage.setLayout(null);
+        
+        JButton enterQuerey = new JButton("Search");
+        enterQuerey.setBounds(frame.getWidth()- 150, frame.getHeight()%4 + 2, 100, 30);
+        resultsPage.add(enterQuerey);
+        
+        querey = new JTextField();
+        querey.setBounds(1, 1, 500, 20);
+        resultsPage.add(querey);
+        
+        filters[0] = new JRadioButton("Test");
+        filters[1] = new JRadioButton("Topic");
+        filters[2] = new JRadioButton("Question");
+        
+        currentPane = resultsPage;
+        frame.add(resultsPage);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+    }
+    
+    public void AddTest1(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JLabel test, error;
+        JList topics;
+        JTextField testname;
+        JButton addquestion, nextpage;
+        ArrayList<Integer> idsOfTopics = new ArrayList<Integer>();
+        JPanel addtest1 = new JPanel();
+        addtest1.setSize(frame.getSize());
+        addtest1.setLayout(null);
+        
         
         nextpage = new JButton("Next");
         nextpage.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
@@ -608,7 +658,7 @@ public class Window {
             while(topicRS.next()){
                 idsOfTopics.add(topicRS.getInt(1));
                 Topic topic = new Topic(c, topicRS.getInt(1));
-                listModel.addElement( topic.getTopicName());
+                listModel.addElement( topic.getName());
                 count++;
             }
         }catch(SQLException sasd){
@@ -839,7 +889,7 @@ public class Window {
         Topic[] topics = currentTest.getTopics();
         
         for(int i = 0; i < topics.length; i++){
-            listModel.addElement(topics[i].getTopicName());
+            listModel.addElement(topics[i].getName());
             topicIds.add(topics[i].getID());
         }
         
@@ -937,7 +987,7 @@ public class Window {
                 if( !inTest){
                     idsOfTopics.add(topicRS.getInt(1));
                
-                    listModel.addElement( topic.getTopicName());
+                    listModel.addElement( topic.getName());
                     
                 }
             }
@@ -1004,7 +1054,7 @@ public class Window {
                     if( !inTest){
                         idsOfQuestions.add(topicRS.getInt(1));
 
-                        listModel.addElement( topic.getTopicName());
+                        listModel.addElement( topic.getName());
 
                     }
                 }

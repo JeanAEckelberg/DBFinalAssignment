@@ -50,8 +50,8 @@ public class AddTest2Listener implements ActionListener{
         }
         try{
             
-            Test.createTest(c, questionList, this.currentUser.getID(), this.testname);
-            Test newTest = new Test(c, this.testname);
+            int id = Test.createTest(c, this.currentUser.getID(), this.testname);
+            Test newTest = new Test(c, id);
             
             for(int i = 0; i < this.idsOfTopics.size(); i++){
                 Topic current = new Topic(c, this.idsOfTopics.get(i));

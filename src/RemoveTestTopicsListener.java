@@ -49,7 +49,7 @@ public class RemoveTestTopicsListener implements ActionListener{
             }
             
             for( Topic topic : selectedTopics){
-                currentTest.addTopicToTest(topic, currentUser.getID());
+                currentTest.addTopicToTest(topic.getID(), currentUser.getID());
             }
         }catch(SQLException sqe){
             System.err.println("sqlerror");

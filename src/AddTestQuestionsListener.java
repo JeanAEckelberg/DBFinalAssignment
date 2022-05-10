@@ -49,7 +49,7 @@ public class AddTestQuestionsListener implements ActionListener{
             }
             
             for( Question question : selectedQuestions){
-                currentTest.addQuestionToTest(question, currentUser.getID());
+                currentTest.addQuestionToTest(question.getID(), currentUser.getID());
             }
         }catch(SQLException sqe){
             System.err.println("sqlerror");
