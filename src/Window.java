@@ -484,14 +484,14 @@ public class Window {
         
         names = new String[allTopics.size()];
         Topic[] currentTopics = new Topic[0];
-        try{
+        //try{
             for(int i = 0; i < names.length; i++)
                 names[i] = allTopics.get(i).getName();
             currentTopics = currentQuestion.getTopics();
-        } catch (SQLException e) {
-            error.setText("Error fetching topics!");
-            error.setVisible(true);
-        }
+        //} catch (SQLException e) {
+        //    error.setText("Error fetching topics!");
+        //    error.setVisible(true);
+        //}
          
         int[] currentTopicIndicies = new int[currentTopics.length];
         int counter = 0;
@@ -629,7 +629,7 @@ public class Window {
         
     }
     
-<<<<<<< HEAD
+    
     public void TakeTest(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
@@ -686,7 +686,12 @@ public class Window {
     }
     
     public void TakeTestBody(User currentUser, Test currentTest, ArrayList<Question> questions, long startTime, int correctAns){
-        if(questions.isEmpty()) TestCompleted(currentUser, currentTest, startTime, correctAns);
+        if(questions.isEmpty()) {
+            TestCompleted(currentUser, currentTest, startTime, correctAns);
+            return;
+        }
+            
+            
         frame.setVisible(false);
         frame.remove(currentPane);
         
@@ -702,11 +707,12 @@ public class Window {
         question.setBounds(frame.getWidth()/2-100, 100, 300, 100);
         takeTestBody.add(question);
         
+        
         for(int i = 0; i < ansButtons.length; i++){
             ansButtons[i] = new JButton(answers[i].getText());
             ansButtons[i].setBounds(frame.getWidth()/2-100, 200+(50*i), 300, 30);
             takeTestBody.add(ansButtons[i]);
-            if(i == questions.get(0).getCorrectAns()) {
+            if(answers[i].getID() == questions.get(0).getCorrectAns()) {
                 ansButtons[i].addActionListener((ActionEvent e) -> {
                         questions.remove(0);
                         int temp = correctAns;
@@ -733,12 +739,13 @@ public class Window {
         long time = System.currentTimeMillis()-startTime;
         frame.setVisible(false);
         frame.remove(currentPane);
-        if(correctAns == currentTest.getNumQuestions())
+        if(correctAns == currentTest.getNumQuestions()){
             try{
                 currentTest.addToLeaderboard(currentUser.getID(), time);
             } catch (SQLException e){
-                
+                System.out.println(e.getMessage());
             }
+        }
             
         
         ArrayList<Question> questions = new ArrayList<>();
@@ -767,6 +774,7 @@ public class Window {
         
         thanks = new JLabel("You got "+ correctAns + " of " + currentTest.getNumQuestions() + " questions right!");
         thanks.setBounds(frame.getWidth()/2-150, 150, 300, 30);
+        takeTest.add(thanks);
         
         leaderboardTitle = new JLabel("Leaderboard");
         leaderboardTitle.setBounds(frame.getWidth()/2-100, 200, 200, 30);
@@ -791,7 +799,7 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-=======
+
     public void AddTest1(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
@@ -1254,5 +1262,5 @@ public class Window {
         frame.setVisible(true);
     }
     
->>>>>>> main
+
 }

@@ -629,14 +629,14 @@ public class Test {
      * @param timeTaken long value of time taken in milliseconds
      */
     public void addToLeaderboard(int userID, long timeTaken)throws SQLException{
+        int hours = (int) (timeTaken / (1000*60*60));
+        timeTaken -=hours*(1000*60*60);
+        int minutes = (int) (timeTaken/(1000*60));
+        timeTaken -= minutes*1000*60;
+        double seconds = timeTaken/1000.0;
         
-        double seconds = (double) timeTaken / 1000 / 60 ;
-        int minutes = (int) ((timeTaken / (1000*60)) % 60);
-        int hours   = (int) ((timeTaken / (1000*60*60)) % 24);
-        
-        String intervalString = String.format("%02d:%02d,%02.2f", hours, minutes, seconds);
-        
-        String insertStr = "insert into leaderboard (userID, testID, score, timeElapsed) values(?,?,?,?)";
+        String intervalString = String.format("%02d:%02d:%04.1f", hours, minutes, seconds);
+        String insertStr = "insert into leaderboard (userID, testID, score, timeElapsed) values (?,?,?,?)";
         PreparedStatement insertStmt;
         
         try{
@@ -649,7 +649,7 @@ public class Test {
         try{
             insertStmt.setInt(1, userID);
             insertStmt.setInt(2, getTestID());
-            insertStmt.setFloat(3, (float) 100.0);
+            insertStmt.setDouble(3, 100.0);
             insertStmt.setString(4, intervalString);
         }
         catch (SQLException e){
@@ -662,6 +662,7 @@ public class Test {
         catch(SQLException e){
             throw new SQLException("can't execute in addToLeaderboard in test");
         }
+        
     }
     
     /**
@@ -672,7 +673,8 @@ public class Test {
     public String[][] pullTopTen() throws SQLException{
         String[][] toReturn = new String[10][2];
         String searchStr = "select userName, timeElapsed from leaderboard, "
-                + "userTable where testID = " + getTestID() + " and leaderboard.userID = userTable.userID";
+                + "userTable where testID = " + getTestID() + " and leaderboard.userID = userTable.userID "
+                + "order by timeElapsed";
         PreparedStatement searchStmt;
         ResultSet set;
         
@@ -685,8 +687,12 @@ public class Test {
         
         try{
             set = searchStmt.executeQuery();
-            if (!set.next()) throw new SQLException();
             for (int i = 0; i < 10; i++){
+                if(!set.next()){
+                    toReturn[i][0] = "";
+                    toReturn[i][1] = "";
+                    continue;
+                }
                 toReturn[i][0] = set.getString(1);
                 toReturn[i][1] = set.getString(2);
             }
