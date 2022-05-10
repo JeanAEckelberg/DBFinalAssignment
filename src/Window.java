@@ -183,7 +183,19 @@ public class Window {
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
         dashboard.add(exitbutton);
         
-        searchbutton.addActionListener(new SearchListener(this,c, query));
+        searchbutton.addActionListener((ActionEvent e) -> {
+            try{
+                Search s = new Search(c);
+                ResultSet rs = s.Tests(query.getText());
+                ArrayList<Test> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Test(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTests(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
         createTopic.addActionListener(new CreateTopicListener(this, currentUser) );
         createTest.addActionListener( new CreateTestListener(this, currentUser) );
         createQuestion.addActionListener(new CreateQuestionListener(this , currentUser) );
