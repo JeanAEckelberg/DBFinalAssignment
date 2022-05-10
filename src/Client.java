@@ -36,8 +36,10 @@ public class Client {
             Test.createTest(connection, user1.getID(), "Sample Test 3");
             Test test = new Test(connection, 3);
             test.addQuestionToTest(q1.getID(), user1.getID());
-            test.addQuestionToTest(q1.getID(), user1.getID());
+            test.removeQuestion(q1.getID(), 4);
+            test.addQuestionToTest(q2.getID(), user1.getID());
             test.addTopicToTest(t1.getID(), 4);
+            test.removeTopic(t1.getID(), 4);
             test.addTopicToTest(t2.getID(), 4);
             //w.Dashboard(user1);
             //w.LogIn();
@@ -62,6 +64,7 @@ public class Client {
             
         } catch (SQLException e){
             System.err.println("Connection Failed " + e.getMessage());
+            e.printStackTrace();
         }
         
     }

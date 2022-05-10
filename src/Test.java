@@ -360,8 +360,8 @@ public class Test {
         }
         
         try{
-            insertStmt.setInt(2, questionID);
-            insertStmt.setInt(1, testID);
+            insertStmt.setInt(1, questionID);
+            insertStmt.setInt(2, testID);
         }
         catch (SQLException e) {
             throw new SQLException("Can't set questionID in "
@@ -370,6 +370,7 @@ public class Test {
         
         try{
             insertStmt.executeUpdate();
+            insertStmt.close();
         }
         catch (SQLException e){
             throw new SQLException("Can't execute update in "
@@ -457,7 +458,7 @@ public class Test {
      * @param userID identifier of the user attempting to modify the test
      * @throws java.sql.SQLException
      */
-    public void removeQuestionLink(int questionID, int userID) throws SQLException, IllegalArgumentException{
+    public void removeQuestion(int questionID, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeQuestionLink : Test : perms");
         
         // find the question in question
@@ -475,48 +476,8 @@ public class Test {
         
         questions.remove(temp);
         
-        // update numberOfQuestions
-        String updateString = "update test set numberOfQuestions = "
-                + "? where testID = " + testID;
-        PreparedStatement updateStmt;
-        
-        try{
-            updateStmt = c.prepareStatement(updateString);
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't prep update statement "
-                    + "in removeQuestionLink in Test class");
-        }
-        
-        try{
-            updateStmt.setInt(1, questions.size());
-        }
-        catch (SQLException e) {
-            throw new SQLException("Can't set numberOfQuestions "
-                    + "in removeQuestionLink in Test class");
-        }
-        
-        try{
-            updateStmt.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't execute update of numberOfQuestions"
-                    + " in removeQuestionLink in Test class");
-        }
     }
     
-    /**
-     * Method to remove a question from a test and the db
-     * @param questionID
-     * @param userID
-     * @throws SQLException
-     * @throws IllegalArgumentException 
-     */
-    public void removeQuestion(int questionID, int userID)throws SQLException, IllegalArgumentException {
-        removeQuestionLink(questionID, userID);
-        new Question(c, questionID).remove(userID);
-        
-    }
     
     /**
      * Method to remove a topic from a test linking table
@@ -524,7 +485,7 @@ public class Test {
      * @param userID identifier of the user attempting to modify the test
      * @throws java.sql.SQLException
      */
-    public void removeTopicLinks(int topicID, int userID) throws SQLException, IllegalArgumentException{
+    public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTopicLinks : Test : perms");
         
         // find the question in question
@@ -543,19 +504,7 @@ public class Test {
         topics.remove(temp);
         
     }
-    
-    /**
-     * Method to remove a topic from a test and completely from the db
-     * Will throw errors if there are any questions still in the topic
-     * @param topicID
-     * @param userID
-     * @throws SQLException
-     * @throws IllegalArgumentException 
-     */
-    public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
-        removeTopicLinks(topicID, userID);
-        new Topic(c, topicID).remove(userID);
-    }    
+       
     
     /**
     * Method to remove this test from the database using a transaction to ensure 
@@ -769,7 +718,7 @@ public class Test {
         if (!validatePerms(c, userID)) 
             throw new IllegalArgumentException("removeAllTopics : test : perms");
         for(Topic t : topics){
-            removeTopicLinks(userID, t.getID());
+            removeTopic(userID, t.getID());
         }
     }
     
@@ -780,7 +729,7 @@ public class Test {
         if(!validatePerms(c, userID))
             throw new IllegalArgumentException("removeAllQuestions : test : perms");
         for(Question q : questions){
-            removeQuestionLink(userID, q.getID());
+            removeQuestion(userID, q.getID());
         }
     }
 }
