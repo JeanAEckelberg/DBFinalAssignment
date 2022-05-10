@@ -544,13 +544,9 @@ public class Window {
         
         int answerSize = 0;
         Answer[] answers = new Answer[4];
-        //try{
-            answers = currentQuestion.getAnswers();
-            answerSize = answers.length;
-        //} catch(SQLException e){
-        //    error.setText("Error fetching answers!");
-        //    error.setVisible(true);
-        //}
+        
+        answers = currentQuestion.getAnswers();
+        answerSize = answers.length;
         
         for(int i = 0; i < ansText.length;i++){
             ansText[i] = new JTextField();
@@ -1250,14 +1246,23 @@ public class Window {
         
         
         topics = new JList(listModel);
-        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
-        topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        addtest1.add(topics);
-        /*
-        topics = new JList(Search.search(topics));
-        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
-        addtest1.add(topics);
-        */
+        topics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        addtest1.add(scrollPane);
         
         JButton exitbutton = new JButton("Exit");
         exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
@@ -1303,9 +1308,23 @@ public class Window {
         
         
         questions = new JList(listModel);
-        questions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
-        questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        addtest2.add(questions);
+        questions.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(questions);
+        questions.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        addtest2.add(scrollPane);
         
         create = new JButton("Create");
         create.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
@@ -1476,13 +1495,27 @@ public class Window {
         }
         
         testtopics = new JList(listModel);
-        testtopics.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
-        testtopics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        testtopics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
         if(testtopics.getModel().getSize() - 1 >= 0){
             testtopics.setSelectionInterval(0, testtopics.getModel().getSize() -1);
         }
         
-        removetesttopics.add(testtopics);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(testtopics);
+        testtopics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        removetesttopics.add(scrollPane);
         
        
         save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testtopics, topicIds));
@@ -1523,13 +1556,27 @@ public class Window {
         }
         
         testquestions = new JList(listModel);
-        testquestions.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
-        testquestions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        testquestions.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
         if(testquestions.getModel().getSize() - 1 >= 0){
             testquestions.setSelectionInterval(0, testquestions.getModel().getSize() -1);
         }
         
-        removetestquestions.add(testquestions);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(testquestions);
+        testquestions.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        removetestquestions.add(scrollPane);
         
        
         save.addActionListener(new RemoveTestQuestionsListener(this, c , currentTest, currentUser, testquestions, questionIds));
@@ -1580,9 +1627,23 @@ public class Window {
         
         
         JList topics = new JList(listModel);
-        topics.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
-        topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        addtesttopics.add(topics);
+        topics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        addtesttopics.add(scrollPane);
         
         JButton save = new JButton("Save");
         save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
@@ -1648,9 +1709,23 @@ public class Window {
         
         
         JList questions = new JList(listModel);
-        questions.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
-        questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        addtestquestions.add(questions);
+        questions.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(questions);
+        questions.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        addtestquestions.add(scrollPane);
         
         JButton save = new JButton("Save");
         save.setBounds(frame.getWidth()/2 -10,frame.getHeight()/8 -20, 100, 30);
