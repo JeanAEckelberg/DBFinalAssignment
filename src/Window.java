@@ -1092,13 +1092,7 @@ public class Window {
             leaderboard = new JTable();
         }
         
-        leaderboard.setModel( new DefaultTableModel() {
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
+        leaderboard.setEnabled(false);
         
         leaderboard.setBounds(frame.getWidth()/2-100, 200, 200, 400);
         takeTest.add(leaderboard);
@@ -1219,13 +1213,7 @@ public class Window {
             leaderboard = new JTable();
         }
         
-        leaderboard.setModel( new DefaultTableModel() {
-
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        });
+        leaderboard.setEnabled(false);
         
         leaderboard.setBounds(frame.getWidth()/2-100, 250, 200, 400);
         takeTest.add(leaderboard);
