@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class Window {
     JFrame frame;
@@ -1090,6 +1091,15 @@ public class Window {
         } catch (SQLException e) {
             leaderboard = new JTable();
         }
+        
+        leaderboard.setModel( new DefaultTableModel() {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+        
         leaderboard.setBounds(frame.getWidth()/2-100, 200, 200, 400);
         takeTest.add(leaderboard);
         
@@ -1208,6 +1218,15 @@ public class Window {
         } catch (SQLException e) {
             leaderboard = new JTable();
         }
+        
+        leaderboard.setModel( new DefaultTableModel() {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+        
         leaderboard.setBounds(frame.getWidth()/2-100, 250, 200, 400);
         takeTest.add(leaderboard);
         
