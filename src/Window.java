@@ -616,7 +616,7 @@ public class Window {
         resultsPage.setLayout(null);
         
         JButton enterQuery = new JButton("Search");
-        enterQuery.setBounds(frame.getWidth()-200, 10, 100, 30);
+        enterQuery.setBounds(600, 50, 100, 30);
         resultsPage.add(enterQuery);
         
         query = new JTextField();
@@ -638,11 +638,11 @@ public class Window {
         
         
         previous = new JButton("Previous");
-        previous.setBounds(200, frame.getHeight()-200, 100, 30);
+        previous.setBounds(300, resultsPage.getHeight()-300, 100, 30);
         resultsPage.add(previous);
         
         next = new JButton("Next");
-        next.setBounds(frame.getWidth() - 200, frame.getHeight() - 200, 100, 30);
+        next.setBounds(resultsPage.getWidth() - 300, resultsPage.getHeight() - 300, 100, 30);
         resultsPage.add(next);
         
         
@@ -650,8 +650,8 @@ public class Window {
             Test currentTest = tests.get(Math.min(Math.max(0,tests.size()-1), cursor+i));
             results[i] = new JButton(currentTest.getTestName());
             take[i] = new JButton("Take Test");
-            results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
-            take[i].setBounds(frame.getWidth()/2 + 150, 200+(i*60), 100, 50);
+            results[i].setBounds(resultsPage.getWidth()/2 - 150, 200+(i*60), 300, 50);
+            take[i].setBounds(resultsPage.getWidth()/2 + 150, 200+(i*60), 100, 50);
             resultsPage.add(results[i]);
             resultsPage.add(take[i]);
             
@@ -768,7 +768,7 @@ public class Window {
         resultsPage.setLayout(null);
         
         JButton enterQuery = new JButton("Search");
-        enterQuery.setBounds(frame.getWidth()-200, 10, 100, 30);
+        enterQuery.setBounds(600, 50, 100, 30);
         resultsPage.add(enterQuery);
         
         query = new JTextField();
@@ -790,18 +790,18 @@ public class Window {
         
         
         previous = new JButton("Previous");
-        previous.setBounds(200, frame.getHeight()-200, 100, 30);
+        previous.setBounds(300, resultsPage.getHeight()-300, 100, 30);
         resultsPage.add(previous);
         
         next = new JButton("Next");
-        next.setBounds(frame.getWidth() - 200, frame.getHeight() - 200, 100, 30);
+        next.setBounds(resultsPage.getWidth() - 300, resultsPage.getHeight() - 300, 100, 30);
         resultsPage.add(next);
         
         
         for(int i = 0; i < results.length; i++){
             Topic currentTopic = topics.get(Math.min(Math.max(0,topics.size()-1), cursor+i));
             results[i] = new JButton(currentTopic.getName());
-            results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
+            results[i].setBounds(resultsPage.getWidth()/2 - 150, 200+(i*60), 300, 50);
             resultsPage.add(results[i]);
             
             results[i].addActionListener((ActionEvent e) -> {
@@ -915,7 +915,7 @@ public class Window {
         resultsPage.setLayout(null);
         
         JButton enterQuery = new JButton("Search");
-        enterQuery.setBounds(frame.getWidth()-200, 10, 100, 30);
+        enterQuery.setBounds(600, 50, 100, 30);
         resultsPage.add(enterQuery);
         
         query = new JTextField();
@@ -937,18 +937,18 @@ public class Window {
         
         
         previous = new JButton("Previous");
-        previous.setBounds(200, frame.getHeight()-200, 100, 30);
+        previous.setBounds(300, resultsPage.getHeight()-300, 100, 30);
         resultsPage.add(previous);
         
         next = new JButton("Next");
-        next.setBounds(frame.getWidth() - 200, frame.getHeight() - 200, 100, 30);
+        next.setBounds(resultsPage.getWidth() - 300, resultsPage.getHeight() - 300, 100, 30);
         resultsPage.add(next);
         
         
         for(int i = 0; i < results.length; i++){
             Question currentQuestion = questions.get(Math.min(Math.max(0,questions.size()-1), cursor+i));
             results[i] = new JButton(currentQuestion.getText());
-            results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
+            results[i].setBounds(resultsPage.getWidth()/2 - 150, 200+(i*60), 300, 50);
             resultsPage.add(results[i]);
             
             results[i].addActionListener((ActionEvent e) -> {
@@ -1279,7 +1279,7 @@ public class Window {
         
     }
     
-     public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
+    public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
         frame.setVisible(false);
         frame.remove(currentPane);
         
@@ -1348,7 +1348,6 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
      }
-    
     
     
     public void EditTestHome(User currentUser, Test currentTest){
@@ -1524,9 +1523,6 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-    
-    
-    
     
     
     public void RemoveTestQuestions(User currentUser, Test currentTest){
