@@ -889,7 +889,6 @@ public class Window {
         
     }
     
-
     public void SearchPageQuestions(User currentUser, ArrayList<Question> questions){
         
         /*
@@ -1035,7 +1034,6 @@ public class Window {
         frame.setVisible(true);
         
     }
-    
     
     public void TakeTest(User currentUser, Test currentTest){
         frame.setVisible(false);
@@ -1274,7 +1272,7 @@ public class Window {
         
     }
     
-     public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
+    public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
         frame.setVisible(false);
         frame.remove(currentPane);
         
@@ -1330,43 +1328,49 @@ public class Window {
         frame.setVisible(true);
      }
     
-    
-    
     public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-        JButton removeQuestions, addQuestions, removeTopics, addTopics, removeTest, editname  ;
+        JButton removeQuestions, addQuestions, removeTopics, addTopics, removeTest, editname, back  ;
         
         
         JPanel edittesthome = new JPanel();
         edittesthome.setSize(frame.getSize());
         edittesthome.setLayout(null);
         
+        JLabel title = new JLabel("Edit Test Page");
+        title.setBounds(edittesthome.getWidth()/2-10, 100, 100, 30);
+        edittesthome.add(title);
         
         editname = new JButton("Edit Name");
-        editname.setBounds(edittesthome.getWidth()/2-10,edittesthome.getHeight()/2 -200, 100, 30);
+        editname.setBounds(edittesthome.getWidth()/2-10,edittesthome.getHeight()/4 +30, 100, 30);
         edittesthome.add(editname);
         
         
         removeQuestions = new JButton("Remove Questions");
-        removeQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -250, 200, 30);
+        removeQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +65, 200, 30);
         edittesthome.add(removeQuestions);
         
         addQuestions = new JButton("Add Questions");
-        addQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -300, 200, 30);
+        addQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +100, 200, 30);
         edittesthome.add(addQuestions);
         
         removeTopics = new JButton("Remove Topics");
-        removeTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -350, 200, 30);
+        removeTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +135, 200, 30);
         edittesthome.add(removeTopics);
         
         addTopics = new JButton("Add Topics");
-        addTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -400, 200, 30);
+        addTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +170, 200, 30);
         edittesthome.add(addTopics);
         
         removeTest = new JButton("REMOVE TEST");
-        removeTest.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -450, 200, 30);
+        removeTest.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +205, 200, 30);
         edittesthome.add(removeTest);
+        
+        back = new JButton("Back");
+        back.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +240, 200, 30);
+        edittesthome.add(back);
+        
         Window ref = this;
      
         
@@ -1411,6 +1415,8 @@ public class Window {
         
         });
         
+        back.addActionListener(new BackToDashboardListener(ref, currentUser));
+        
         removeTest.addActionListener(new RemoveTestListener(this, c, currentUser, currentTest));
         
         currentPane = edittesthome;
@@ -1418,7 +1424,6 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-    
     
     public void EditTestName(User currentUser, Test currentTest){
         frame.setVisible(false);
@@ -1491,10 +1496,6 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-    
-    
-    
-    
     
     public void RemoveTestQuestions(User currentUser, Test currentTest){
          frame.setVisible(false);
@@ -1669,5 +1670,4 @@ public class Window {
         frame.setVisible(true);
     }
     
-
 }
