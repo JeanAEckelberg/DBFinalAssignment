@@ -42,6 +42,10 @@ public class Window {
         enter.setBounds(frame.getWidth()/2-50, frame.getHeight()/2, 100, 30);
         logIn.add(enter);
         
+        JButton signUp = new JButton("SignUp");
+        signUp.setBounds(frame.getWidth()/2-50, frame.getHeight()/2+50, 100, 30);
+        logIn.add(signUp);
+        
         user = new JLabel("Username: ");
         user.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100, 100, 30);
         logIn.add(user);
@@ -63,7 +67,16 @@ public class Window {
         key.setBounds(frame.getWidth()/2, frame.getHeight()/2-50, 100, 30);
         logIn.add(key);
         
+        Window temp = this;
+        
         enter.addActionListener(new LogInListener(this,c,error,name,key));
+        signUp.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SignUp();
+            }
+            
+        });
         currentPane = logIn;
         frame.add(logIn);
         frame.setLayout(null);
