@@ -593,7 +593,7 @@ public class Test {
     public void setTestName(String name, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("setTestName : Test : perms");
         
-        String updateString = "update test testName = ? where testID = " + getTestID();
+        String updateString = "update test set testName = ? where testID = ? ";
         PreparedStatement updateStmt;
         
         try{
@@ -606,6 +606,7 @@ public class Test {
         
         try{
             updateStmt.setString(1, name);
+            updateStmt.setInt(2, testID);
         }
         catch (SQLException e){
             throw new SQLException("can't set the testName in "
@@ -619,6 +620,8 @@ public class Test {
             throw new SQLException("Can't execute the update "
                     + "statement in setTestName in Test class");
         }
+        
+        testName = name;
     }
     
     /**

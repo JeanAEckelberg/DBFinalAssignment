@@ -31,16 +31,18 @@ public class Client {
             User user1 = new User(connection, "Milksoplimit", "p455word");
             Question q1 = new Question(connection, 1);
             Question q2 = new Question(connection, 2);
+            q1.setText(4, "new text");
             Topic t1 = new Topic(connection, 1);
             Topic t2 = new Topic(connection, 3);
-            Test.createTest(connection, user1.getID(), "Sample Test 3");
-            Test test = new Test(connection, 3);
+            Test test = new Test(connection, Test.createTest(connection, user1.getID(), "Sample Test 3"));
             test.addQuestionToTest(q1.getID(), user1.getID());
             test.removeQuestion(q1.getID(), 4);
             test.addQuestionToTest(q2.getID(), user1.getID());
             test.addTopicToTest(t1.getID(), 4);
             test.removeTopic(t1.getID(), 4);
             test.addTopicToTest(t2.getID(), 4);
+            test.setTestName("New Sample Test 3", 4);
+            test.removeTest(connection, 4);
             //w.Dashboard(user1);
             //w.LogIn();
 
