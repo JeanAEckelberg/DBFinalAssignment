@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.*;
 
 public class Window {
@@ -16,7 +17,7 @@ public class Window {
     
     public Window( String title, int width, int height, Connection c){ //Connection c,
         frame = new JFrame(title);
-        frame.setBounds(200, 100, width, height);
+        frame.setBounds(25, 25, width, height);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.c = c;
         
@@ -609,5 +610,167 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
         
+    }
+    
+    public void TakeTest(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        ArrayList<Question> questions = new ArrayList<>();
+        Question[] temp = currentTest.getQuestions();
+        questions.addAll(Arrays.asList(temp));
+        temp = null;
+        
+        JLabel leaderboardTitle, name;
+        JTable leaderboard;
+        
+        JPanel takeTest = new JPanel();
+        takeTest.setSize(frame.getSize());
+        takeTest.setLayout(null);
+        
+        JButton enter = new JButton("Take Test");
+        enter.setBounds(frame.getWidth()/2-100, frame.getHeight()-200, 100, 30);
+        takeTest.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-200, 100, 30);
+        takeTest.add(back);
+        
+        name = new JLabel(currentTest.getTestName());
+        name.setBounds(frame.getWidth()/2-100, 100, 200, 30);
+        takeTest.add(name);
+        
+        leaderboardTitle = new JLabel("Leaderboard");
+        leaderboardTitle.setBounds(frame.getWidth()/2-100, 150, 200, 30);
+        takeTest.add(leaderboardTitle);
+        
+        String[] headers = {"Username","Time Taken"};
+        try{
+            leaderboard = new JTable(currentTest.pullTopTen(), headers);
+        } catch (SQLException e) {
+            leaderboard = new JTable();
+        }
+        leaderboard.setBounds(frame.getWidth()/2-100, 200, 200, 400);
+        takeTest.add(leaderboard);
+        
+        enter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TakeTestBody(currentUser, currentTest, questions, System.currentTimeMillis(), 0);
+            }
+        });
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
+        currentPane = takeTest;
+        frame.add(takeTest);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void TakeTestBody(User currentUser, Test currentTest, ArrayList<Question> questions, long startTime, int correctAns){
+        if(questions.isEmpty()) TestCompleted(currentUser, currentTest, startTime, correctAns);
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JLabel question;
+        Answer[] answers = questions.get(0).getAnswers();
+        JButton[] ansButtons = new JButton[answers.length];
+        
+        JPanel takeTestBody = new JPanel();
+        takeTestBody.setSize(frame.getSize());
+        takeTestBody.setLayout(null);
+        
+        question = new JLabel(questions.get(0).getText());
+        question.setBounds(frame.getWidth()/2-100, 100, 300, 100);
+        takeTestBody.add(question);
+        
+        for(int i = 0; i < ansButtons.length; i++){
+            ansButtons[i] = new JButton(answers[i].getText());
+            ansButtons[i].setBounds(frame.getWidth()/2-100, 200+(50*i), 300, 30);
+            takeTestBody.add(ansButtons[i]);
+            if(i == questions.get(0).getCorrectAns()) {
+                ansButtons[i].addActionListener((ActionEvent e) -> {
+                        questions.remove(0);
+                        int temp = correctAns;
+                        temp++;
+                        TakeTestBody(currentUser, currentTest, questions, startTime, temp);
+                    }
+                );
+            } else {
+                ansButtons[i].addActionListener((ActionEvent e) -> {
+                        questions.remove(0);
+                        TakeTestBody(currentUser, currentTest, questions, startTime, correctAns);
+                    }
+                );
+            }
+        }
+        
+        currentPane = takeTestBody;
+        frame.add(takeTestBody);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void TestCompleted(User currentUser, Test currentTest, long startTime, int correctAns){
+        long time = System.currentTimeMillis()-startTime;
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        if(correctAns == currentTest.getNumQuestions())
+            try{
+                currentTest.addToLeaderboard(currentUser.getID(), time);
+            } catch (SQLException e){
+                
+            }
+            
+        
+        ArrayList<Question> questions = new ArrayList<>();
+        Question[] temp = currentTest.getQuestions();
+        questions.addAll(Arrays.asList(temp));
+        temp = null;
+        
+        JLabel leaderboardTitle, name, thanks;
+        JTable leaderboard;
+        
+        JPanel takeTest = new JPanel();
+        takeTest.setSize(frame.getSize());
+        takeTest.setLayout(null);
+        
+        JButton enter = new JButton("Take Again");
+        enter.setBounds(frame.getWidth()/2-100, frame.getHeight()-200, 100, 30);
+        takeTest.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-200, 100, 30);
+        takeTest.add(back);
+        
+        name = new JLabel(currentTest.getTestName());
+        name.setBounds(frame.getWidth()/2-100, 100, 200, 30);
+        takeTest.add(name);
+        
+        thanks = new JLabel("You got "+ correctAns + " of " + currentTest.getNumQuestions() + " questions right!");
+        thanks.setBounds(frame.getWidth()/2-150, 150, 300, 30);
+        
+        leaderboardTitle = new JLabel("Leaderboard");
+        leaderboardTitle.setBounds(frame.getWidth()/2-100, 200, 200, 30);
+        takeTest.add(leaderboardTitle);
+        
+        String[] headers = {"Username","Time Taken"};
+        try{
+            leaderboard = new JTable(currentTest.pullTopTen(), headers);
+        } catch (SQLException e) {
+            leaderboard = new JTable();
+        }
+        leaderboard.setBounds(frame.getWidth()/2-100, 250, 200, 400);
+        takeTest.add(leaderboard);
+        
+        enter.addActionListener((ActionEvent e) -> {
+            TakeTestBody(currentUser, currentTest, questions, System.currentTimeMillis(), 0);
+        });
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
+        currentPane = takeTest;
+        frame.add(takeTest);
+        frame.setLayout(null);
+        frame.setVisible(true);
     }
 }

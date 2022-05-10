@@ -629,7 +629,7 @@ public class Test {
      * @param userID user taking the test
      * @param timeTaken long value of time taken in milliseconds
      */
-    public void addToLeaderborad(int userID, long timeTaken)throws SQLException{
+    public void addToLeaderboard(int userID, long timeTaken)throws SQLException{
         
         double seconds = (double) timeTaken / 1000 / 60 ;
         int minutes = (int) ((timeTaken / (1000*60)) % 60);
