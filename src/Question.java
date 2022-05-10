@@ -258,11 +258,10 @@ public class Question {
         for(Answer a : answers){
             if(a.getID() == ansID) temp = a;
         }
-        if(temp == null) return;
+        if(temp == null || correctIndex == null) return;
         
         if(answers.indexOf(temp) == correctIndex){ correctIndex = null; }
-        
-        if(answers.indexOf(temp) < correctIndex) { correctIndex--; }
+        else if(answers.indexOf(temp) < correctIndex) { correctIndex--; }
         
         //Delete from linking table
         String decouple = "delete from answerToQuestion where questionID = ? and answerID = ?";
@@ -342,11 +341,12 @@ public class Question {
             a.remove(userID);
         }
         
-        String deleteStr = "delete from question where questionID = " + getID();
+        String deleteStr = "delete from question where questionID = ? " ;
         PreparedStatement stmt;
         
         try{
             stmt = c.prepareStatement(deleteStr);
+            stmt.setInt(1, questionID);
         }
         catch (SQLException e){
             throw new SQLException("can't prep stmt removeQuestion");
@@ -354,6 +354,7 @@ public class Question {
         
         try{
             stmt.executeUpdate();
+            stmt.close();
         }
         catch (SQLException e){
             throw new SQLException("can't execute stmt removeQuestion");

@@ -144,7 +144,7 @@ public class Answer {
             throw new SQLException("can't execute stmt deleteAnswer");
         }
         
-        String removeStr = "delete from answer where anserID = " + getID();
+        String removeStr = "delete from answer where answerID = " + getID();
         PreparedStatement remove;
         
         try{

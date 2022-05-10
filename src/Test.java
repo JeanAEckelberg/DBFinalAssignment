@@ -52,8 +52,8 @@ public class Test {
             set = quereyStatement.executeQuery();
             if (!set.next()) throw new SQLException();
             this.testID = set.getInt(1);
-            this.creatorID = set.getInt(3);
-            this.testName = set.getString(4);
+            this.creatorID = set.getInt(2);
+            testName = set.getString(3);
             if(set.wasNull()) testName = "";
             set.close();
         }
@@ -301,53 +301,21 @@ public class Test {
      * uses a transaction to ensure that there are no orphaned questions or 
      * other problems
      * @param c Connection to the database
-     * @param questions An array of questions already in the database
      * @param creatorID identifier of the user who made the test
      * @param testName name of the test
      * @throws java.sql.SQLException
      */
-    public static void createTest(Connection c, ArrayList<Question> questions, 
+    public static int createTest(Connection c, 
             int creatorID, String testName) throws SQLException {
         
-        // Begin Transaction
-        try{
-            c.setAutoCommit(false); // set to false in order to make a transaction
-        
-            // get the next testID for the linking table inserts
-            String nextIDString = "select count(*) from test";
-            PreparedStatement nextIDStmt;
-            int nextID  = -1;
-            ResultSet set;
-
-            try{
-                nextIDStmt = c.prepareStatement(nextIDString);
-            }
-            catch (SQLException e){
-                throw new SQLException("Can't prep statemtent to get "
-                        + "the next testID in createTest of Test class");
-            }
-
-            try{
-                set = nextIDStmt.executeQuery();
-                if (!set.next()) throw new SQLException();
-                nextID = set.getInt(1);
-                set.close();
-            }
-            catch(SQLException e){
-                throw new SQLException("Can't execute statemtent to get "
-                        + "the next testID in createTest of Test class");
-            }
-
-            // the test insertion
-            String insertTestString = "insert into test (numberOfQuestions, "
-                    + "creator, testName) values (?, ?, ?)";
+            String insertTestString = "insert into test ( "
+                    + "creator, testName) values (?, ?)";
             PreparedStatement insertTestStmt;
 
             try{
                 insertTestStmt = c.prepareStatement(insertTestString);
-                insertTestStmt.setInt(1, questions.size());
-                insertTestStmt.setInt(2, creatorID);
-                insertTestStmt.setString(3, testName);
+                insertTestStmt.setInt(1, creatorID);
+                insertTestStmt.setString(2, testName);
             }
             catch (SQLException e){
                 throw new SQLException("Can't prep test insert "
@@ -362,56 +330,24 @@ public class Test {
                 throw new SQLException("Can't execute test insert "
                         + "statement in createTest of Test class.");
             }
-            
-            // the question insertion into the linking table
-            String insertQuestionsString = "insert into questionInTest "
-                    + "(questionID, testID) values (?, " + nextID + " )";
-            PreparedStatement insertQuestionsStmt;
-            
-            for (Question q : questions){
-                try{
-                    insertQuestionsStmt = c.prepareStatement(insertQuestionsString);
-                    insertQuestionsStmt.setInt(1, q.getID());
-                    insertQuestionsStmt.executeUpdate();
-                }
-                catch (SQLException e){
-                    throw new SQLException("Problem adding Questions "
-                            + "to the Test in createTest of Test class");
-                }
-            }
-            
-            c.commit();
-        
-        } // end transaction
-        
-        catch (SQLException exc){
-            try{
-                c.rollback(); // rollback on failure
-            }
-            catch (SQLException roll){
-                throw new SQLException("Problem rolling back "
-                        + "transaction from error: " + exc.getMessage());
-            }
-            
-        }
-        finally{ // always do this
-            c.setAutoCommit(true); // set back to true to prevent problems elsewhere in application
-        }
+                        
+            ResultSet r = c.prepareStatement("select testID from test where testName = '" + testName + "'").executeQuery();
+            r.next();
+            return r.getInt(1);
         
     }
     
     /**
      * Method to add a single question to an existing test
-     * @param question question to be added
+     * @param questionID question to be added
      * @param userID id of user attempting to modify the test
      * @throws SQLException 
      */
-    public void addQuestionToTest(Question question, int userID) throws SQLException, IllegalArgumentException{
+    public void addQuestionToTest(int questionID, int userID) throws SQLException, IllegalArgumentException{
         
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("addQuestionToTest : Test : perms");
         
-        String insertString = "insert into questionInTest (questionID, "
-                + "testID) values (?, " + testID + " )";
+        String insertString = "insert into questionInTest values(?, ?) ";
         PreparedStatement insertStmt;
         
         
@@ -424,7 +360,8 @@ public class Test {
         }
         
         try{
-            insertStmt.setInt(1, question.getID());
+            insertStmt.setInt(1, questionID);
+            insertStmt.setInt(2, testID);
         }
         catch (SQLException e) {
             throw new SQLException("Can't set questionID in "
@@ -433,54 +370,28 @@ public class Test {
         
         try{
             insertStmt.executeUpdate();
+            insertStmt.close();
         }
         catch (SQLException e){
             throw new SQLException("Can't execute update in "
                     + "addQuestionToTest in Test class");
         }
         
-        questions.add(question);
+        questions.add(new Question(c, questionID) );
         
-        String updateString = "update test set numberOfQuestions = "
-                + "? where testID = " + testID;
-        PreparedStatement updateStmt;
-        
-        try{
-            updateStmt = c.prepareStatement(updateString);
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't prep update statement "
-                    + "in addQuestionToTest in Test class");
-        }
-        
-        try{
-            updateStmt.setInt(1, questions.size());
-        }
-        catch (SQLException e) {
-            throw new SQLException("Can't set numberOfQuestions "
-                    + "in addQuestionToTest in Test class");
-        }
-        
-        try{
-            updateStmt.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't execute update of numberOfQuestions"
-                    + " in addQuestionToTest in Test class");
-        }
     }
     
     /**
      * Method to add a single Topic to an existing test
-     * @param topic topic to be added
+     * @param topicID topic to be added
      * @param userID id of user attempting to modify the test
      * @throws SQLException 
      */
-    public void addTopicToTest (Topic topic, int userID) throws SQLException, IllegalArgumentException {
+    public void addTopicToTest (int topicID, int userID) throws SQLException, IllegalArgumentException {
         
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("addTopicToTest : Test : perms");
         
-        String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
+        String insertString = "insert into topicInTest (topicID, testID) values (?, ?)";
         PreparedStatement insertStmt;
         
         
@@ -492,7 +403,8 @@ public class Test {
         }
         
         try{
-            insertStmt.setInt(1, topic.getID());
+            insertStmt.setInt(1, topicID);
+            insertStmt.setInt(2, testID);
         }
         catch (SQLException e) {
             throw new SQLException("Can't set questionID in addTopicToTest in Test class");
@@ -505,7 +417,7 @@ public class Test {
             throw new SQLException("Can't execute update in addTopicToTest in Test class");
         }
         
-        topics.add(topic);
+        topics.add(new Topic(c, topicID) );
     }
     
      public void addTopicToTest (Topic topic) throws SQLException, IllegalArgumentException {
@@ -546,7 +458,7 @@ public class Test {
      * @param userID identifier of the user attempting to modify the test
      * @throws java.sql.SQLException
      */
-    public void removeQuestionLink(int questionID, int userID) throws SQLException, IllegalArgumentException{
+    public void removeQuestion(int questionID, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeQuestionLink : Test : perms");
         
         // find the question in question
@@ -564,48 +476,8 @@ public class Test {
         
         questions.remove(temp);
         
-        // update numberOfQuestions
-        String updateString = "update test set numberOfQuestions = "
-                + "? where testID = " + testID;
-        PreparedStatement updateStmt;
-        
-        try{
-            updateStmt = c.prepareStatement(updateString);
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't prep update statement "
-                    + "in removeQuestionLink in Test class");
-        }
-        
-        try{
-            updateStmt.setInt(1, questions.size());
-        }
-        catch (SQLException e) {
-            throw new SQLException("Can't set numberOfQuestions "
-                    + "in removeQuestionLink in Test class");
-        }
-        
-        try{
-            updateStmt.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't execute update of numberOfQuestions"
-                    + " in removeQuestionLink in Test class");
-        }
     }
     
-    /**
-     * Method to remove a question from a test and the db
-     * @param questionID
-     * @param userID
-     * @throws SQLException
-     * @throws IllegalArgumentException 
-     */
-    public void removeQuestion(int questionID, int userID)throws SQLException, IllegalArgumentException {
-        removeQuestionLink(questionID, userID);
-        new Question(c, questionID).remove(userID);
-        
-    }
     
     /**
      * Method to remove a topic from a test linking table
@@ -613,7 +485,7 @@ public class Test {
      * @param userID identifier of the user attempting to modify the test
      * @throws java.sql.SQLException
      */
-    public void removeTopicLinks(int topicID, int userID) throws SQLException, IllegalArgumentException{
+    public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTopicLinks : Test : perms");
         
         // find the question in question
@@ -632,19 +504,7 @@ public class Test {
         topics.remove(temp);
         
     }
-    
-    /**
-     * Method to remove a topic from a test and completely from the db
-     * Will throw errors if there are any questions still in the topic
-     * @param topicID
-     * @param userID
-     * @throws SQLException
-     * @throws IllegalArgumentException 
-     */
-    public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
-        removeTopicLinks(topicID, userID);
-        new Topic(c, topicID).remove(userID);
-    }    
+       
     
     /**
     * Method to remove this test from the database using a transaction to ensure 
@@ -733,7 +593,7 @@ public class Test {
     public void setTestName(String name, int userID) throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("setTestName : Test : perms");
         
-        String updateString = "update test testName = ? where testID = " + getTestID();
+        String updateString = "update test set testName = ? where testID = ? ";
         PreparedStatement updateStmt;
         
         try{
@@ -746,6 +606,7 @@ public class Test {
         
         try{
             updateStmt.setString(1, name);
+            updateStmt.setInt(2, testID);
         }
         catch (SQLException e){
             throw new SQLException("can't set the testName in "
@@ -759,6 +620,8 @@ public class Test {
             throw new SQLException("Can't execute the update "
                     + "statement in setTestName in Test class");
         }
+        
+        testName = name;
     }
     
     /**
@@ -858,7 +721,7 @@ public class Test {
         if (!validatePerms(c, userID)) 
             throw new IllegalArgumentException("removeAllTopics : test : perms");
         for(Topic t : topics){
-            removeTopicLinks(userID, t.getID());
+            removeTopic(userID, t.getID());
         }
     }
     
@@ -869,7 +732,7 @@ public class Test {
         if(!validatePerms(c, userID))
             throw new IllegalArgumentException("removeAllQuestions : test : perms");
         for(Question q : questions){
-            removeQuestionLink(userID, q.getID());
+            removeQuestion(userID, q.getID());
         }
     }
 }
