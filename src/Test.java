@@ -331,7 +331,9 @@ public class Test {
                         + "statement in createTest of Test class.");
             }
                         
-            return c.prepareStatement("select testID from test where testName = " + testName).executeQuery().getInt(1);
+            ResultSet r = c.prepareStatement("select testID from test where testName = '" + testName + "'").executeQuery();
+            r.next();
+            return r.getInt(1);
         
     }
     
