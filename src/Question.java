@@ -13,12 +13,15 @@ public class Question {
     private int questionID;
     private String questionText;
     private int userID;
-    private int correctIndex;
+    private Integer correctIndex;
+    private Connection c;
+
     
     private ArrayList<Answer> answers;
     private ArrayList<Topic> topics;
     
     public Question(Connection c, int id){
+        correctIndex = null;
         String getQuestion = "Select * from question where questionID = ?";
         PreparedStatement prepStmt;
         ResultSet rs;
@@ -45,6 +48,7 @@ public class Question {
             if(!rs.next()) throw new SQLException();
             questionID = rs.getInt(1);
             questionText = rs.getString(2);
+            if(rs.wasNull()) questionText = "";
             userID = rs.getInt(3);
             
             rs.close();
@@ -55,11 +59,13 @@ public class Question {
         }
         answers = new ArrayList<>();
         topics = new ArrayList<>();
-        pullAnswers(c);
-        pullTopics(c);
+        this.c = c;
+        pullAnswers();
+        pullTopics();
+
     }
     
-    private void pullAnswers(Connection c){
+    private void pullAnswers(){
         String getAnswers = "Select answerID, correct from answerToQuestion where questionID = ?";
         PreparedStatement prepStmt;
         ResultSet rs;
@@ -97,7 +103,7 @@ public class Question {
         }
     }
     
-    private void pullTopics(Connection c){
+    private void pullTopics(){
         String getTopics = "Select topicID from questionInTopic where questionID = ?";
         PreparedStatement prepStmt;
         ResultSet rs;
@@ -132,7 +138,7 @@ public class Question {
         }
     }
     
-    private boolean validatePerms(Connection c, int id) throws SQLException {
+    private boolean validatePerms(int id) throws SQLException{
         int permLvl = User.getPermissionLevel(c, id);
         return permLvl > 0 || id == userID;
     }
@@ -145,9 +151,11 @@ public class Question {
         return questionID;
     }
     
-    public void setText(Connection c, int id, String text) throws SQLException, IllegalArgumentException {
+
+    public void setText(int id, String text) throws SQLException, IllegalArgumentException {
+
         
-        if (!validatePerms(c, id)) throw new IllegalArgumentException("setText : question : perms");
+        if (!validatePerms(id)) throw new IllegalArgumentException("setText : question : perms");
         
         String setText = "update question set questionText = ? where questionID = ?";
         
@@ -175,8 +183,8 @@ public class Question {
         questionText = text;
     }
     
-    public void addTopic(Connection c, int userID, int topicID) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("addTopic : question : perms");
+    public void addTopic(int userID, int topicID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("addTopic : question : perms");
         
         for(Topic t : topics){
             if(t.getID() == topicID) return;
@@ -196,8 +204,8 @@ public class Question {
         topics.add(temp);
     }
     
-    public void removeTopic(Connection c, int userID, int topicID) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTopic : question : perms");
+    public void removeTopic(int userID, int topicID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("removeTopic : question : perms");
         
         //This may cause issues if removing isn't working
         Topic temp = null;
@@ -219,14 +227,13 @@ public class Question {
         topics.remove(temp);
     }
     
-    public Topic[] getTopics(Connection c, int userID) throws SQLException, IllegalArgumentException{
-        //if (!validatePerms(c, userID)) throw new IllegalArgumentException("getTopics : question : perms");
+    public Topic[] getTopics() throws SQLException, IllegalArgumentException{
         Topic[] temp = new Topic[0];
         return topics.toArray(temp);
     }
     
-    public void addAnswer(Connection c, int userID, int ansID, boolean correct) throws SQLException, IllegalArgumentException {
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("addAnswer : question : perms");
+    public void addAnswer(int userID, int ansID, boolean correct) throws SQLException, IllegalArgumentException {
+        if (!validatePerms(userID)) throw new IllegalArgumentException("addAnswer : question : perms");
         
         for(Answer a : answers){
             if(a.getID() == ansID) return;
@@ -243,20 +250,22 @@ public class Question {
         prepStmt.setBoolean(3, correct);
 
         prepStmt.executeUpdate();
-        
+        if(correct) correctIndex = answers.size();
         answers.add(temp);
     }
     
-    public void removeAnswer(Connection c, int userID, int ansID) throws  SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeAnswer : question : perms");
+    public void removeAnswer(int userID, int ansID) throws  SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("removeAnswer : question : perms");
         
         //This may cause issues if removing isn't working
         Answer temp = null;
         for(Answer a : answers){
             if(a.getID() == ansID) temp = a;
         }
-        if(temp == null) return;
+        if(temp == null || correctIndex == null) return;
         
+        if(answers.indexOf(temp) == correctIndex){ correctIndex = null; }
+        else if(answers.indexOf(temp) < correctIndex) { correctIndex--; }
         
         //Delete from linking table
         String decouple = "delete from answerToQuestion where questionID = ? and answerID = ?";
@@ -275,37 +284,97 @@ public class Question {
         answers.remove(temp);
     }
     
-    public Answer[] getAnswers(Connection c, int userID) throws SQLException, IllegalArgumentException {
-        //if (!validatePerms(c, userID)) throw new IllegalArgumentException("getAnswers : question : perms");
+
+    public Answer[] getAnswers() throws SQLException {
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
     }
     
-    public int getCorrectAns(){
+    public Integer getCorrectAns(){
+        if(correctIndex == null || correctIndex >= answers.size()) return null;
         return answers.get(correctIndex).getID();
     }
     
-    public static void createQuestion(Connection c, 
+    
+    public static int createQuestion(Connection c, 
             int userID, String qText) throws SQLException{
         String setQuestion = "insert into question(questionText, creator) values(?, ?)";
+        String getQuestion = "select questionID from question where questionText = ?";
         
-        PreparedStatement prepStmt1;
+        ResultSet rs;
+        PreparedStatement prepStmt;
 
         try{
-             prepStmt1 = c.prepareStatement(setQuestion);
-             prepStmt1.setString(1, qText);
-             prepStmt1.setInt(2, userID);
+             prepStmt = c.prepareStatement(setQuestion);
+             prepStmt.setString(1, qText);
+             prepStmt.setInt(2, userID);
              
         } catch (SQLException e){
             throw new SQLException("Can't prep statement.");
         }
         
         try{
-            prepStmt1.executeUpdate();
-            prepStmt1.close();
+            prepStmt.executeUpdate();
+            prepStmt.close();
             
         } catch (SQLException e){
             throw new SQLException("Can't execute statement.");
         }
+        
+        try{
+            prepStmt = c.prepareStatement(getQuestion);
+            prepStmt.setString(1, qText);
+            
+            rs = prepStmt.executeQuery();
+            if(!rs.next()) throw new SQLException();
+            
+            return rs.getInt(1);
+        } catch (SQLException e){
+            throw new SQLException("Can't prep or execute statement.");
+        }
+    }
+    
+    public void remove( int userID)throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) 
+            throw new IllegalArgumentException("removeQuestion : question : perms");
+        Topic[] topics = getTopics();
+        for(Topic t : topics) removeTopic(userID, t.getID());
+        Answer[] answers = getAnswers();
+        for(Answer a : answers){
+            removeAnswer(userID, a.getID());
+            a.remove(userID);
+        }
+        
+        String deleteStr = "delete from question where questionID = ? " ;
+        PreparedStatement stmt;
+        
+        try{
+            stmt = c.prepareStatement(deleteStr);
+            stmt.setInt(1, questionID);
+        }
+        catch (SQLException e){
+            throw new SQLException("can't prep stmt removeQuestion");
+        }
+        
+        try{
+            stmt.executeUpdate();
+            stmt.close();
+        }
+        catch (SQLException e){
+            throw new SQLException("can't execute stmt removeQuestion");
+        }
+        
+        
+    }
+    
+    public void removeAllTopics(int userID) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) 
+            throw new IllegalArgumentException("removeAllTopics : question : perms");
+        
+        Topic[] topics = getTopics();
+        for (Topic t : topics){
+            removeTopic(userID, t.getID());
+        }
+        
     }
 }

@@ -42,6 +42,10 @@ public class Window {
         enter.setBounds(frame.getWidth()/2-50, frame.getHeight()/2, 100, 30);
         logIn.add(enter);
         
+        JButton signUp = new JButton("SignUp");
+        signUp.setBounds(frame.getWidth()/2-50, frame.getHeight()/2+50, 100, 30);
+        logIn.add(signUp);
+        
         user = new JLabel("Username: ");
         user.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100, 100, 30);
         logIn.add(user);
@@ -63,7 +67,16 @@ public class Window {
         key.setBounds(frame.getWidth()/2, frame.getHeight()/2-50, 100, 30);
         logIn.add(key);
         
+        Window temp = this;
+        
         enter.addActionListener(new LogInListener(this,c,error,name,key));
+        signUp.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SignUp();
+            }
+            
+        });
         currentPane = logIn;
         frame.add(logIn);
         frame.setLayout(null);
@@ -86,7 +99,9 @@ public class Window {
         signUp.add(enter);
         
         JButton back = new JButton("Back");
-        enter.setBounds(50, frame.getHeight()-50, 100, 30);
+
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
+
         signUp.add(back);
         
         user = new JLabel("Set Username: ");
@@ -110,7 +125,8 @@ public class Window {
         key.setBounds(frame.getWidth()/2, frame.getHeight()/2-50, 100, 30);
         signUp.add(key);
         
-        enter.addActionListener(new SignUpListener(this,c,error,name,key));
+        enter.addActionListener(new SignUpListener(c,error,name,key));
+
         back.addActionListener(new BackToLogInListener(this));
         currentPane = signUp;
         frame.add(signUp);
@@ -165,9 +181,9 @@ public class Window {
         dashboard.add(exitbutton);
         
         searchbutton.addActionListener(new SearchListener(this,c, query));
-        createTopic.addActionListener(new CreateTopicListener(this));
-        createTest.addActionListener(new CreateTestListener(this));
-        createQuestion.addActionListener(new CreateQuestionListener(this));
+        createTopic.addActionListener(new CreateTopicListener(this, currentUser) );
+        createTest.addActionListener( new CreateTestListener(this, currentUser) );
+        createQuestion.addActionListener(new CreateQuestionListener(this , currentUser) );
         exitbutton.addActionListener(new BackToLogInListener(this));
         currentPane = dashboard;
         frame.add(dashboard);
@@ -175,18 +191,400 @@ public class Window {
         frame.setVisible(true);
         
     }
-   
-    public void AddTest1(User currentUser){
+    
+    public void Search(JTextField text ){
         frame.setVisible(false);
         frame.remove(currentPane);
-        JLabel test, error;
+    }
+    
+    public void CreateTopic(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JLabel topic, desc, error;
+        JTextField name;
+        JTextArea description;
+        
+        JPanel createTopic = new JPanel();
+        createTopic.setSize(frame.getSize());
+        createTopic.setLayout(null);
+        
+        JButton enter = new JButton("Create");
+        enter.setBounds(frame.getWidth()/2-100, frame.getHeight()/2+100, 100, 30);
+        createTopic.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
+        createTopic.add(back);
+        
+        topic = new JLabel("Set Topic Name: ");
+        topic.setBounds(frame.getWidth()/2-200, frame.getHeight()/2-200, 100, 30);
+        createTopic.add(topic);
+        
+        desc = new JLabel("Set Topic Description: ");
+        desc.setBounds(frame.getWidth()/2-200, frame.getHeight()/2-100, 200, 100);
+        createTopic.add(desc);
+        
+        error = new JLabel("Name already in use!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-300, 400, 30);
+        error.setVisible(false);
+        createTopic.add(error);
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2, frame.getHeight()/2-200, 300, 30);
+        createTopic.add(name);
+        
+        description = new JTextArea();
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        description.setBounds(frame.getWidth()/2, frame.getHeight()/2-100, 300, 100);
+        createTopic.add(description);
+        
+        enter.addActionListener(new TopicCreateListener(c,name,description,error,currentUser));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = createTopic;
+        frame.add(createTopic);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void CreateQuestion(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        Search s = new Search(c);
+        JLabel question, error;
+        JLabel[] ans = new JLabel[4];
+        
+        JTextArea questionText;
+        JTextField[] ansText = new JTextField[4];
+        
+        JRadioButton[] ansButtons = new JRadioButton[4];
+        ButtonGroup group = new ButtonGroup();
+        
         JList topics;
-        JTextField testname;
-        JButton addquestion, nextpage;
-        ArrayList<Integer> idsOfTopics = new ArrayList<Integer>();
-        JPanel addtest1 = new JPanel();
-        addtest1.setSize(frame.getSize());
-        addtest1.setLayout(null);
+        ResultSet rs;
+        ArrayList<Topic> allTopics = new ArrayList<>();
+        String[] names;
+        
+        JPanel createQuestion = new JPanel();
+        createQuestion.setSize(frame.getSize());
+        createQuestion.setLayout(null);
+        
+        JButton enter = new JButton("Create");
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
+        createQuestion.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
+        createQuestion.add(back);
+        
+        question = new JLabel("Set Question Text: ");
+        question.setBounds(frame.getWidth()/2-300, frame.getHeight()/2-250, 200, 100);
+        createQuestion.add(question);
+        
+        for(int i = 0; i < ans.length; i++){
+            ans[i] = new JLabel("Set Answer: ");
+            ans[i].setBounds(frame.getWidth()/2-300, frame.getHeight()/2-100+(i*50), 100, 30);
+            createQuestion.add(ans[i]);
+        }
+        
+        error = new JLabel("Question already exists!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-425, 400, 30);
+        error.setVisible(false);
+        createQuestion.add(error);
+        
+        
+        try{
+            rs = s.Topics("");
+            while(rs.next())
+                allTopics.add(new Topic(c, rs.getInt(1)));
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+        
+        names = new String[allTopics.size()];
+        
+        try{
+            for(int i = 0; i < names.length; i++)
+                names[i] = allTopics.get(i).getName();
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+        
+        topics = new JList<>(names);
+        
+        topics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        createQuestion.add(scrollPane);
+        
+        questionText = new JTextArea();
+        questionText.setLineWrap(true);
+        questionText.setWrapStyleWord(true);
+        questionText.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-250, 300, 100);
+        createQuestion.add(questionText);
+        
+        for(int i = 0; i < ansText.length;i++){
+            ansText[i] = new JTextField();
+            ansText[i].setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100+(i*50), 300, 30);
+            createQuestion.add(ansText[i]);
+        }
+        
+        for(int i = 0; i < ansButtons.length;i++){
+            ansButtons[i] = new JRadioButton();
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 30, 30);
+            group.add(ansButtons[i]);
+            createQuestion.add(ansButtons[i]);
+        }
+        ansButtons[0].setSelected(true);
+        
+        enter.addActionListener(new QuestionCreateListener(c,questionText,ansText,ansButtons,topics,allTopics,error,currentUser));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = createQuestion;
+        frame.add(createQuestion);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void EditTopic(User currentUser, Topic currentTopic){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JTextField name;
+        JTextArea description;
+        JLabel error;
+        
+        
+        JPanel editTopic = new JPanel();
+        editTopic.setSize(frame.getSize());
+        editTopic.setLayout(null);
+        
+        JButton enter = new JButton("Save");
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
+        editTopic.add(enter);
+        
+        JButton remove = new JButton("Remove");
+        remove.setBounds(frame.getWidth()-600, frame.getHeight()-300, 100, 30);
+        editTopic.add(enter);
+        
+        JButton cancel = new JButton("Cancel");
+        cancel.setBounds(frame.getWidth()-800, frame.getHeight()-300, 100, 30);
+        editTopic.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
+        editTopic.add(back);
+        
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
+        try{
+            name.setText(currentTopic.getName());
+        } catch (SQLException e){
+            name.setText("CRITICAL ERROR - TOPIC DNE");
+        }
+        editTopic.add(name);
+        
+        description = new JTextArea();
+        description.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-100, 300, 100);
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        try{
+            description.setText(currentTopic.getDesc());
+        } catch (SQLException e){
+            description.setText("CRITICAL ERROR - TOPIC DNE");
+        }
+        editTopic.add(description);
+        
+        
+        error = new JLabel("Question already exists!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 400, 30);
+        error.setVisible(false);
+        editTopic.add(error);
+        
+        
+        
+        enter.addActionListener(new TopicEditSaveListener(c,currentTopic,name,description,error,currentUser));
+        remove.addActionListener(new TopicEditRemoveListener(c,currentTopic,error,currentUser));
+        cancel.addActionListener(new CancelListener(error));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
+        currentPane = editTopic;
+        frame.add(editTopic);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void EditQuestion(User currentUser, Question currentQuestion){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        Search s = new Search(c);
+        
+        JTextArea questionText;
+        JTextField[] ansText = new JTextField[4];
+        
+        JRadioButton[] ansButtons = new JRadioButton[4];
+        ButtonGroup group = new ButtonGroup();
+        
+        JLabel error;
+        
+        JList topics;
+        ResultSet rs;
+        ArrayList<Topic> allTopics = new ArrayList<>();
+        String[] names;
+        
+        JPanel editQuestion = new JPanel();
+        editQuestion.setSize(frame.getSize());
+        editQuestion.setLayout(null);
+        
+        JButton enter = new JButton("Save");
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
+        editQuestion.add(enter);
+        
+        JButton remove = new JButton("Remove");
+        remove.setBounds(frame.getWidth()-600, frame.getHeight()-300, 100, 30);
+        editQuestion.add(enter);
+        
+        JButton cancel = new JButton("Cancel");
+        cancel.setBounds(frame.getWidth()-800, frame.getHeight()-300, 100, 30);
+        editQuestion.add(enter);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(200, frame.getHeight()-300, 100, 30);
+        editQuestion.add(back);
+        
+        
+        
+        error = new JLabel("Question already exists!");
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2+300, 400, 30);
+        error.setVisible(false);
+        editQuestion.add(error);
+        
+        // topics multiselect JList
+        try{
+           rs = s.Topics("");
+           while(rs.next()){
+               allTopics.add(new Topic(c, rs.getInt(1)));
+           }
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+        
+        names = new String[allTopics.size()];
+        Topic[] currentTopics = new Topic[0];
+        try{
+            for(int i = 0; i < names.length; i++)
+                names[i] = allTopics.get(i).getName();
+            currentTopics = currentQuestion.getTopics();
+        } catch (SQLException e) {
+            error.setText("Error fetching topics!");
+            error.setVisible(true);
+        }
+         
+        int[] currentTopicIndicies = new int[currentTopics.length];
+        int counter = 0;
+        for(int i = 0; i < allTopics.size(); i++){
+            for(int j = 0; j < currentTopics.length; j++){
+                if(allTopics.get(i).getID() != currentTopics[i].getID()) continue;
+                
+                currentTopicIndicies[counter++] = i;
+            }
+        }
+        
+        topics = new JList<>(names);
+        
+        topics.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1){
+                if (super.isSelectedIndex(index0))
+                    super.removeSelectionInterval(index0, index1);
+                else
+                    super.addSelectionInterval(index0, index1);
+            }
+        });
+        
+        topics.setSelectedIndices(currentTopicIndicies);
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        editQuestion.add(scrollPane);
+
+        questionText = new JTextArea();
+        questionText.setLineWrap(true);
+        questionText.setWrapStyleWord(true);
+        questionText.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-250, 300, 100);
+        questionText.setText(currentQuestion.getText());
+        editQuestion.add(questionText);
+        
+        int answerSize = 0;
+        Answer[] answers = new Answer[4];
+        try{
+            answers = currentQuestion.getAnswers();
+            answerSize = answers.length;
+        } catch(SQLException e){
+            error.setText("Error fetching answers!");
+            error.setVisible(true);
+        }
+        
+        for(int i = 0; i < ansText.length;i++){
+            ansText[i] = new JTextField();
+            ansText[i].setBounds(frame.getWidth()/2, frame.getHeight()/2-150+(i*50), 100, 30);
+            editQuestion.add(ansText[i]);
+            if(i >= answerSize) continue;
+            ansText[i].setText(answers[i].getText());
+            
+        }
+        
+        for(int i = 0; i < ansButtons.length;i++){
+            ansButtons[i] = new JRadioButton();
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 30, 30);
+            group.add(ansButtons[i]);
+            editQuestion.add(ansButtons[i]);
+        }
+        
+        
+        
+        
+        enter.addActionListener(new QuestionEditSaveListener(c,questionText,ansText,ansButtons,topics,allTopics,error,currentQuestion,currentUser));
+        remove.addActionListener(new QuestionEditRemoveListener(c,currentQuestion,error,currentUser));
+        cancel.addActionListener(new CancelListener(error));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
+        currentPane = editQuestion;
+        frame.add(editQuestion);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void CreateTest(User currentUser){
+        
+    }
+    
+    /**
+     * Search page UI
+     * @param currentUser user using the page
+     */
+    public void SearchPage(User currentUser){
         
         
         nextpage = new JButton("Next");
@@ -243,6 +641,7 @@ public class Window {
         
         
     }
+    
      public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
         frame.setVisible(false);
         frame.remove(currentPane);

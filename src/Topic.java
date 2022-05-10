@@ -7,6 +7,7 @@ public class Topic {
     private String description;
     private int topicID;
     private int userID;
+    Connection c;
     
     
     Topic(Connection c, int id) throws SQLException{
@@ -37,9 +38,11 @@ public class Topic {
             
             topicID = rs.getInt(1);
             name = rs.getString(2);
+            if(rs.wasNull()) name = "";
             description = rs.getString(3);
+            if(rs.wasNull()) description = "";
             userID = rs.getInt(4);
-            
+            this.c = c;
             rs.close();
         } catch (SQLException e) {
             throw new SQLException("Can't execute query.");
@@ -71,35 +74,65 @@ public class Topic {
         }
     }
     
-    public String getDescription(){
-        return description;
-    }
-    
     public int getID(){
         return topicID;
     }
+
+    public  String getName() {
+        return name;
+    }
+
+    /*
+    public  void setName(String newName) throws SQLException{
+        PreparedStatement prepStmt;
+        String setName = "update topic set topicName = ? where topicID = ?";
+        try{
+            prepStmt = c.prepareStatement(setName);
+
+        }catch(SQLException e){
+            System.err.println("Can't prep statment");
+            System.exit(1);
+            return;
+        }
+
+        try{
+            prepStmt.setString(1, newName);
+            prepStmt.setInt(2, this.topicID);
+
+        } catch(SQLException e){
+            throw new SQLException("Can't set ID or name");
+        }
+
+        try{
+            prepStmt.executeQuery();
+        }catch(SQLException e){
+            throw new SQLException("Can't execute query");
+        }
+       
+    }
+    */
+
     
+    public String getDesc() throws SQLException{
+        return description;
+    }
+
     public int getCreator(){
         return userID;
     }
     
-    public String getTopicName(){
-        return name;
-    }
-    
-    private boolean validatePerms(Connection c, int userID) throws SQLException{
+    private boolean validatePerms(int userID) throws SQLException{
         int permLVL = User.getPermissionLevel(c, userID);
         return permLVL > 0 || userID == this.userID;
     }
     
     /**
      * Make sure this is called only after all questions have been removed and the topic has been removed from the tests
-     * @param c
      * @param userID
      * @throws IllegalArgumentException
      * @throws SQLException 
      */
-    public void removeTopic(Connection c, int userID) throws IllegalArgumentException, SQLException{
+    public void remove( int userID) throws IllegalArgumentException, SQLException{
         if (userID != this.userID || User.getPermissionLevel(c, userID) < 1) 
             throw new IllegalArgumentException("removeTopic : topic : perms");
         
@@ -121,8 +154,8 @@ public class Topic {
         }
     }
     
-    public void setTopicName(Connection c, int userID, String name) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setTopicName : topic : perms");
+    public void setName(int userID, String name) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("setTopicName : topic : perms");
         
         String updateStr = "update topic set topicName = ? where topicID = " + getID();
         PreparedStatement update;
@@ -149,8 +182,8 @@ public class Topic {
         }
     }
     
-    public void setDescription(Connection c, int userID, String desc) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("setDescription : topic : perms");
+    public void setDesc(int userID, String desc) throws SQLException, IllegalArgumentException{
+        if (!validatePerms(userID)) throw new IllegalArgumentException("setDescription : topic : perms");
         
         String updateString = "update topic set topicDescription = ? where topicID = " + getID();
         PreparedStatement update;
