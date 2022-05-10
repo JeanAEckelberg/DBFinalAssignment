@@ -227,7 +227,7 @@ public class Question {
         topics.remove(temp);
     }
     
-    public Topic[] getTopics() throws SQLException, IllegalArgumentException{
+    public Topic[] getTopics(){
         Topic[] temp = new Topic[0];
         return topics.toArray(temp);
     }
@@ -287,7 +287,7 @@ public class Question {
     }
     
 
-    public Answer[] getAnswers() throws SQLException {
+    public Answer[] getAnswers() {
         Answer[] temp = new Answer[0];
         return answers.toArray(temp);
     }

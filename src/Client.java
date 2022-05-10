@@ -26,9 +26,17 @@ public class Client {
 
             
             Window w = new Window("Discrete DB", 1280, 960, connection); //connection,
+            User user1 = new User(connection, "Milksoplimit", "p455word");
+            Test test = new Test(connection, 1);
+            w.TakeTest(user1, test);
+            
            //w.SignUp();
            // User.createUser(connection, "Jim", "1234");
+<<<<<<< Updated upstream
            
+=======
+           /*
+>>>>>>> Stashed changes
             User user1 = new User(connection, "Milksoplimit", "p455word");
             Topic t1 = new Topic(connection, 1);
             Question q1 = new Question(connection, 1);
@@ -50,8 +58,12 @@ public class Client {
             test.addTopicToTest(t2.getID(), 4);
             test.setTestName("New Sample Test 3", 4);
             test.removeTest(connection, 4);
+<<<<<<< Updated upstream
             */
            
+=======
+           */
+>>>>>>> Stashed changes
             //w.Dashboard(user1);
             //w.LogIn();
 

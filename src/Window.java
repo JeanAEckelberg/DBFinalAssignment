@@ -534,13 +534,13 @@ public class Window {
         
         int answerSize = 0;
         Answer[] answers = new Answer[4];
-        try{
+        //try{
             answers = currentQuestion.getAnswers();
             answerSize = answers.length;
-        } catch(SQLException e){
-            error.setText("Error fetching answers!");
-            error.setVisible(true);
-        }
+        //} catch(SQLException e){
+        //    error.setText("Error fetching answers!");
+        //    error.setVisible(true);
+        //}
         
         for(int i = 0; i < ansText.length;i++){
             ansText[i] = new JTextField();
