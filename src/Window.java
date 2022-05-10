@@ -1549,14 +1549,14 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(testtopics);
         testtopics.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setBounds(frame.getWidth()/2 - 200 ,frame.getHeight()/2 -200 , 400, 400);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         removetesttopics.add(scrollPane);
         
        
         save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testtopics, topicIds));
-        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        back.addActionListener(new BackToEditTestHomeListener(this, currentUser, currentTest));
         currentPane = removetesttopics;
         frame.add(removetesttopics);
         frame.setLayout(null);
@@ -1611,14 +1611,14 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(testquestions);
         testquestions.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setBounds(frame.getWidth()/2 - 200 ,frame.getHeight()/2 -200 , 400, 400);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         removetestquestions.add(scrollPane);
         
        
         save.addActionListener(new RemoveTestQuestionsListener(this, c , currentTest, currentUser, testquestions, questionIds));
-        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        back.addActionListener(new BackToEditTestHomeListener(this, currentUser, currentTest));
         currentPane = removetestquestions;
         frame.add(removetestquestions);
         frame.setLayout(null);
@@ -1679,7 +1679,7 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(topics);
         topics.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setBounds(frame.getWidth()/2 - 200 ,frame.getHeight()/2 -200 , 400, 400);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         addtesttopics.add(scrollPane);
@@ -1761,7 +1761,7 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(questions);
         questions.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        scrollPane.setBounds(frame.getWidth()/2 - 200 ,frame.getHeight()/2 -200 , 400, 400);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         addtestquestions.add(scrollPane);
