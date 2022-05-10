@@ -28,7 +28,14 @@ public class Client {
             Window w = new Window("Discrete DB", 1280, 960, connection); //connection,
            //w.SignUp();
            // User.createUser(connection, "Jim", "1234");
+           
             User user1 = new User(connection, "Milksoplimit", "p455word");
+            Topic t1 = new Topic(connection, 1);
+            Question q1 = new Question(connection, 1);
+            Test test1 = new Test(connection, 2);
+            w.EditTestHome(user1, test1);
+            
+            /*
             Question q1 = new Question(connection, 1);
             Question q2 = new Question(connection, 2);
             q1.setText(4, "new text");
@@ -43,11 +50,13 @@ public class Client {
             test.addTopicToTest(t2.getID(), 4);
             test.setTestName("New Sample Test 3", 4);
             test.removeTest(connection, 4);
+            */
+           
             //w.Dashboard(user1);
             //w.LogIn();
 
             /* Testing calls for methods
-            //User.createUser(connection, "Jim", "1234");
+            User.createUser(connection, "Jim", "1234");
             User user1 = new User(connection, "Jim", "1234");
             System.out.println(user1.getUserName());
             //Topic.createTopic(connection, "Test", "Test Description", 8);

@@ -43,6 +43,10 @@ public class Window {
         enter.setBounds(frame.getWidth()/2-50, frame.getHeight()/2, 100, 30);
         logIn.add(enter);
         
+        JButton signUp = new JButton("SignUp");
+        signUp.setBounds(frame.getWidth()/2-50, frame.getHeight()/2+50, 100, 30);
+        logIn.add(signUp);
+        
         user = new JLabel("Username: ");
         user.setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100, 100, 30);
         logIn.add(user);
@@ -64,7 +68,16 @@ public class Window {
         key.setBounds(frame.getWidth()/2, frame.getHeight()/2-50, 100, 30);
         logIn.add(key);
         
+        Window temp = this;
+        
         enter.addActionListener(new LogInListener(this,c,error,name,key));
+        signUp.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SignUp();
+            }
+            
+        });
         currentPane = logIn;
         frame.add(logIn);
         frame.setLayout(null);
@@ -292,13 +305,8 @@ public class Window {
         
         names = new String[allTopics.size()];
         
-        try{
             for(int i = 0; i < names.length; i++)
                 names[i] = allTopics.get(i).getName();
-        } catch (SQLException e) {
-            error.setText("Error fetching topics!");
-            error.setVisible(true);
-        }
         
         topics = new JList<>(names);
         
@@ -313,7 +321,6 @@ public class Window {
         });
         
         
-        //topics.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(topics);
         topics.setLayoutOrientation(JList.VERTICAL);
@@ -381,11 +388,11 @@ public class Window {
         
         name = new JTextField();
         name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
-        try{
+        // try{                                           Kept for in case null poiter or other issue
             name.setText(currentTopic.getName());
-        } catch (SQLException e){
-            name.setText("CRITICAL ERROR - TOPIC DNE");
-        }
+        //} catch (SQLException e){
+        //    name.setText("CRITICAL ERROR - TOPIC DNE");
+        //}
         editTopic.add(name);
         
         description = new JTextArea();
@@ -460,13 +467,13 @@ public class Window {
         
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2+300, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-300, 400, 30);
         error.setVisible(false);
         editQuestion.add(error);
         
         // topics multiselect JList
         try{
-           rs = s.Questions("");
+           rs = s.Topics("");
            while(rs.next()){
                allTopics.add(new Topic(c, rs.getInt(1)));
            }
@@ -490,7 +497,7 @@ public class Window {
         int counter = 0;
         for(int i = 0; i < allTopics.size(); i++){
             for(int j = 0; j < currentTopics.length; j++){
-                if(allTopics.get(i).getID() != currentTopics[i].getID()) continue;
+                if(allTopics.get(i).getID() != currentTopics[j].getID()) continue;
                 
                 currentTopicIndicies[counter++] = i;
             }
@@ -509,9 +516,15 @@ public class Window {
         });
         
         topics.setSelectedIndices(currentTopicIndicies);
-        topics.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-400, 100, 30);
-        editQuestion.add(topics);
         
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(topics);
+        topics.setLayoutOrientation(JList.VERTICAL);
+        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        editQuestion.add(scrollPane);
+
         questionText = new JTextArea();
         questionText.setLineWrap(true);
         questionText.setWrapStyleWord(true);
@@ -540,9 +553,13 @@ public class Window {
         
         for(int i = 0; i < ansButtons.length;i++){
             ansButtons[i] = new JRadioButton();
-            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 100, 30);
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 30, 30);
+            if(i < answers.length && currentQuestion.getCorrectAns() != null
+                    && currentQuestion.getCorrectAns() == answers[i].getID())
+                ansButtons[i].setSelected(true);
             group.add(ansButtons[i]);
             editQuestion.add(ansButtons[i]);
+            
         }
         
         
@@ -612,6 +629,7 @@ public class Window {
         
     }
     
+<<<<<<< HEAD
     public void TakeTest(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
@@ -773,4 +791,468 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
+=======
+    public void AddTest1(User currentUser){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JLabel test, error;
+        JList topics;
+        JTextField testname;
+        JButton addquestion, nextpage;
+        ArrayList<Integer> idsOfTopics = new ArrayList<Integer>();
+        JPanel addtest1 = new JPanel();
+        addtest1.setSize(frame.getSize());
+        addtest1.setLayout(null);
+        
+        
+        nextpage = new JButton("Next");
+        nextpage.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtest1.add(nextpage);
+        
+        test = new JLabel("Test Name: ");
+        test.setBounds(frame.getWidth()/2-500, frame.getHeight()/8 -20, 100, 30);
+        addtest1.add(test);
+        
+        testname = new JTextField();
+        testname.setBounds(frame.getWidth()/2 -400,frame.getHeight()/8 -20, 400, 30);
+        addtest1.add(testname);
+        
+        //temp
+        Search s = new Search(c);
+        DefaultListModel listModel = new DefaultListModel();
+        try{
+            ResultSet topicRS = s.Topics("");
+            
+            while(topicRS.next()){
+                idsOfTopics.add(topicRS.getInt(1));
+                Topic topic = new Topic(c, topicRS.getInt(1));
+                listModel.addElement( topic.getName());
+            }
+        }catch(SQLException sasd){
+            listModel.addElement("No topics found");
+        }
+        
+        
+        
+        topics = new JList(listModel);
+        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtest1.add(topics);
+        /*
+        topics = new JList(Search.search(topics));
+        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        addtest1.add(topics);
+        */
+        
+        JButton exitbutton = new JButton("Exit");
+        exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
+        addtest1.add(exitbutton);
+        
+        nextpage.addActionListener(new AddTestListener(this, c, testname, currentUser, idsOfTopics, topics));
+        exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = addtest1;
+        frame.add(addtest1);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+        
+        
+    }
+    
+     public void AddTest2(User currentUser, String testname, ArrayList<Integer> topicIds){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JPanel addtest2 = new JPanel();
+        addtest2.setSize(frame.getSize());
+        addtest2.setLayout(null);
+        JButton create;
+        JList questions;
+        ArrayList<Integer> questionIDList = new ArrayList<Integer>();
+        
+
+        //temporary
+        Search s = new Search(c);
+        DefaultListModel listModel = new DefaultListModel();
+        try{
+           for(int i = 0; i < topicIds.size(); i++){
+                ResultSet questionRS = s.QuestionsByTopic(topicIds.get(i));
+                while(questionRS.next()){
+                    Question q = new Question(c, questionRS.getInt(1));
+                    questionIDList.add(questionRS.getInt(1));
+                    listModel.addElement(q.getText());
+
+                }
+            }
+        }catch(SQLException e){}
+        
+        
+        questions = new JList(listModel);
+        questions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtest2.add(questions);
+        
+        create = new JButton("Create");
+        create.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtest2.add(create);
+        
+         JButton exitbutton = new JButton("Exit");
+        exitbutton.setBounds(frame.getWidth() -350,frame.getHeight()/20 , 150, 30);
+        addtest2.add(exitbutton);
+        
+        JLabel selectquestions = new JLabel("Select Questions");
+        selectquestions.setBounds(frame.getWidth()/2 -500,frame.getHeight()/8 -20, 100, 30);
+        addtest2.add(selectquestions);
+        
+        //will go back to dashboard later
+        
+        exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
+        create.addActionListener(new AddTest2Listener(this, c, currentUser, testname, topicIds, questions, questionIDList));
+        exitbutton.addActionListener(new BackToDashboardListener(this, currentUser));
+        currentPane = addtest2;
+        frame.add(addtest2);
+        frame.setLayout(null);
+        frame.setVisible(true);
+     }
+    
+    
+    
+    public void EditTestHome(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JButton removeQuestions, addQuestions, removeTopics, addTopics, removeTest, editname  ;
+        
+        
+        JPanel edittesthome = new JPanel();
+        edittesthome.setSize(frame.getSize());
+        edittesthome.setLayout(null);
+        
+        
+        editname = new JButton("Edit Name");
+        editname.setBounds(frame.getWidth()/2-10,frame.getHeight()/2 -200, 100, 30);
+        edittesthome.add(editname);
+        
+        
+        removeQuestions = new JButton("Remove Questions");
+        removeQuestions.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -250, 200, 30);
+        edittesthome.add(removeQuestions);
+        
+        addQuestions = new JButton("Add Questions");
+        addQuestions.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -300, 200, 30);
+        edittesthome.add(addQuestions);
+        
+        removeTopics = new JButton("Remove Topics");
+        removeTopics.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -350, 200, 30);
+        edittesthome.add(removeTopics);
+        
+        addTopics = new JButton("Add Topics");
+        addTopics.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -400, 200, 30);
+        edittesthome.add(addTopics);
+        
+        removeTest = new JButton("REMOVE TEST");
+        removeTest.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -450, 200, 30);
+        edittesthome.add(removeTest);
+        Window ref = this;
+     
+        
+        
+        editname.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.EditTestName(currentUser, currentTest);
+            }
+        
+        });
+        
+        removeQuestions.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.RemoveTestQuestions(currentUser, currentTest);
+            }
+        
+        });
+        
+        addQuestions.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.AddTestQuestions(currentUser, currentTest);
+            }
+        
+        });
+        
+        removeTopics.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.RemoveTestTopics(currentUser, currentTest);
+            }
+        
+        });
+        
+        addTopics.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                ref.AddTestTopics(currentUser, currentTest);
+            }
+        
+        });
+        
+        removeTest.addActionListener(new RemoveTestListener(this, c, currentUser, currentTest));
+        
+        currentPane = edittesthome;
+        frame.add(edittesthome);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    
+    public void EditTestName(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        JTextField name;
+        JButton save;
+        
+        JPanel edittestname  = new JPanel();
+        edittestname.setSize(frame.getSize());
+        edittestname.setLayout(null);
+        
+        name = new JTextField();
+        name.setBounds(frame.getWidth()/2-50, frame.getHeight()/2-150, 300, 30);
+        name.setText(currentTest.getTestName());
+        edittestname.add(name);
+        
+        
+        save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +300, frame.getHeight()/2-150, 100, 30);
+        edittestname.add(save);
+        
+        
+        save.addActionListener(new EditTestNameListener(this, c , currentTest, currentUser, name));
+        
+        currentPane = edittestname;
+        frame.add(edittestname);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void RemoveTestTopics(User currentUser, Test currentTest){
+         frame.setVisible(false);
+        frame.remove(currentPane);
+        JList testtopics;
+        JButton save;
+        ArrayList<Integer> topicIds = new ArrayList<Integer>();
+                
+                
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel removetesttopics  = new JPanel();
+        removetesttopics.setSize(frame.getSize());
+        removetesttopics.setLayout(null);
+
+        
+        save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        removetesttopics.add(save);
+        
+        Topic[] topics = currentTest.getTopics();
+        
+        for(int i = 0; i < topics.length; i++){
+            listModel.addElement(topics[i].getName());
+            topicIds.add(topics[i].getID());
+        }
+        
+        testtopics = new JList(listModel);
+        testtopics.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        testtopics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        if(testtopics.getModel().getSize() - 1 >= 0){
+            testtopics.setSelectionInterval(0, testtopics.getModel().getSize() -1);
+        }
+        
+        removetesttopics.add(testtopics);
+        
+       
+        save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testtopics, topicIds));
+        currentPane = removetesttopics;
+        frame.add(removetesttopics);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    
+    
+    
+    
+    public void RemoveTestQuestions(User currentUser, Test currentTest){
+         frame.setVisible(false);
+        frame.remove(currentPane);
+        JList testquestions;
+        JButton save;
+        ArrayList<Integer> questionIds = new ArrayList<Integer>();
+                
+                
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel removetestquestions  = new JPanel();
+        removetestquestions.setSize(frame.getSize());
+        removetestquestions.setLayout(null);
+
+        
+        save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        removetestquestions.add(save);
+        
+        Question[] questions = currentTest.getQuestions();
+        
+        for(int i = 0; i < questions.length; i++){
+            listModel.addElement(questions[i].getText());
+            questionIds.add(questions[i].getID());
+        }
+        
+        testquestions = new JList(listModel);
+        testquestions.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        testquestions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        if(testquestions.getModel().getSize() - 1 >= 0){
+            testquestions.setSelectionInterval(0, testquestions.getModel().getSize() -1);
+        }
+        
+        removetestquestions.add(testquestions);
+        
+       
+        save.addActionListener(new RemoveTestQuestionsListener(this, c , currentTest, currentUser, testquestions, questionIds));
+        currentPane = removetestquestions;
+        frame.add(removetestquestions);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void AddTestTopics(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        ArrayList<Integer> idsOfTopics = new ArrayList<Integer>();
+        Topic[] topicsInTest = currentTest.getTopics();
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel addtesttopics  = new JPanel();
+        addtesttopics.setSize(frame.getSize());
+        addtesttopics.setLayout(null);
+        
+        
+        
+        Search s = new Search(c);
+        
+        try{
+            ResultSet topicRS = s.Topics("");
+            int count = 0;
+            while(topicRS.next()){
+                Topic topic = new Topic(c, topicRS.getInt(1));
+                Boolean inTest = false;
+                for(int i =0; i < topicsInTest.length; i++){
+                    if(topic.getID() == topicsInTest[i].getID()){
+                        inTest = true;
+                    }
+                        
+                }
+                if( !inTest){
+                    idsOfTopics.add(topicRS.getInt(1));
+               
+                    listModel.addElement( topic.getName());
+                    
+                }
+            }
+        }catch(SQLException sasd){
+            listModel.addElement("No topics found");
+        }
+        
+        
+        
+        JList topics = new JList(listModel);
+        topics.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtesttopics.add(topics);
+        
+        JButton save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        addtesttopics.add(save);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(frame.getWidth()/2 -300,frame.getHeight()/8 -20, 100, 30);
+        addtesttopics.add(back);
+        
+        
+        back.addActionListener(new BackToEditTestHomeListener(this, currentUser, currentTest));
+        
+        
+        save.addActionListener(new AddTestTopicsListener(this, c , currentTest, currentUser, topics, idsOfTopics));
+        currentPane = addtesttopics;
+        frame.add(addtesttopics);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+    public void AddTestQuestions(User currentUser, Test currentTest){
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        ArrayList<Integer> idsOfQuestions = new ArrayList<Integer>();
+        Question[] questionsInTest = currentTest.getQuestions();
+        
+        Topic[] topicsInTest = currentTest.getTopics();
+        DefaultListModel listModel = new DefaultListModel();
+
+        JPanel addtestquestions  = new JPanel();
+        addtestquestions.setSize(frame.getSize());
+        addtestquestions.setLayout(null);
+        
+        
+        
+        Search s = new Search(c);
+        
+        try{
+            for(int i = 0; i < topicsInTest.length; i++){
+                ResultSet topicRS = s.QuestionsByTopic(topicsInTest[i].getID());
+                
+                while(topicRS.next()){
+                    Question question = new Question(c, topicRS.getInt(1));
+                    Boolean inTest = false;
+                    for(int j =0; j < questionsInTest.length; j++){
+                        if(question.getID() == questionsInTest[j].getID()){
+                            inTest = true;
+                        }
+
+                    }
+                    if( !inTest){
+                        idsOfQuestions.add(topicRS.getInt(1));
+
+                        listModel.addElement( question.getText());
+
+                    }
+                }
+            }
+        }catch(SQLException sasd){
+            listModel.addElement("No questions found (might not have any topics)");
+        }
+        
+        
+        
+        JList questions = new JList(listModel);
+        questions.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
+        questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        addtestquestions.add(questions);
+        
+        JButton save = new JButton("Save");
+        save.setBounds(frame.getWidth()/2 -10,frame.getHeight()/8 -20, 100, 30);
+        addtestquestions.add(save);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(frame.getWidth()/2 -200,frame.getHeight()/8 -20, 100, 30);
+        addtestquestions.add(back);
+        
+        
+        back.addActionListener(new BackToEditTestHomeListener(this, currentUser, currentTest));
+        save.addActionListener(new AddTestQuestionsListener(this, c , currentTest, currentUser, questions, idsOfQuestions));
+        currentPane = addtestquestions;
+        frame.add(addtestquestions);
+        frame.setLayout(null);
+        frame.setVisible(true);
+    }
+    
+>>>>>>> main
 }

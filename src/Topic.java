@@ -77,7 +77,8 @@ public class Topic {
     public int getID(){
         return topicID;
     }
-    public  String getName() throws SQLException{
+
+    public  String getName() {
         return name;
     }
 

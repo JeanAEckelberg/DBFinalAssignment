@@ -44,7 +44,6 @@ create table if not exists answer (
 
 create table if not exists test (
 	testID serial primary key,
-	numberOfQuestions int not null,
 	creator int,
 	testName varchar(50) unique not null,
 	foreign key (creator) references userTable (userID)
@@ -200,7 +199,12 @@ values ('Symbolic Logic', 'Symbolic logic is a way to represent logical expressi
 		
 	   ('Proofs', 'Proof, in logic, an argument that establishes the validity of a proposition.', 4),
 	   
-	   ('Sets', 'A set is the mathematical model for a collection of different things; a set contains elements or members, which can be mathematical objects of any kind: numbers, symbols, points in space, lines, other geometrical shapes, variables, or even other sets.', 7);
+	   ('Sets', 'A set is the mathematical model for a collection of different things; a set contains elements or members, which can be mathematical objects of any kind: numbers, symbols, points in space, lines, other geometrical shapes, variables, or even other sets.', 7),
+	   
+	   ('Logic 4', '', 4),
+	   
+	   ('Logic 5', '', 4)
+	   ;
 	   
 insert into question (questionText, creator)
 values ('A ^ B', 4),
@@ -237,9 +241,10 @@ values (1, 3, true),
 	   (5, 11, false),
 	   (5, 12, true);
 	   
-insert into test (numberOfQuestions, creator, testName)
-values (5, 1, 'Sample Test 1'),
-	   (2, 6, 'Sample Test 2');
+insert into test (creator, testName)
+values (4, 'Sample Test 1'),
+	   (6, 'Sample Test 2'),
+	   (4, 'Sample Test 3');
 	   
 insert into questionInTopic (questionID, topicID)
 values (1,1),
