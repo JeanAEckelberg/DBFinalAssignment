@@ -149,7 +149,7 @@ public class Window {
         dashboard.setLayout(null);
         
         greeting = new JLabel("Hello "+ currentUser.getUserName() + "!");
-        greeting.setBounds(frame.getWidth()/2-500, frame.getHeight()/20 -20, 100, 30);
+        greeting.setBounds(frame.getWidth()/2-500, frame.getHeight()/20 -20, 500, 30);
         dashboard.add(greeting);
         
         JButton searchbutton = new JButton("Search");
@@ -282,25 +282,25 @@ public class Window {
         createQuestion.setLayout(null);
         
         JButton enter = new JButton("Create");
-        enter.setBounds(frame.getWidth()-400, frame.getHeight()-300, 100, 30);
+        enter.setBounds(frame.getWidth()-400, frame.getHeight()-200, 100, 30);
         createQuestion.add(enter);
         
         JButton back = new JButton("Back");
-        back.setBounds(200, frame.getHeight()-300, 100, 30);
+        back.setBounds(200, frame.getHeight()-200, 100, 30);
         createQuestion.add(back);
         
         question = new JLabel("Set Question Text: ");
-        question.setBounds(frame.getWidth()/2-300, frame.getHeight()/2-250, 200, 100);
+        question.setBounds(frame.getWidth()/2-300, frame.getHeight()/2-150, 200, 100);
         createQuestion.add(question);
         
         for(int i = 0; i < ans.length; i++){
             ans[i] = new JLabel("Set Answer: ");
-            ans[i].setBounds(frame.getWidth()/2-300, frame.getHeight()/2-100+(i*50), 100, 30);
+            ans[i].setBounds(frame.getWidth()/2-300, frame.getHeight()/2+(i*50), 100, 30);
             createQuestion.add(ans[i]);
         }
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-425, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-325, 400, 30);
         error.setVisible(false);
         createQuestion.add(error);
         
@@ -335,7 +335,7 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(topics);
         topics.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-400, 300, 100);
+        scrollPane.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-300, 300, 100);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         createQuestion.add(scrollPane);
@@ -343,18 +343,18 @@ public class Window {
         questionText = new JTextArea();
         questionText.setLineWrap(true);
         questionText.setWrapStyleWord(true);
-        questionText.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-250, 300, 100);
+        questionText.setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150, 300, 100);
         createQuestion.add(questionText);
         
         for(int i = 0; i < ansText.length;i++){
             ansText[i] = new JTextField();
-            ansText[i].setBounds(frame.getWidth()/2-100, frame.getHeight()/2-100+(i*50), 300, 30);
+            ansText[i].setBounds(frame.getWidth()/2-100, frame.getHeight()/2+(i*50), 300, 30);
             createQuestion.add(ansText[i]);
         }
         
         for(int i = 0; i < ansButtons.length;i++){
             ansButtons[i] = new JRadioButton();
-            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-100+(i*50), 30, 30);
+            ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2+(i*50), 30, 30);
             group.add(ansButtons[i]);
             createQuestion.add(ansButtons[i]);
         }
@@ -1362,7 +1362,7 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(questions);
         questions.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        scrollPane.setBounds(frame.getWidth()/2-200 ,frame.getHeight()/2-200 , 400, 400);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         addtest2.add(scrollPane);
