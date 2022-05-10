@@ -358,16 +358,15 @@ public class Test {
     
     /**
      * Method to add a single question to an existing test
-     * @param question question to be added
+     * @param questionID question to be added
      * @param userID id of user attempting to modify the test
      * @throws SQLException 
      */
-    public void addQuestionToTest(Question question, int userID) throws SQLException, IllegalArgumentException{
+    public void addQuestionToTest(int questionID, int userID) throws SQLException, IllegalArgumentException{
         
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("addQuestionToTest : Test : perms");
         
-        String insertString = "insert into questionInTest (questionID, "
-                + "testID) values (?, " + testID + " )";
+        String insertString = "insert into questionInTest values(?, ?) ";
         PreparedStatement insertStmt;
         
         
@@ -380,7 +379,8 @@ public class Test {
         }
         
         try{
-            insertStmt.setInt(1, question.getID());
+            insertStmt.setInt(2, questionID);
+            insertStmt.setInt(1, testID);
         }
         catch (SQLException e) {
             throw new SQLException("Can't set questionID in "
@@ -395,21 +395,21 @@ public class Test {
                     + "addQuestionToTest in Test class");
         }
         
-        questions.add(question);
+        questions.add(new Question(c, questionID) );
         
     }
     
     /**
      * Method to add a single Topic to an existing test
-     * @param topic topic to be added
+     * @param topicID topic to be added
      * @param userID id of user attempting to modify the test
      * @throws SQLException 
      */
-    public void addTopicToTest (Topic topic, int userID) throws SQLException, IllegalArgumentException {
+    public void addTopicToTest (int topicID, int userID) throws SQLException, IllegalArgumentException {
         
         if (!validatePerms(c, userID)) throw new IllegalArgumentException("addTopicToTest : Test : perms");
         
-        String insertString = "insert into topicInTest (topicID, testID) values (?, " + testID + " )";
+        String insertString = "insert into topicInTest (topicID, testID) values (?, ?)";
         PreparedStatement insertStmt;
         
         
@@ -421,7 +421,8 @@ public class Test {
         }
         
         try{
-            insertStmt.setInt(1, topic.getID());
+            insertStmt.setInt(1, topicID);
+            insertStmt.setInt(2, testID);
         }
         catch (SQLException e) {
             throw new SQLException("Can't set questionID in addTopicToTest in Test class");
@@ -434,7 +435,7 @@ public class Test {
             throw new SQLException("Can't execute update in addTopicToTest in Test class");
         }
         
-        topics.add(topic);
+        topics.add(new Topic(c, topicID) );
     }
     
      public void addTopicToTest (Topic topic) throws SQLException, IllegalArgumentException {
