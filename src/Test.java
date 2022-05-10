@@ -305,14 +305,9 @@ public class Test {
      * @param testName name of the test
      * @throws java.sql.SQLException
      */
-    public static void createTest(Connection c, 
+    public static int createTest(Connection c, 
             int creatorID, String testName) throws SQLException {
         
-        // Begin Transaction
-        try{
-            c.setAutoCommit(false); // set to false in order to make a transaction
-        
-            // the test insertion
             String insertTestString = "insert into test ( "
                     + "creator, testName) values (?, ?)";
             PreparedStatement insertTestStmt;
@@ -336,23 +331,7 @@ public class Test {
                         + "statement in createTest of Test class.");
             }
                         
-            c.commit();
-        
-        } // end transaction
-        
-        catch (SQLException exc){
-            try{
-                c.rollback(); // rollback on failure
-            }
-            catch (SQLException roll){
-                throw new SQLException("Problem rolling back "
-                        + "transaction from error: " + exc.getMessage());
-            }
-            
-        }
-        finally{ // always do this
-            c.setAutoCommit(true); // set back to true to prevent problems elsewhere in application
-        }
+            return c.prepareStatement("select testID from test where testName = " + testName).executeQuery().getInt(1);
         
     }
     
