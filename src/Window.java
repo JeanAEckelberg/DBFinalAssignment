@@ -1458,7 +1458,7 @@ public class Window {
          frame.setVisible(false);
         frame.remove(currentPane);
         JList testtopics;
-        JButton save;
+        JButton save, back;
         ArrayList<Integer> topicIds = new ArrayList<Integer>();
                 
                 
@@ -1470,8 +1470,12 @@ public class Window {
 
         
         save = new JButton("Save");
-        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        save.setBounds(removetesttopics.getWidth()/2 +10,removetesttopics.getHeight()/8 -20, 100, 30);
         removetesttopics.add(save);
+        
+        back = new JButton("Back");
+        back.setBounds(removetesttopics.getWidth()/2 -200,removetesttopics.getHeight()/8 -20, 100, 30);
+        removetesttopics.add(back);
         
         Topic[] topics = currentTest.getTopics();
         
@@ -1491,6 +1495,7 @@ public class Window {
         
        
         save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testtopics, topicIds));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = removetesttopics;
         frame.add(removetesttopics);
         frame.setLayout(null);
@@ -1501,7 +1506,7 @@ public class Window {
          frame.setVisible(false);
         frame.remove(currentPane);
         JList testquestions;
-        JButton save;
+        JButton save, back;
         ArrayList<Integer> questionIds = new ArrayList<Integer>();
                 
                 
@@ -1513,8 +1518,12 @@ public class Window {
 
         
         save = new JButton("Save");
-        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        save.setBounds(removetestquestions.getWidth()/2 +10,removetestquestions.getHeight()/8 -20, 100, 30);
         removetestquestions.add(save);
+        
+        back = new JButton("Back");
+        back.setBounds(removetestquestions.getWidth()/2 - 200,removetestquestions.getHeight()/8 -20, 100, 30);
+        removetestquestions.add(back);
         
         Question[] questions = currentTest.getQuestions();
         
@@ -1534,6 +1543,7 @@ public class Window {
         
        
         save.addActionListener(new RemoveTestQuestionsListener(this, c , currentTest, currentUser, testquestions, questionIds));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = removetestquestions;
         frame.add(removetestquestions);
         frame.setLayout(null);
