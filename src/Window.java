@@ -620,6 +620,11 @@ public class Window {
         enterQuery.setBounds(600, 50, 100, 30);
         resultsPage.add(enterQuery);
         
+        JButton back = new JButton("Back");
+        back.setBounds(20, 20, 100, 30);
+        resultsPage.add(back);
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
         query = new JTextField();
         query.setBounds(100, 50, 500, 30);
         resultsPage.add(query);
@@ -779,6 +784,11 @@ public class Window {
         enterQuery.setBounds(600, 50, 100, 30);
         resultsPage.add(enterQuery);
         
+        JButton back = new JButton("Back");
+        back.setBounds(20, 20, 100, 30);
+        resultsPage.add(back);
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
+        
         query = new JTextField();
         query.setBounds(100, 50, 500, 30);
         resultsPage.add(query);
@@ -931,6 +941,11 @@ public class Window {
         JButton enterQuery = new JButton("Search");
         enterQuery.setBounds(600, 50, 100, 30);
         resultsPage.add(enterQuery);
+        
+        JButton back = new JButton("Back");
+        back.setBounds(20, 20, 100, 30);
+        resultsPage.add(back);
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
         
         query = new JTextField();
         query.setBounds(100, 50, 500, 30);
@@ -1285,7 +1300,7 @@ public class Window {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(topics);
         topics.setLayoutOrientation(JList.VERTICAL);
-        scrollPane.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        scrollPane.setBounds(frame.getWidth()/2 - 200 ,frame.getHeight()/2 -200 , 400, 400);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
         addtest1.add(scrollPane);
