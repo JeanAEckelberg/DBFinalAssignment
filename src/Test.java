@@ -484,7 +484,8 @@ public class Test {
      * @throws java.sql.SQLException
      */
     public void removeTopic(int topicID, int userID) throws SQLException, IllegalArgumentException{
-        if (!validatePerms(c, userID)) throw new IllegalArgumentException("removeTopicLinks : Test : perms");
+        if (!validatePerms(c, userID)) 
+            throw new IllegalArgumentException("removeTopicLinks : Test : perms");
         
         // find the question in question
         Topic temp = null;
@@ -702,14 +703,15 @@ public class Test {
      * getter for the topics in this test
      */
     public Topic[] getTopics(){
-        return (Topic[]) topics.toArray();
+        Topic[] temp = new Topic[0];
+        return topics.toArray(temp);
     }
     
     /**
      * getter for the questions in this test
      */
     public Question[] getQuestions(){
-        return (Question[]) questions.toArray();
+        return  questions.toArray(new Question[0]);
     }
     
     /**
@@ -718,8 +720,9 @@ public class Test {
     public void removeAllTopics(int userID)throws SQLException, IllegalArgumentException{
         if (!validatePerms(c, userID)) 
             throw new IllegalArgumentException("removeAllTopics : test : perms");
-        for(Topic t : topics){
-            removeTopic(userID, t.getID());
+        Topic[] tArray = topics.toArray(new Topic[0]);
+        for(Topic t : tArray){
+            removeTopic(t.getID(), userID);
         }
     }
     
@@ -729,8 +732,9 @@ public class Test {
     public void removeAllQuestions(int userID) throws SQLException, IllegalArgumentException{
         if(!validatePerms(c, userID))
             throw new IllegalArgumentException("removeAllQuestions : test : perms");
-        for(Question q : questions){
-            removeQuestion(userID, q.getID());
+        Question[] questionArray = questions.toArray(new Question[0]);
+        for(Question q : questionArray){
+            removeQuestion(q.getID(), userID);
         }
     }
 }

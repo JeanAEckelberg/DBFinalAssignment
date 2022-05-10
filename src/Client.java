@@ -32,7 +32,8 @@ public class Client {
             User user1 = new User(connection, "Milksoplimit", "p455word");
             Topic t1 = new Topic(connection, 1);
             Question q1 = new Question(connection, 1);
-            w.EditQuestion(user1, q1);
+            Test test1 = new Test(connection, 2);
+            w.EditTestHome(user1, test1);
             
             /*
             Question q1 = new Question(connection, 1);

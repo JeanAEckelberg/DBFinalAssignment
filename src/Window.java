@@ -765,28 +765,28 @@ public class Window {
         
         
         editname = new JButton("Edit Name");
-        editname.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 -500, 100, 30);
+        editname.setBounds(frame.getWidth()/2-10,frame.getHeight()/2 -200, 100, 30);
         edittesthome.add(editname);
         
         
         removeQuestions = new JButton("Remove Questions");
-        removeQuestions.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 -300, 100, 30);
+        removeQuestions.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -250, 200, 30);
         edittesthome.add(removeQuestions);
         
         addQuestions = new JButton("Add Questions");
-        addQuestions.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 -100, 100, 30);
+        addQuestions.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -300, 200, 30);
         edittesthome.add(addQuestions);
         
         removeTopics = new JButton("Remove Topics");
-        removeTopics.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 +100, 100, 30);
+        removeTopics.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -350, 200, 30);
         edittesthome.add(removeTopics);
         
         addTopics = new JButton("Add Topics");
-        addTopics.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 +300, 100, 30);
+        addTopics.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -400, 200, 30);
         edittesthome.add(addTopics);
         
         removeTest = new JButton("REMOVE TEST");
-        removeTest.setBounds(frame.getWidth()/2 +10,frame.getHeight()/2 +500, 100, 30);
+        removeTest.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -450, 200, 30);
         edittesthome.add(removeTest);
         Window ref = this;
      
@@ -858,7 +858,7 @@ public class Window {
         
         
         save = new JButton("Save");
-        save.setBounds(frame.getWidth()/2 +150, frame.getHeight()/2-150, 300, 30);
+        save.setBounds(frame.getWidth()/2 +300, frame.getHeight()/2-150, 100, 30);
         edittestname.add(save);
         
         
@@ -897,7 +897,7 @@ public class Window {
         }
         
         testtopics = new JList(listModel);
-        testtopics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        testtopics.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
         testtopics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         if(testtopics.getModel().getSize() - 1 >= 0){
             testtopics.setSelectionInterval(0, testtopics.getModel().getSize() -1);
@@ -944,7 +944,7 @@ public class Window {
         }
         
         testquestions = new JList(listModel);
-        testquestions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        testquestions.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
         testquestions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         if(testquestions.getModel().getSize() - 1 >= 0){
             testquestions.setSelectionInterval(0, testquestions.getModel().getSize() -1);
@@ -953,7 +953,7 @@ public class Window {
         removetestquestions.add(testquestions);
         
        
-        save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testquestions, questionIds));
+        save.addActionListener(new RemoveTestQuestionsListener(this, c , currentTest, currentUser, testquestions, questionIds));
         currentPane = removetestquestions;
         frame.add(removetestquestions);
         frame.setLayout(null);
@@ -1001,7 +1001,7 @@ public class Window {
         
         
         JList topics = new JList(listModel);
-        topics.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        topics.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
         topics.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         addtesttopics.add(topics);
         
@@ -1046,10 +1046,10 @@ public class Window {
                 ResultSet topicRS = s.QuestionsByTopic(topicsInTest[i].getID());
                 
                 while(topicRS.next()){
-                    Topic topic = new Topic(c, topicRS.getInt(1));
+                    Question question = new Question(c, topicRS.getInt(1));
                     Boolean inTest = false;
-                    for(int j =0; j < questionsInTest.length; i++){
-                        if(topic.getID() == questionsInTest[j].getID()){
+                    for(int j =0; j < questionsInTest.length; j++){
+                        if(question.getID() == questionsInTest[j].getID()){
                             inTest = true;
                         }
 
@@ -1057,7 +1057,7 @@ public class Window {
                     if( !inTest){
                         idsOfQuestions.add(topicRS.getInt(1));
 
-                        listModel.addElement( topic.getName());
+                        listModel.addElement( question.getText());
 
                     }
                 }
@@ -1069,16 +1069,16 @@ public class Window {
         
         
         JList questions = new JList(listModel);
-        questions.setBounds(frame.getWidth()/2 ,frame.getHeight()/2 , 400, 400);
+        questions.setBounds(frame.getWidth()/2 - 20 ,frame.getHeight()/2 -20 , 400, 400);
         questions.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         addtestquestions.add(questions);
         
         JButton save = new JButton("Save");
-        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        save.setBounds(frame.getWidth()/2 -10,frame.getHeight()/8 -20, 100, 30);
         addtestquestions.add(save);
         
         JButton back = new JButton("Back");
-        back.setBounds(frame.getWidth()/2 -300,frame.getHeight()/8 -20, 100, 30);
+        back.setBounds(frame.getWidth()/2 -200,frame.getHeight()/8 -20, 100, 30);
         addtestquestions.add(back);
         
         

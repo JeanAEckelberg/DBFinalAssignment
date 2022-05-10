@@ -19,6 +19,8 @@ public class BackToEditTestHomeListener implements ActionListener{
     private Test currentTest;
     public BackToEditTestHomeListener(Window ref, User currentUser, Test currentTest){
         this.ref = ref;
+        this.currentUser = currentUser;
+        this.currentTest = currentTest;
     }
 
     @Override
