@@ -899,7 +899,6 @@ public class Window {
         
     }
     
-
     public void SearchPageQuestions(User currentUser, ArrayList<Question> questions){
         
         /*
@@ -1052,7 +1051,6 @@ public class Window {
         frame.setVisible(true);
         
     }
-    
     
     public void TakeTest(User currentUser, Test currentTest){
         frame.setVisible(false);
@@ -1370,42 +1368,49 @@ public class Window {
         frame.setVisible(true);
      }
     
-    
     public void EditTestHome(User currentUser, Test currentTest){
         frame.setVisible(false);
         frame.remove(currentPane);
-        JButton removeQuestions, addQuestions, removeTopics, addTopics, removeTest, editname  ;
+        JButton removeQuestions, addQuestions, removeTopics, addTopics, removeTest, editname, back  ;
         
         
         JPanel edittesthome = new JPanel();
         edittesthome.setSize(frame.getSize());
         edittesthome.setLayout(null);
         
+        JLabel title = new JLabel("Edit Test Page");
+        title.setBounds(edittesthome.getWidth()/2-10, 100, 100, 30);
+        edittesthome.add(title);
         
         editname = new JButton("Edit Name");
-        editname.setBounds(edittesthome.getWidth()/2-10,edittesthome.getHeight()/2 -200, 100, 30);
+        editname.setBounds(edittesthome.getWidth()/2-10,edittesthome.getHeight()/4 +30, 100, 30);
         edittesthome.add(editname);
         
         
         removeQuestions = new JButton("Remove Questions");
-        removeQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -250, 200, 30);
+        removeQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +65, 200, 30);
         edittesthome.add(removeQuestions);
         
         addQuestions = new JButton("Add Questions");
-        addQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -300, 200, 30);
+        addQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +100, 200, 30);
         edittesthome.add(addQuestions);
         
         removeTopics = new JButton("Remove Topics");
-        removeTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -350, 200, 30);
+        removeTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +135, 200, 30);
         edittesthome.add(removeTopics);
         
         addTopics = new JButton("Add Topics");
-        addTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -400, 200, 30);
+        addTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +170, 200, 30);
         edittesthome.add(addTopics);
         
         removeTest = new JButton("REMOVE TEST");
-        removeTest.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -450, 200, 30);
+        removeTest.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +205, 200, 30);
         edittesthome.add(removeTest);
+        
+        back = new JButton("Back");
+        back.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/4 +240, 200, 30);
+        edittesthome.add(back);
+        
         Window ref = this;
      
         
@@ -1450,6 +1455,8 @@ public class Window {
         
         });
         
+        back.addActionListener(new BackToDashboardListener(ref, currentUser));
+        
         removeTest.addActionListener(new RemoveTestListener(this, c, currentUser, currentTest));
         
         currentPane = edittesthome;
@@ -1457,7 +1464,6 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-    
     
     public void EditTestName(User currentUser, Test currentTest){
         frame.setVisible(false);
@@ -1492,7 +1498,7 @@ public class Window {
          frame.setVisible(false);
         frame.remove(currentPane);
         JList testtopics;
-        JButton save;
+        JButton save, back;
         ArrayList<Integer> topicIds = new ArrayList<Integer>();
                 
                 
@@ -1504,8 +1510,12 @@ public class Window {
 
         
         save = new JButton("Save");
-        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        save.setBounds(removetesttopics.getWidth()/2 +10,removetesttopics.getHeight()/8 -20, 100, 30);
         removetesttopics.add(save);
+        
+        back = new JButton("Back");
+        back.setBounds(removetesttopics.getWidth()/2 -200,removetesttopics.getHeight()/8 -20, 100, 30);
+        removetesttopics.add(back);
         
         Topic[] topics = currentTest.getTopics();
         
@@ -1539,18 +1549,18 @@ public class Window {
         
        
         save.addActionListener(new RemoveTestTopicsListener(this, c , currentTest, currentUser, testtopics, topicIds));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = removetesttopics;
         frame.add(removetesttopics);
         frame.setLayout(null);
         frame.setVisible(true);
     }
     
-    
     public void RemoveTestQuestions(User currentUser, Test currentTest){
          frame.setVisible(false);
         frame.remove(currentPane);
         JList testquestions;
-        JButton save;
+        JButton save, back;
         ArrayList<Integer> questionIds = new ArrayList<Integer>();
                 
                 
@@ -1562,8 +1572,12 @@ public class Window {
 
         
         save = new JButton("Save");
-        save.setBounds(frame.getWidth()/2 +10,frame.getHeight()/8 -20, 100, 30);
+        save.setBounds(removetestquestions.getWidth()/2 +10,removetestquestions.getHeight()/8 -20, 100, 30);
         removetestquestions.add(save);
+        
+        back = new JButton("Back");
+        back.setBounds(removetestquestions.getWidth()/2 - 200,removetestquestions.getHeight()/8 -20, 100, 30);
+        removetestquestions.add(back);
         
         Question[] questions = currentTest.getQuestions();
         
@@ -1597,6 +1611,7 @@ public class Window {
         
        
         save.addActionListener(new RemoveTestQuestionsListener(this, c , currentTest, currentUser, testquestions, questionIds));
+        back.addActionListener(new BackToDashboardListener(this, currentUser));
         currentPane = removetestquestions;
         frame.add(removetestquestions);
         frame.setLayout(null);
@@ -1761,5 +1776,4 @@ public class Window {
         frame.setVisible(true);
     }
     
-
 }
