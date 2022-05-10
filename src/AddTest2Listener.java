@@ -38,7 +38,7 @@ public class AddTest2Listener implements ActionListener{
     }
     
     @Override
-   public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
         this.selectedQuestionIds = new ArrayList<Integer>();
         int[] templist = this.questionJLIST.getSelectedIndices();
         for( int i = 0; i < templist.length; i++){
@@ -57,6 +57,9 @@ public class AddTest2Listener implements ActionListener{
                 Topic current = new Topic(c, this.idsOfTopics.get(i));
                 newTest.addTopicToTest(current);
             }
+            for(Question q : questionList)
+                newTest.addQuestionToTest(q.getID(), currentUser.getID());
+            
         }catch(SQLException se){
             System.out.println("couldn't create test");
         }

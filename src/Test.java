@@ -297,9 +297,7 @@ public class Test {
     }
     
     /**
-     * A static method to insert a Test and it's questions into the database that 
-     * uses a transaction to ensure that there are no orphaned questions or 
-     * other problems
+     * A static method to insert a Test into the database
      * @param c Connection to the database
      * @param creatorID identifier of the user who made the test
      * @param testName name of the test

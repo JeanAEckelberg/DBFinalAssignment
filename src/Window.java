@@ -466,7 +466,7 @@ public class Window {
         
         
         error = new JLabel("Question already exists!");
-        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2+300, 400, 30);
+        error.setBounds(frame.getWidth()/2-90, frame.getHeight()/2-300, 400, 30);
         error.setVisible(false);
         editQuestion.add(error);
         
@@ -496,7 +496,7 @@ public class Window {
         int counter = 0;
         for(int i = 0; i < allTopics.size(); i++){
             for(int j = 0; j < currentTopics.length; j++){
-                if(allTopics.get(i).getID() != currentTopics[i].getID()) continue;
+                if(allTopics.get(i).getID() != currentTopics[j].getID()) continue;
                 
                 currentTopicIndicies[counter++] = i;
             }
@@ -553,8 +553,12 @@ public class Window {
         for(int i = 0; i < ansButtons.length;i++){
             ansButtons[i] = new JRadioButton();
             ansButtons[i].setBounds(frame.getWidth()/2-150, frame.getHeight()/2-150+(i*50), 30, 30);
+            if(i < answers.length && currentQuestion.getCorrectAns() != null
+                    && currentQuestion.getCorrectAns() == answers[i].getID())
+                ansButtons[i].setSelected(true);
             group.add(ansButtons[i]);
             editQuestion.add(ansButtons[i]);
+            
         }
         
         
@@ -654,12 +658,11 @@ public class Window {
         DefaultListModel listModel = new DefaultListModel();
         try{
             ResultSet topicRS = s.Topics("");
-            int count = 0;
+            
             while(topicRS.next()){
                 idsOfTopics.add(topicRS.getInt(1));
                 Topic topic = new Topic(c, topicRS.getInt(1));
                 listModel.addElement( topic.getName());
-                count++;
             }
         }catch(SQLException sasd){
             listModel.addElement("No topics found");
