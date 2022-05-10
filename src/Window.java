@@ -208,11 +208,6 @@ public class Window {
         
     }
     
-    public void Search(JTextField text ){
-        frame.setVisible(false);
-        frame.remove(currentPane);
-    }
-    
     public void CreateTopic(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
@@ -590,11 +585,7 @@ public class Window {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-    
-    public void CreateTest(User currentUser){
         
-    }
-    
     /**
      * Search page UI
      * @param currentUser user using the page
@@ -663,17 +654,17 @@ public class Window {
             Test currentTest = tests.get(Math.min(Math.max(0,tests.size()-1), cursor+i));
             results[i] = new JButton(currentTest.getTestName());
             take[i] = new JButton("Take Test");
-            results[i].setBounds(frame.getWidth() - 150, 200+(i*120), 300, 100);
-            take[i].setBounds(frame.getWidth() + 150, 200+(i*120), 100, 100);
+            results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
+            take[i].setBounds(frame.getWidth()/2 + 150, 200+(i*60), 100, 50);
             resultsPage.add(results[i]);
             resultsPage.add(take[i]);
             
             results[i].addActionListener((ActionEvent e) -> {
-                editTestHome(currentUser,currentTest);
+                EditTestHome(currentUser,currentTest);
             });
             
             take[i].addActionListener((ActionEvent e) -> {
-                takeTest(currentUser,currentTest);
+                TakeTest(currentUser,currentTest);
             });
         }
         
@@ -687,6 +678,7 @@ public class Window {
             cursor+=5;
             if(cursor >= tests.size())
                 cursor=tests.size()-6;
+            if(cursor < 0) cursor = 0;
             SearchPageTests(currentUser, tests);
         });
         
@@ -813,7 +805,7 @@ public class Window {
         for(int i = 0; i < results.length; i++){
             Topic currentTopic = topics.get(Math.min(Math.max(0,topics.size()-1), cursor+i));
             results[i] = new JButton(currentTopic.getName());
-            results[i].setBounds(frame.getWidth() - 150, 200+(i*120), 300, 100);
+            results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
             resultsPage.add(results[i]);
             
             results[i].addActionListener((ActionEvent e) -> {
@@ -831,6 +823,7 @@ public class Window {
             cursor+=5;
             if(cursor >= topics.size())
                 cursor=topics.size()-6;
+            if(cursor < 0) cursor = 0;
             SearchPageTopics(currentUser, topics);
         });
         
@@ -959,7 +952,7 @@ public class Window {
         for(int i = 0; i < results.length; i++){
             Question currentQuestion = questions.get(Math.min(Math.max(0,questions.size()-1), cursor+i));
             results[i] = new JButton(currentQuestion.getText());
-            results[i].setBounds(frame.getWidth() - 150, 200+(i*120), 300, 100);
+            results[i].setBounds(frame.getWidth()/2 - 150, 200+(i*60), 300, 50);
             resultsPage.add(results[i]);
             
             results[i].addActionListener((ActionEvent e) -> {
@@ -977,6 +970,7 @@ public class Window {
             cursor+=5;
             if(cursor >= questions.size())
                 cursor=questions.size()-6;
+            if(cursor < 0) cursor = 0;
             SearchPageQuestions(currentUser, questions);
         });
         
@@ -1350,28 +1344,28 @@ public class Window {
         
         
         editname = new JButton("Edit Name");
-        editname.setBounds(frame.getWidth()/2-10,frame.getHeight()/2 -200, 100, 30);
+        editname.setBounds(edittesthome.getWidth()/2-10,edittesthome.getHeight()/2 -200, 100, 30);
         edittesthome.add(editname);
         
         
         removeQuestions = new JButton("Remove Questions");
-        removeQuestions.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -250, 200, 30);
+        removeQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -250, 200, 30);
         edittesthome.add(removeQuestions);
         
         addQuestions = new JButton("Add Questions");
-        addQuestions.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -300, 200, 30);
+        addQuestions.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -300, 200, 30);
         edittesthome.add(addQuestions);
         
         removeTopics = new JButton("Remove Topics");
-        removeTopics.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -350, 200, 30);
+        removeTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -350, 200, 30);
         edittesthome.add(removeTopics);
         
         addTopics = new JButton("Add Topics");
-        addTopics.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -400, 200, 30);
+        addTopics.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -400, 200, 30);
         edittesthome.add(addTopics);
         
         removeTest = new JButton("REMOVE TEST");
-        removeTest.setBounds(frame.getWidth()/2 -10,frame.getHeight()/2 -450, 200, 30);
+        removeTest.setBounds(edittesthome.getWidth()/2 -10,edittesthome.getHeight()/2 -450, 200, 30);
         edittesthome.add(removeTest);
         Window ref = this;
      

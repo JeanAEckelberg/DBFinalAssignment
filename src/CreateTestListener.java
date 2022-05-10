@@ -29,7 +29,7 @@ public class CreateTestListener implements ActionListener{
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        ref.CreateTest(currentUser);
+        ref.AddTest1(currentUser);
       
     }
 }

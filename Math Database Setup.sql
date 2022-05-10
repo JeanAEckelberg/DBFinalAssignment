@@ -53,8 +53,8 @@ create table if not exists leaderboard (
 	userID int,
 	testID int,
 	score real,
-	timeElapsed interval, -- intervals are written in 'HH:mm:ss.s' where m is minutes and .s is fractions of a second
-	primary key (userID, testID),
+	timeElapsed varchar(10), -- intervals are written in 'HH:mm:ss.s' where m is minutes and .s is fractions of a second
+	primary key (userID, testID, timeElapsed),
 	foreign key (userID) references userTable (userID),
 	foreign key (testID) references test (testID)
 );

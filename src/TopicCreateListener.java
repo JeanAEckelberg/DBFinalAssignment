@@ -38,7 +38,9 @@ public class TopicCreateListener implements ActionListener{
         try{
             Topic.createTopic(c, name.getText(), desc.getText(), currentUser.getID());
             error.setText("Topic Created!");
-        } catch(Exception f) {
+        } catch (IllegalArgumentException a){
+            error.setText("You are not authorized!");
+        } catch(SQLException f) {
             error.setText("Topic Already Exists");
         } finally {
             error.setVisible(true);
