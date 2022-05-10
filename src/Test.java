@@ -52,8 +52,8 @@ public class Test {
             set = quereyStatement.executeQuery();
             if (!set.next()) throw new SQLException();
             this.testID = set.getInt(1);
-            this.creatorID = set.getInt(3);
-            this.testName = set.getString(4);
+            this.creatorID = set.getInt(2);
+            testName = set.getString(3);
             if(set.wasNull()) testName = "";
             set.close();
         }
@@ -301,53 +301,26 @@ public class Test {
      * uses a transaction to ensure that there are no orphaned questions or 
      * other problems
      * @param c Connection to the database
-     * @param questions An array of questions already in the database
      * @param creatorID identifier of the user who made the test
      * @param testName name of the test
      * @throws java.sql.SQLException
      */
-    public static void createTest(Connection c, ArrayList<Question> questions, 
+    public static void createTest(Connection c, 
             int creatorID, String testName) throws SQLException {
         
         // Begin Transaction
         try{
             c.setAutoCommit(false); // set to false in order to make a transaction
         
-            // get the next testID for the linking table inserts
-            String nextIDString = "select count(*) from test";
-            PreparedStatement nextIDStmt;
-            int nextID  = -1;
-            ResultSet set;
-
-            try{
-                nextIDStmt = c.prepareStatement(nextIDString);
-            }
-            catch (SQLException e){
-                throw new SQLException("Can't prep statemtent to get "
-                        + "the next testID in createTest of Test class");
-            }
-
-            try{
-                set = nextIDStmt.executeQuery();
-                if (!set.next()) throw new SQLException();
-                nextID = set.getInt(1);
-                set.close();
-            }
-            catch(SQLException e){
-                throw new SQLException("Can't execute statemtent to get "
-                        + "the next testID in createTest of Test class");
-            }
-
             // the test insertion
-            String insertTestString = "insert into test (numberOfQuestions, "
-                    + "creator, testName) values (?, ?, ?)";
+            String insertTestString = "insert into test ( "
+                    + "creator, testName) values (?, ?)";
             PreparedStatement insertTestStmt;
 
             try{
                 insertTestStmt = c.prepareStatement(insertTestString);
-                insertTestStmt.setInt(1, questions.size());
-                insertTestStmt.setInt(2, creatorID);
-                insertTestStmt.setString(3, testName);
+                insertTestStmt.setInt(1, creatorID);
+                insertTestStmt.setString(2, testName);
             }
             catch (SQLException e){
                 throw new SQLException("Can't prep test insert "
@@ -362,24 +335,7 @@ public class Test {
                 throw new SQLException("Can't execute test insert "
                         + "statement in createTest of Test class.");
             }
-            
-            // the question insertion into the linking table
-            String insertQuestionsString = "insert into questionInTest "
-                    + "(questionID, testID) values (?, " + nextID + " )";
-            PreparedStatement insertQuestionsStmt;
-            
-            for (Question q : questions){
-                try{
-                    insertQuestionsStmt = c.prepareStatement(insertQuestionsString);
-                    insertQuestionsStmt.setInt(1, q.getID());
-                    insertQuestionsStmt.executeUpdate();
-                }
-                catch (SQLException e){
-                    throw new SQLException("Problem adding Questions "
-                            + "to the Test in createTest of Test class");
-                }
-            }
-            
+                        
             c.commit();
         
         } // end transaction
@@ -441,33 +397,6 @@ public class Test {
         
         questions.add(question);
         
-        String updateString = "update test set numberOfQuestions = "
-                + "? where testID = " + testID;
-        PreparedStatement updateStmt;
-        
-        try{
-            updateStmt = c.prepareStatement(updateString);
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't prep update statement "
-                    + "in addQuestionToTest in Test class");
-        }
-        
-        try{
-            updateStmt.setInt(1, questions.size());
-        }
-        catch (SQLException e) {
-            throw new SQLException("Can't set numberOfQuestions "
-                    + "in addQuestionToTest in Test class");
-        }
-        
-        try{
-            updateStmt.executeUpdate();
-        }
-        catch (SQLException e){
-            throw new SQLException("Can't execute update of numberOfQuestions"
-                    + " in addQuestionToTest in Test class");
-        }
     }
     
     /**
