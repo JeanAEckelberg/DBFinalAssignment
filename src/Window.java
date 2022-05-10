@@ -13,6 +13,7 @@ public class Window {
     JFrame frame;
     JPanel currentPane;
     Connection c;
+    int cursor;
     
     public Window( String title, int width, int height, Connection c){ //Connection c,
         frame = new JFrame(title);
@@ -137,6 +138,8 @@ public class Window {
     public void Dashboard(User currentUser){
         frame.setVisible(false);
         frame.remove(currentPane);
+        cursor = 0;
+        
         JLabel search, greeting, menu;
         JTextField query;
         JPanel dashboard = new JPanel();
@@ -584,7 +587,7 @@ public class Window {
      * Search page UI
      * @param currentUser user using the page
      */
-    public void SearchPage(User currentUser){
+    public void SearchPageTests(User currentUser, ArrayList<Test> tests){
         
         /*
         The idea with this method is to provide a search page that allows a user
@@ -600,27 +603,425 @@ public class Window {
         frame.remove(currentPane);
         
         JLabel notFound;
-        JRadioButton[] filters = new JRadioButton[3];
-        JButton takeTest, edit, delete, next, previous;
-        JLabel[] results;
-        JTextField querey;
+        JButton[] filters = new JButton[3];
+        JButton[] results = new JButton[5];
+        JButton[] take = new JButton[5];
+        JButton next, previous;
+        JTextField query;
+        
+        Search s = new Search(c);
         
         // under construction
         JPanel resultsPage = new JPanel();
         resultsPage.setSize(frame.getSize());
         resultsPage.setLayout(null);
         
-        JButton enterQuerey = new JButton("Search");
-        enterQuerey.setBounds(frame.getWidth()- 150, frame.getHeight()%4 + 2, 100, 30);
-        resultsPage.add(enterQuerey);
+        JButton enterQuery = new JButton("Search");
+        enterQuery.setBounds(frame.getWidth()-200, 10, 100, 30);
+        resultsPage.add(enterQuery);
         
-        querey = new JTextField();
-        querey.setBounds(1, 1, 500, 20);
-        resultsPage.add(querey);
+        query = new JTextField();
+        query.setBounds(100, 50, 500, 30);
+        resultsPage.add(query);
         
-        filters[0] = new JRadioButton("Test");
-        filters[1] = new JRadioButton("Topic");
-        filters[2] = new JRadioButton("Question");
+        filters[0] = new JButton("Test");
+        filters[0].setBounds(100, 100, 100, 30);
+        resultsPage.add(filters[0]);
+        
+        
+        filters[1] = new JButton("Topic");
+        filters[1].setBounds(300, 100, 100, 30);
+        resultsPage.add(filters[1]);
+        
+        filters[2] = new JButton("Question");
+        filters[2].setBounds(500, 100, 100, 30);
+        resultsPage.add(filters[2]);
+        
+        
+        previous = new JButton("Previous");
+        previous.setBounds(200, frame.getHeight()-200, 100, 30);
+        resultsPage.add(previous);
+        
+        next = new JButton("Next");
+        next.setBounds(frame.getWidth() - 200, frame.getHeight() - 200, 100, 30);
+        resultsPage.add(next);
+        
+        
+        for(int i = 0; i < results.length; i++){
+            Test currentTest = tests.get(Math.min(Math.max(0,tests.size()-1), cursor+i));
+            results[i] = new JButton(currentTest.getTestName());
+            take[i] = new JButton("Take Test");
+            results[i].setBounds(frame.getWidth() - 150, 200+(i*120), 300, 100);
+            take[i].setBounds(frame.getWidth() + 150, 200+(i*120), 100, 100);
+            resultsPage.add(results[i]);
+            resultsPage.add(take[i]);
+            
+            results[i].addActionListener((ActionEvent e) -> {
+                editTestHome(currentUser,currentTest);
+            });
+            
+            take[i].addActionListener((ActionEvent e) -> {
+                takeTest(currentUser,currentTest);
+            });
+        }
+        
+        previous.addActionListener((ActionEvent e) -> {
+            cursor-=5;
+            if(cursor < 0) cursor = 0;
+            SearchPageTests(currentUser, tests);
+        });
+        
+        next.addActionListener((ActionEvent e) -> {
+            cursor+=5;
+            if(cursor >= tests.size())
+                cursor=tests.size()-6;
+            SearchPageTests(currentUser, tests);
+        });
+        
+        
+        enterQuery.addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Tests(query.getText());
+                ArrayList<Test> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Test(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTests(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        
+        filters[0].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Tests("");
+                ArrayList<Test> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Test(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTests(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        filters[1].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Topics("");
+                ArrayList<Topic> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Topic(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTopics(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        filters[2].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Questions(query.getText());
+                ArrayList<Question> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Question(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageQuestions(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        currentPane = resultsPage;
+        frame.add(resultsPage);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+    }
+    
+    public void SearchPageTopics(User currentUser, ArrayList<Topic> topics){
+        
+        /*
+        The idea with this method is to provide a search page that allows a user
+         to querey the db and filter the results
+        for questions and topics the edit and delete buttons should be diplayed and
+        associated with each instance of the topics and questions
+        the same for tests, except users can also take tests.
+        there will be between 5 ans 10 results on each page and the user will be able to 
+        page through the results of their search
+        */
+        
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JLabel notFound;
+        JButton[] filters = new JButton[3];
+        JButton[] results = new JButton[5];
+        JButton next, previous;
+        JTextField query;
+        
+        Search s = new Search(c);
+        
+        // under construction
+        JPanel resultsPage = new JPanel();
+        resultsPage.setSize(frame.getSize());
+        resultsPage.setLayout(null);
+        
+        JButton enterQuery = new JButton("Search");
+        enterQuery.setBounds(frame.getWidth()-200, 10, 100, 30);
+        resultsPage.add(enterQuery);
+        
+        query = new JTextField();
+        query.setBounds(100, 50, 500, 30);
+        resultsPage.add(query);
+        
+        filters[0] = new JButton("Test");
+        filters[0].setBounds(100, 100, 100, 30);
+        resultsPage.add(filters[0]);
+        
+        
+        filters[1] = new JButton("Topic");
+        filters[1].setBounds(300, 100, 100, 30);
+        resultsPage.add(filters[1]);
+        
+        filters[2] = new JButton("Question");
+        filters[2].setBounds(500, 100, 100, 30);
+        resultsPage.add(filters[2]);
+        
+        
+        previous = new JButton("Previous");
+        previous.setBounds(200, frame.getHeight()-200, 100, 30);
+        resultsPage.add(previous);
+        
+        next = new JButton("Next");
+        next.setBounds(frame.getWidth() - 200, frame.getHeight() - 200, 100, 30);
+        resultsPage.add(next);
+        
+        
+        for(int i = 0; i < results.length; i++){
+            Topic currentTopic = topics.get(Math.min(Math.max(0,topics.size()-1), cursor+i));
+            results[i] = new JButton(currentTopic.getName());
+            results[i].setBounds(frame.getWidth() - 150, 200+(i*120), 300, 100);
+            resultsPage.add(results[i]);
+            
+            results[i].addActionListener((ActionEvent e) -> {
+                EditTopic(currentUser, currentTopic);
+            });
+        }
+        
+        previous.addActionListener((ActionEvent e) -> {
+            cursor-=5;
+            if(cursor < 0) cursor = 0;
+            SearchPageTopics(currentUser, topics);
+        });
+        
+        next.addActionListener((ActionEvent e) -> {
+            cursor+=5;
+            if(cursor >= topics.size())
+                cursor=topics.size()-6;
+            SearchPageTopics(currentUser, topics);
+        });
+        
+        
+        enterQuery.addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Topics(query.getText());
+                ArrayList<Topic> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Topic(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTopics(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        
+        filters[0].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Tests("");
+                ArrayList<Test> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Test(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTests(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        filters[1].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Topics("");
+                ArrayList<Topic> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Topic(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTopics(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        filters[2].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Questions(query.getText());
+                ArrayList<Question> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Question(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageQuestions(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        
+        currentPane = resultsPage;
+        frame.add(resultsPage);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        
+    }
+    
+
+    public void SearchPageQuestions(User currentUser, ArrayList<Question> questions){
+        
+        /*
+        The idea with this method is to provide a search page that allows a user
+         to querey the db and filter the results
+        for questions and topics the edit and delete buttons should be diplayed and
+        associated with each instance of the topics and questions
+        the same for tests, except users can also take tests.
+        there will be between 5 ans 10 results on each page and the user will be able to 
+        page through the results of their search
+        */
+        
+        frame.setVisible(false);
+        frame.remove(currentPane);
+        
+        JLabel notFound;
+        JButton[] filters = new JButton[3];
+        JButton[] results = new JButton[5];
+        JButton next, previous;
+        JTextField query;
+        
+        Search s = new Search(c);
+        
+        // under construction
+        JPanel resultsPage = new JPanel();
+        resultsPage.setSize(frame.getSize());
+        resultsPage.setLayout(null);
+        
+        JButton enterQuery = new JButton("Search");
+        enterQuery.setBounds(frame.getWidth()-200, 10, 100, 30);
+        resultsPage.add(enterQuery);
+        
+        query = new JTextField();
+        query.setBounds(100, 50, 500, 30);
+        resultsPage.add(query);
+        
+        filters[0] = new JButton("Test");
+        filters[0].setBounds(100, 100, 100, 30);
+        resultsPage.add(filters[0]);
+        
+        
+        filters[1] = new JButton("Topic");
+        filters[1].setBounds(300, 100, 100, 30);
+        resultsPage.add(filters[1]);
+        
+        filters[2] = new JButton("Question");
+        filters[2].setBounds(500, 100, 100, 30);
+        resultsPage.add(filters[2]);
+        
+        
+        previous = new JButton("Previous");
+        previous.setBounds(200, frame.getHeight()-200, 100, 30);
+        resultsPage.add(previous);
+        
+        next = new JButton("Next");
+        next.setBounds(frame.getWidth() - 200, frame.getHeight() - 200, 100, 30);
+        resultsPage.add(next);
+        
+        
+        for(int i = 0; i < results.length; i++){
+            Question currentQuestion = questions.get(Math.min(Math.max(0,questions.size()-1), cursor+i));
+            results[i] = new JButton(currentQuestion.getText());
+            results[i].setBounds(frame.getWidth() - 150, 200+(i*120), 300, 100);
+            resultsPage.add(results[i]);
+            
+            results[i].addActionListener((ActionEvent e) -> {
+                EditQuestion(currentUser, currentQuestion);
+            });
+        }
+        
+        previous.addActionListener((ActionEvent e) -> {
+            cursor-=5;
+            if(cursor < 0) cursor = 0;
+            SearchPageQuestions(currentUser, questions);
+        });
+        
+        next.addActionListener((ActionEvent e) -> {
+            cursor+=5;
+            if(cursor >= questions.size())
+                cursor=questions.size()-6;
+            SearchPageQuestions(currentUser, questions);
+        });
+        
+        
+        enterQuery.addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Questions(query.getText());
+                ArrayList<Question> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Question(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageQuestions(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        
+        filters[0].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Tests("");
+                ArrayList<Test> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Test(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTests(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        filters[1].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Topics("");
+                ArrayList<Topic> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Topic(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageTopics(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
+        filters[2].addActionListener((ActionEvent e) -> {
+            try{
+                ResultSet rs = s.Questions(query.getText());
+                ArrayList<Question> temp = new ArrayList<>();
+                while(rs.next())
+                    temp.add(new Question(c,rs.getInt(1)));
+                cursor = 0;
+                SearchPageQuestions(currentUser, temp);
+            } catch(SQLException f){
+                
+            }
+        });
+        
         
         currentPane = resultsPage;
         frame.add(resultsPage);
